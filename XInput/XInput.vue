@@ -15,6 +15,11 @@ const props = defineProps({
   isRequired: { type: Boolean, default: false },
   /** Texto de ayuda: muestra un ícono "?" con tooltip junto al label. */
   help: { type: String, default: '' },
+  /** Fondo del control (nombre de color Quasar/CSS). 'white' por defecto:
+   *  invisible sobre fondos blancos (la mayoría de la app), pero evita que
+   *  el input "transparente" se mimetice al usarlo sobre un card/banner de
+   *  color. Pasar '' o 'transparent' para el comportamiento clásico. */
+  bgColor: { type: String, default: 'white' },
 })
 
 const emit = defineEmits(['update:modelValue', 'input', 'change'])
@@ -71,7 +76,8 @@ const filteredAttrs = computed(() => {
         for: elementId,
         type: inputType,
         autofocus: props.autofocus,
-        'aria-required': props.isRequired ? 'true' : null
+        'aria-required': props.isRequired ? 'true' : null,
+        'bg-color': props.bgColor || undefined
       }"
       :model-value="modelValue"
       :error="!!errorMessage"

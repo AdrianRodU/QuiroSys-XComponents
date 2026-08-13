@@ -81,6 +81,11 @@ const props = defineProps({
   truncateWidth: { type: [String, Number], default: null },
   /** Texto de ayuda: muestra un ícono "?" con tooltip junto al label. */
   help: { type: String, default: '' },
+  /** Fondo del control (nombre de color Quasar/CSS). 'white' por defecto:
+   *  invisible sobre fondos blancos (la mayoría de la app), pero evita que
+   *  el input "transparente" se mimetice al usarlo sobre un card/banner de
+   *  color. Pasar '' o 'transparent' para el comportamiento clásico. */
+  bgColor: { type: String, default: 'white' },
 });
 
 const fallbackId = `app-select-${Math.random().toString(36).substring(2, 9)}`;
@@ -311,6 +316,7 @@ function onSelect(val) {
                 'error-message': props.error,
                 'no-error-icon': true,
                 'hide-bottom-space': !props.error,
+                'bg-color': props.bgColor || undefined,
               }"
               :hide-selected="isFilterable"
               :fill-input="isFilterable"

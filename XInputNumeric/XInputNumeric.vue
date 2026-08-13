@@ -24,6 +24,11 @@ const props = defineProps({
   min: { type: [Number, String], default: null },
   max: { type: [Number, String], default: null },
   step: { type: [Number, String], default: 1 },
+  /** Fondo del control (nombre de color Quasar/CSS). 'white' por defecto:
+   *  invisible sobre fondos blancos (la mayoría de la app), pero evita que
+   *  el input "transparente" se mimetice al usarlo sobre un card/banner de
+   *  color. Pasar '' o 'transparent' para el comportamiento clásico. */
+  bgColor: { type: String, default: 'white' },
 })
 const emit = defineEmits(['update:modelValue', 'input', 'change'])
 
@@ -113,6 +118,7 @@ defineExpose({ focus, select, focusAndSelect })
         debounce: props.inputDebounce,
         autofocus: props.autofocus,
         'aria-required': props.isRequired ? 'true' : null,
+        'bg-color': props.bgColor || undefined,
       }"
       :model-value="modelValue"
       :min="minNum"

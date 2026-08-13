@@ -20,6 +20,7 @@ import XInput from '@/components/XInput/XInput.vue'
 | `error` | `String` | `null` | Mensaje de error a mostrar |
 | `autofocus` | `Boolean` | `false` | Auto-focus al montar |
 | `isRequired` | `Boolean` | `false` | Muestra asterisco de requerido |
+| `bgColor` | `String` | `'white'` | Fondo del control (color Quasar/CSS). Invisible sobre fondos blancos; evita que el input se mimetice sobre un card/banner de color. `''` para el comportamiento clásico (transparente). |
 
 Ademas, soporta todos los atributos de `QInput` de Quasar como `label`, `type`, `placeholder`, `disabled`, `readonly`, etc.
 

@@ -14,6 +14,7 @@ import XSelect from '@/components/XSelect/XSelect.vue'
 
 | Prop | Tipo | Default | Descripcion |
 |------|------|---------|-------------|
+| `bgColor` | `String` | `'white'` | Fondo del control (color Quasar/CSS). Invisible sobre fondos blancos; evita que el select se mimetice sobre un card/banner de color. `''` para el comportamiento clásico (transparente). |
 | `includeAllOption` | `Boolean` | `false` | Agrega opcion "Todos" al inicio |
 | `isClassic` | `Boolean` | `false` | Usa label flotante dentro del select |
 | `dense` | `Boolean` | `true` | Modo compacto |
