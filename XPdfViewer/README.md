@@ -4,6 +4,8 @@ Visor de PDF embebido basado en [`@embedpdf/vue-pdf-viewer`](https://www.embedpd
 
 > **Motor:** PDFium/WASM vía `@embedpdf/vue-pdf-viewer`. **No usa pdf.js.**
 
+> **Theme:** el toolbar interno de embedpdf sigue automáticamente el modo oscuro de la app (`$q.dark.isActive`), no el del sistema operativo. Sin prop para configurarlo — es siempre así.
+
 ## Instalación
 
 ```vue

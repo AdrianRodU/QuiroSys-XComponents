@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, onBeforeUnmount } from 'vue'
+import { useQuasar } from 'quasar'
 import { api } from 'src/services/api'
 import { PDFViewer } from '@embedpdf/vue-pdf-viewer'
 import XDialog from '../XDialog/XDialog.vue'
@@ -9,6 +10,8 @@ const props = defineProps({
   title: { type: String, default: 'Documento PDF' },
   width: { type: String, default: '80vw' },
 })
+
+const $q = useQuasar()
 
 const isDialogOpen = ref(false)
 const isLoading = ref(false)
@@ -49,7 +52,7 @@ const handleOpen = async () => {
 
     viewerConfig.value = {
       src: blobUrl.value,
-      theme: { preference: 'system' },
+      theme: { preference: $q.dark.isActive ? 'dark' : 'light' },
       tabBar: 'never',
       disabledCategories: [
         'annotation',
@@ -82,6 +85,15 @@ watch(
   () => props.src,
   (newSrc) => {
     if (newSrc && isDialogOpen.value) handleOpen()
+  },
+)
+
+watch(
+  () => $q.dark.isActive,
+  (isDark) => {
+    if (viewerConfig.value.src) {
+      viewerConfig.value = { ...viewerConfig.value, theme: { preference: isDark ? 'dark' : 'light' } }
+    }
   },
 )
 

@@ -32,7 +32,7 @@
          Forzar la key remonta el visor entero con cada `src`/`zoom` nuevo,
          garantizando que siempre cargue el documento y el zoom correctos. -->
     <div class="x-pdf-viewer__viewport" ref="viewportRef">
-      <PDFViewer v-if="src" :key="`${src}::${zoom}`" :config="config" style="width: 100%; height: 100%" @ready="onEmbedReady" />
+      <PDFViewer v-if="src" :key="`${src}::${zoom}::${$q.dark.isActive}`" :config="config" style="width: 100%; height: 100%" @ready="onEmbedReady" />
       <div v-else class="x-pdf-viewer__empty">Sin PDF seleccionado</div>
 
       <div v-if="showActions" class="x-pdf-actions">
@@ -86,6 +86,7 @@
 
 <script setup>
 import { computed, ref, nextTick } from 'vue'
+import { useQuasar } from 'quasar'
 import { PDFViewer } from '@embedpdf/vue-pdf-viewer'
 
 /**
@@ -145,6 +146,8 @@ const props = defineProps({
   showInsert:       { type: Boolean, default: false }, // insert
 })
 
+const $q = useQuasar()
+
 const config = computed(() => {
   // Print + Export SIEMPRE off (los reemplazamos con nuestros botones custom).
   const off = ['document-print', 'document-export']
@@ -168,6 +171,9 @@ const config = computed(() => {
   return {
     src: props.src,
     disabledCategories: off,
+    // Sigue el theme de la app (Quasar), no el del SO — ver `:key` de
+    // <PDFViewer> más abajo: embedpdf solo aplica el theme al montar.
+    theme: { preference: $q.dark.isActive ? 'dark' : 'light' },
     zoom: {
       // Bug verificado en @embedpdf/plugin-zoom (v2.14.4, dist/index.js,
       // método ZoomPlugin.recalcAuto): al terminar de cargar el documento,
