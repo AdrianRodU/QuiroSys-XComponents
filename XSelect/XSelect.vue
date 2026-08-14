@@ -337,10 +337,17 @@ function onSelect(val) {
         <slot :name="name" v-bind="slotProps || {}"/>
       </template>
 
+      <!-- Default de opción: además del ícono FA (opt.icon), soporta logo subido
+           (opt.image_url) — p. ej. métodos de pago con imagen propia (Yape,
+           Izipay). La imagen tiene prioridad si vienen ambos. -->
       <template #option="scope">
         <q-item v-bind="scope.itemProps" :class="scope.opt.class || ''">
-          <q-item-section avatar v-if="scope.opt.icon">
-            <q-icon :name="scope.opt.icon" :color="scope.opt.class?.replace('text-', '') || 'primary'"/>
+          <q-item-section avatar v-if="scope.opt.image_url || scope.opt.icon" style="min-width: 34px">
+            <img v-if="scope.opt.image_url"
+                 :src="scope.opt.image_url"
+                 alt=""
+                 style="width: 22px; height: 22px; object-fit: contain"/>
+            <q-icon v-else :name="scope.opt.icon" :color="scope.opt.class?.replace('text-', '') || 'primary'"/>
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ scope.opt.label }}</q-item-label>
