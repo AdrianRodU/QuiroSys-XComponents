@@ -982,11 +982,14 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
     <q-card-section v-if="initialLoadDone && filters.length > 0 && !isTrulyEmpty" class="q-py-md">
       <div class="row q-col-gutter-md">
         <div v-for="filter in filters" :key="filter.name" :class="filter.class">
+          <!-- clearable: la "x" solo aparece con texto; limpiar dispara la
+               recarga igual que escribir (pedido de Adrián 2026-09-07). -->
           <x-input
             v-if="filter.type === 'input'"
             v-model="filter.value"
             :label="filter.label"
             debounce="750"
+            clearable
             @update:model-value="filterData"
           />
 
