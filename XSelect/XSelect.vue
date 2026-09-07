@@ -94,7 +94,11 @@ const elementLabel = computed(() => (props.isClassic ? attrs.label : undefined))
 const label = computed(() => (props.isClassic ? null : attrs.label));
 const popupContentClass = computed(() => {
   const base = 'app-inner-list app-select__content v-select__content';
-  return attrs.multiple !== undefined ? `${base} v-list-select-multiple` : base;
+  const cls = attrs.multiple !== undefined ? `${base} v-list-select-multiple` : base;
+  // Fusionar la popup-content-class del padre: antes el binding explícito la
+  // PISABA y las clases externas jamás llegaban al menú (fix 2026-09-07).
+  const ext = attrs['popup-content-class'] || attrs.popupContentClass || '';
+  return ext ? `${cls} ${ext}` : cls;
 });
 
 const truncateStyle = computed(() => {
