@@ -14,7 +14,7 @@ const props = defineProps({
   },
   type: {
     type: String,
-    default: 'success' // opciones válidas: success, error, warning, information
+    default: 'success' // opciones válidas: success, error, warning, information, courtesy
   },
   // Icono propio (pisa el del tipo). Vacío = usa el del tipo.
   icon: {
@@ -36,7 +36,10 @@ const colorMap = {
   success:     { text: 'green-10',  bg: 'green-11', icon: 'check_circle' },
   error:       { text: 'red-10',    bg: 'red-2',    icon: 'error' },
   information: { text: 'blue-10',   bg: 'blue-3',   icon: 'info' },
-  warning:     { text: 'yellow-10', bg: 'yellow-7', icon: 'warning' }
+  warning:     { text: 'yellow-10', bg: 'yellow-7', icon: 'warning' },
+  // Riel de CORTESÍAS y CONVENIOS del ERP (v2.7.0): teal suave, el mismo tono
+  // que las vistas clínicas ya usaban a mano para distinguirlo de los avisos.
+  courtesy:    { text: 'teal-9',    bg: 'teal-1',   icon: 'volunteer_activism' }
 }
 
 // --- Calcula los colores a aplicar según el tipo ---
