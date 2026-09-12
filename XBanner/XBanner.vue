@@ -40,9 +40,12 @@ const colorMap = {
 }
 
 // --- Calcula los colores a aplicar según el tipo ---
-const bannerColors = computed(() =>
-  colorMap[props.type] || colorMap.success
-)
+// Alias 'info' → 'information' (v2.6.5): dos vistas ya escribieron "info" y el
+// fallback silencioso a success pintaba VERDE un aviso informativo.
+const bannerColors = computed(() => {
+  const type = props.type === 'info' ? 'information' : props.type
+  return colorMap[type] || colorMap.success
+})
 
 // Icono a pintar: el propio, o el del tipo; noIcon lo apaga.
 const bannerIcon = computed(() =>
