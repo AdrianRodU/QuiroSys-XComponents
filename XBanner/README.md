@@ -25,12 +25,19 @@ A flexible wrapper for Quasar's `QBanner` with predefined semantic styles for su
 
 ## 🎨 Color Scheme Map
 
-| Type         | Text Color   | Background Color |
-|--------------|--------------|------------------|
-| `success`    | `green-10`   | `green-11`       |
-| `error`      | `red-10`     | `red-2`          |
-| `information`| `blue-10`    | `blue-3`         |
-| `warning`    | `yellow-10`  | `yellow-7`       |
+| Type          | Text Color   | Background   | Icon por defecto      | Cuando se usa |
+|---------------|--------------|--------------|-----------------------|---------------|
+| `success`     | `green-10`   | `green-11`   | `check_circle`        | Salio bien |
+| `error`       | `red-10`     | `red-2`      | `error`               | Fallo algo |
+| `information` | `blue-10`    | `blue-3`     | `info`                | Dato util (alias: `info`) |
+| `warning`     | `yellow-10`  | `yellow-7`   | `warning`             | Ojo con esto |
+| `courtesy`    | `teal-9`     | `teal-1`     | `volunteer_activism`  | Riel de cortesias y convenios (v2.7.0) |
+| `neutral`     | `grey-9`     | `grey-3`     | `info`                | Situacion cerrada, sin nada que hacer (v2.8.0) |
+| `trial`       | `purple-9`   | `purple-1`   | `science`             | Algo fuera de lo habitual: periodo de prueba, atencion fuera del flujo (v2.8.0) |
+
+Un `type` NO mapeado cae a `neutral` desde v2.8.0 (antes caia a `success`, y pintaba
+de verde exito un aviso cuyo tipo estaba mal escrito). El default del prop sigue
+siendo `success`: un banner SIN `type` conserva su verde.
 
 ---
 
