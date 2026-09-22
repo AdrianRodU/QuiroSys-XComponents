@@ -20,6 +20,8 @@ import XInputOtp from '@/components/XInputOtp/XInputOtp.vue'
 | `error` | `Boolean` | `false` | Mostrar estado de error |
 | `autoFocus` | `Boolean` | `true` | Auto-focus al montar |
 | `mask` | `Boolean` | `false` | Oculta los digitos tras puntos (type=password). Para un PIN que la persona reutiliza; un OTP de un solo uso no lo necesita |
+| `loading` | `Boolean` | `false` | Comprobando: un giro por casilla, en cascada |
+| `success` | `Boolean` | `false` | Validado: las casillas convergen en UNA con un check |
 
 ## Eventos
 
