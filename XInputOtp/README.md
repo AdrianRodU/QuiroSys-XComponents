@@ -19,6 +19,7 @@ import XInputOtp from '@/components/XInputOtp/XInputOtp.vue'
 | `disabled` | `Boolean` | `false` | Deshabilitar inputs |
 | `error` | `Boolean` | `false` | Mostrar estado de error |
 | `autoFocus` | `Boolean` | `true` | Auto-focus al montar |
+| `mask` | `Boolean` | `false` | Oculta los digitos tras puntos (type=password). Para un PIN que la persona reutiliza; un OTP de un solo uso no lo necesita |
 
 ## Eventos
 

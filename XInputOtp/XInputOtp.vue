@@ -21,6 +21,14 @@ const props = defineProps({
   autoFocus: {
     type: Boolean,
     default: true
+  },
+  // Oculta los digitos tras puntos (type=password). Para un codigo de un solo
+  // uso que llega por SMS da igual verlo; para un PIN que la persona reutiliza
+  // todo el dia, verlo en pantalla lo regala a quien mire por encima del
+  // hombro. Default false para no cambiar los usos existentes.
+  mask: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -130,7 +138,7 @@ defineExpose({
       :key="index"
       :ref="el => inputRefs[index] = el"
       v-model="code[index]"
-      type="text"
+      :type="mask ? 'password' : 'text'"
       inputmode="numeric"
       maxlength="1"
       outlined
