@@ -143,7 +143,7 @@ defineExpose({
       maxlength="1"
       outlined
       class="x-input-otp"
-      :class="{ 'x-input-otp-error': error }"
+      :class="{ 'x-input-otp-error': error, 'x-input-otp-mask': mask }"
       @update:model-value="(val) => handleInput(index, { target: { value: val || '' } })"
       @keydown="(e) => handleKeydown(index, e)"
       :disable="disabled"
@@ -182,6 +182,13 @@ defineExpose({
   font-size: 24px;
   font-weight: bold;
   letter-spacing: 0;
+}
+
+/* El caracter del punto renderiza bastante mas chico que un digito: al mismo
+   tamano de fuente se ve raquitico dentro de la casilla. Se compensa. */
+.x-input-otp-mask :deep(input) {
+  font-size: 38px;
+  line-height: 1;
 }
 
 .x-input-otp-error :deep(.q-field__control) {

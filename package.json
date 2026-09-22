@@ -1,6 +1,6 @@
 {
   "name": "@quirosys/x-components",
-  "version": "2.9.1",
+  "version": "2.9.2",
   "description": "Componentes compartidos QuiroSys - Vue 3 + Quasar v2",
   "main": "index.js",
   "exports": {
