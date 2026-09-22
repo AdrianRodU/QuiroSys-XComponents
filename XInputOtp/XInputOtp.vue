@@ -153,11 +153,28 @@ defineExpose({
 
 <style scoped>
 .x-input-otp {
-  width: 50px;
+  width: 52px;
+}
+
+/* Quasar dibuja el borde del outlined en los pseudo-elementos del control, no
+   en el control: redondear solo el contenedor deja las esquinas RECTAS. Hay que
+   redondear los tres. */
+.x-input-otp :deep(.q-field__control),
+.x-input-otp :deep(.q-field__control)::before,
+.x-input-otp :deep(.q-field__control)::after {
+  border-radius: 12px;
 }
 
 .x-input-otp :deep(.q-field__control) {
-  height: 56px;
+  height: 58px;
+  transition: box-shadow 0.15s ease;
+}
+
+/* Anillo suave al enfocar: con los digitos tapados, saber en que casilla estas
+   es lo unico que te orienta. El color sale del tema del cliente. */
+.x-input-otp.q-field--focused :deep(.q-field__control) {
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--q-primary) 18%, transparent);
 }
 
 .x-input-otp :deep(input) {
