@@ -21,11 +21,12 @@
  * - Las etiquetas van en español DENTRO del componente: no dependen del idioma
  *   del servidor ni de que cada app defina claves i18n.
  * - Las fechas se arman en hora local del navegador (sin UTC): 'YYYY-MM-DD'.
+ * - Los calendarios van DENTRO del panel (v2.12.0). Antes cada fecha abría un
+ *   segundo popup encima del menú: cerca del borde derecho de la pantalla no
+ *   cabía, Quasar lo pegaba al borde y tapaba el propio panel.
  */
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
 import { useQuasar } from 'quasar'
-import XDatepicker from '../XDatepicker/XDatepicker.vue'
-import XDatepickerMonth from '../XDatepicker/XDatepickerMonth.vue'
 
 defineOptions({ name: 'XPeriodFilter' })
 
@@ -49,6 +50,7 @@ const $q = useQuasar()
 const DAYS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
 const MONTHS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto',
   'septiembre', 'octubre', 'noviembre', 'diciembre']
+const MONTHS_SHORT = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
 
 const pad = (n) => String(n).padStart(2, '0')
 const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
@@ -272,15 +274,121 @@ function chooseMode(id) {
   if (id === 'month') selection.monthStart = ym(from)
   if (id === 'between_months') { selection.monthStart = ym(from); selection.monthEnd = ym(to) }
   selection.mode = id
+  resetPending()
+  if (id === 'month' || id === 'between_months') gridYear.value = from.getFullYear()
+}
+
+// ── Calendarios dentro del panel ──────────────────────────────────────────
+// Elegir un día, una semana, un mes o completar un rango ya aplica el filtro;
+// el panel se cierra para que se vea el resultado. Las flechas de semana no
+// cierran (se suelen pulsar varias veces seguidas).
+const rangePending = ref(false)
+const monthPending = ref(null)
+
+function resetPending() {
+  rangePending.value = false
+  monthPending.value = null
+}
+
+// Por fecha
+function pickDate(val) {
+  if (!val) return
+  selection.dateStart = val
+  menuOpen.value = false
+}
+
+// Entre fechas: el primer toque marca el inicio y el segundo el final. Con un
+// mismo día dos veces, QDate devuelve la fecha sola (no un objeto).
+const rangeModel = computed(() => (selection.dateStart === selection.dateEnd
+  ? selection.dateStart
+  : { from: selection.dateStart, to: selection.dateEnd }))
+
+function pickRange(val) {
+  rangePending.value = false
+  if (!val) return
+  if (typeof val === 'string') {
+    selection.dateStart = val
+    selection.dateEnd = val
+  } else {
+    let a = val.from
+    let b = val.to
+    if (b < a) [a, b] = [b, a]
+    selection.dateStart = a
+    selection.dateEnd = b
+  }
+  menuOpen.value = false
+}
+
+// Por semana: tocar cualquier día elige su semana (de lunes a sábado).
+const weekCalendar = ref(null)
+const weekDates = computed(() => {
+  const from = mondayOf(parseYmd(selection.weekStart))
+  return Array.from({ length: props.weekDays }, (_, i) => ymd(addDays(from, i)))
+})
+
+function pickWeek(_val, _reason, details) {
+  if (!details?.year) return
+  selection.weekStart = ymd(mondayOf(new Date(details.year, details.month - 1, details.day)))
+  menuOpen.value = false
 }
 
 function shiftWeek(n) {
   selection.weekStart = ymd(addDays(mondayOf(parseYmd(selection.weekStart)), 7 * n))
+  // El calendario acompaña a la semana cuando cambia de mes.
+  const d = parseYmd(selection.weekStart)
+  nextTick(() => weekCalendar.value?.setCalendarTo(d.getFullYear(), d.getMonth() + 1))
 }
 
 const weekLabel = computed(() => {
   const from = mondayOf(parseYmd(selection.weekStart))
   return labelFor('week', from, addDays(from, props.weekDays - 1))
+})
+
+// Por mes / Entre meses: cuadrícula de 12 meses con el año arriba.
+const gridYear = ref(t0.getFullYear())
+const currentMonth = ym(t0)
+const monthCells = computed(() => MONTHS_SHORT.map((label, i) => {
+  const key = `${gridYear.value}-${pad(i + 1)}`
+  return { key, label, name: `${MONTHS[i]} de ${gridYear.value}`, state: monthState(key) }
+}))
+
+function monthState(key) {
+  if (selection.mode === 'month') return key === selection.monthStart ? 'selected' : ''
+  if (monthPending.value) return key === monthPending.value ? 'selected' : ''
+  let a = selection.monthStart
+  let b = selection.monthEnd
+  if (b < a) [a, b] = [b, a]
+  if (key === a || key === b) return 'selected'
+  return key > a && key < b ? 'in-range' : ''
+}
+
+function pickMonth(key) {
+  if (selection.mode === 'month') {
+    selection.monthStart = key
+    menuOpen.value = false
+    return
+  }
+  if (!monthPending.value) {
+    monthPending.value = key
+    return
+  }
+  let a = monthPending.value
+  let b = key
+  if (b < a) [a, b] = [b, a]
+  selection.monthStart = a
+  selection.monthEnd = b
+  monthPending.value = null
+  menuOpen.value = false
+}
+
+const rangeHint = computed(() => {
+  if (selection.mode === 'between_dates') {
+    return rangePending.value ? 'Ahora toca la fecha final.' : 'Toca la fecha inicial y luego la final.'
+  }
+  if (selection.mode === 'between_months') {
+    return monthPending.value ? 'Ahora toca el mes final.' : 'Toca el mes inicial y luego el final.'
+  }
+  return ''
 })
 </script>
 
@@ -316,53 +424,107 @@ const weekLabel = computed(() => {
           self="top right"
           :offset="[0, 6]"
           class="x-period-filter__menu"
+          @hide="resetPending"
         >
           <div class="x-period-filter__panel" :class="{ 'x-period-filter__panel--mobile': $q.screen.lt.sm }">
             <div class="x-period-filter__modes">
               <div class="x-period-filter__panel-title">Elegir por</div>
-              <q-btn
-                v-for="m in modeOptions"
-                :key="m.id"
-                no-caps
-                flat
-                align="left"
-                class="x-period-filter__mode"
-                :class="{ 'is-active': selection.mode === m.id }"
-                :aria-pressed="selection.mode === m.id ? 'true' : 'false'"
-                :label="m.label"
-                @click="chooseMode(m.id)"
-              />
+              <div class="x-period-filter__mode-list">
+                <q-btn
+                  v-for="m in modeOptions"
+                  :key="m.id"
+                  no-caps
+                  flat
+                  align="left"
+                  class="x-period-filter__mode"
+                  :class="{ 'is-active': selection.mode === m.id }"
+                  :aria-pressed="selection.mode === m.id ? 'true' : 'false'"
+                  :label="m.label"
+                  @click="chooseMode(m.id)"
+                />
+              </div>
             </div>
 
             <div class="x-period-filter__fields">
               <div v-if="!isCustom" class="x-period-filter__hint">
                 Elige cómo quieres filtrar.
               </div>
-              <template v-else-if="selection.mode === 'date'">
-                <x-datepicker v-model="selection.dateStart" label="Fecha" />
-              </template>
+
+              <q-date
+                v-else-if="selection.mode === 'date'"
+                :model-value="selection.dateStart"
+                mask="YYYY-MM-DD"
+                :first-day-of-week="1"
+                minimal
+                flat
+                no-unset
+                class="x-period-filter__calendar"
+                @update:model-value="pickDate"
+              />
+
               <template v-else-if="selection.mode === 'between_dates'">
-                <x-datepicker v-model="selection.dateStart" label="Fecha del" />
-                <x-datepicker v-model="selection.dateEnd" label="Fecha al" />
+                <q-date
+                  :model-value="rangeModel"
+                  mask="YYYY-MM-DD"
+                  :first-day-of-week="1"
+                  range
+                  minimal
+                  flat
+                  class="x-period-filter__calendar"
+                  @range-start="rangePending = true"
+                  @update:model-value="pickRange"
+                />
+                <div class="x-period-filter__hint">{{ rangeHint }}</div>
               </template>
+
               <template v-else-if="selection.mode === 'week'">
                 <div class="x-period-filter__week">
                   <q-btn flat round dense icon="fa-light fa-chevron-left" aria-label="Semana anterior" @click="shiftWeek(-1)" />
                   <div class="x-period-filter__week-label">{{ weekLabel }}</div>
                   <q-btn flat round dense icon="fa-light fa-chevron-right" aria-label="Semana siguiente" @click="shiftWeek(1)" />
                 </div>
+                <q-date
+                  ref="weekCalendar"
+                  :model-value="weekDates"
+                  mask="YYYY-MM-DD"
+                  :first-day-of-week="1"
+                  multiple
+                  minimal
+                  flat
+                  class="x-period-filter__calendar"
+                  @update:model-value="pickWeek"
+                />
               </template>
-              <template v-else-if="selection.mode === 'month'">
-                <x-datepicker-month v-model="selection.monthStart" label="Mes" />
-              </template>
-              <template v-else-if="selection.mode === 'between_months'">
-                <x-datepicker-month v-model="selection.monthStart" label="Mes del" />
-                <x-datepicker-month v-model="selection.monthEnd" label="Mes al" />
+
+              <template v-else-if="selection.mode === 'month' || selection.mode === 'between_months'">
+                <div class="x-period-filter__months">
+                  <div class="x-period-filter__year">
+                    <q-btn flat round dense icon="fa-light fa-chevron-left" aria-label="Año anterior" @click="gridYear--" />
+                    <div class="x-period-filter__year-label">{{ gridYear }}</div>
+                    <q-btn flat round dense icon="fa-light fa-chevron-right" aria-label="Año siguiente" @click="gridYear++" />
+                  </div>
+                  <div class="x-period-filter__month-grid">
+                    <button
+                      v-for="c in monthCells"
+                      :key="c.key"
+                      type="button"
+                      class="x-period-filter__month"
+                      :class="[c.state && `is-${c.state}`, { 'is-current': c.key === currentMonth }]"
+                      :aria-label="c.name"
+                      :aria-pressed="c.state === 'selected' ? 'true' : 'false'"
+                      @click="pickMonth(c.key)"
+                    >{{ c.label }}</button>
+                  </div>
+                </div>
+                <div v-if="rangeHint" class="x-period-filter__hint">{{ rangeHint }}</div>
               </template>
 
               <div class="x-period-filter__preview" aria-live="polite">
-                <span class="x-period-filter__preview-caption">Se mostrará</span>
-                <span class="x-period-filter__preview-label">{{ resolved.label }}</span>
+                <div class="column">
+                  <span class="x-period-filter__preview-caption">Se mostrará</span>
+                  <span class="x-period-filter__preview-label">{{ resolved.label }}</span>
+                </div>
+                <q-btn flat no-caps dense color="primary" label="Listo" class="x-period-filter__done" @click="menuOpen = false" />
               </div>
             </div>
           </div>
@@ -432,6 +594,7 @@ const weekLabel = computed(() => {
 
 .x-period-filter__panel {
   display: grid;
+  // 170 de modos + un calendario de 290 (el ancho fijo de QDate) + aire.
   grid-template-columns: 170px minmax(0, 1fr);
   gap: 16px;
   padding: 14px;
@@ -440,6 +603,8 @@ const weekLabel = computed(() => {
 
   &--mobile {
     grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    width: 340px;
   }
 }
 
@@ -451,15 +616,26 @@ const weekLabel = computed(() => {
 }
 
 .x-period-filter__modes {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
   padding-right: 14px;
   border-right: 1px solid rgba(0, 0, 0, .08);
 
   .x-period-filter__panel--mobile & {
     padding-right: 0;
+    padding-bottom: 10px;
     border-right: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+  }
+}
+
+.x-period-filter__mode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  // En el teléfono los modos van en dos columnas: el calendario necesita el alto.
+  .x-period-filter__panel--mobile & {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -503,13 +679,78 @@ const weekLabel = computed(() => {
   color: #0f172a;
 }
 
-.x-period-filter__preview {
+.x-period-filter__calendar {
+  align-self: center;
+}
+
+.x-period-filter__months {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 8px;
+}
+
+.x-period-filter__year {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.x-period-filter__year-label {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.x-period-filter__month-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.x-period-filter__month {
+  min-height: 40px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: #334155;
+  text-transform: capitalize;
+  cursor: pointer;
+
+  &:hover { background: #f1f5f9; }
+  &:focus-visible { outline: 2px solid var(--q-primary); outline-offset: 1px; }
+
+  &.is-current { border-color: #cbd5e1; }
+
+  &.is-in-range {
+    background: rgba(26, 86, 219, .1);
+    color: var(--q-primary);
+  }
+
+  &.is-selected {
+    background: var(--q-primary);
+    border-color: var(--q-primary);
+    color: #fff;
+    font-weight: 600;
+  }
+}
+
+.x-period-filter__preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   margin-top: auto;
   padding-top: 10px;
   border-top: 1px solid rgba(0, 0, 0, .08);
+}
+
+.x-period-filter__done {
+  flex-shrink: 0;
+  font-weight: 600;
 }
 
 .x-period-filter__preview-caption {
