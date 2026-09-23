@@ -97,14 +97,21 @@ const emit = defineEmits(['cell-action']);
       />
     </div>
 
-    <!-- LINK -->
+    <!-- LINK. Opcionales (v2.10.1): tooltip (q-tooltip), color Quasar del texto
+         e icono (`text-<color>`) y underline:false para ir sin subrayado. -->
     <a v-else-if="cell.type_input === 'link'"
        :href="cell.url"
        :target="cell.target || '_self'"
-       class="q-mx-xs"
-       style="text-decoration: underline; display: inline-flex; align-items: center">
+       :class="['q-mx-xs', cell.color ? `text-${cell.color}` : '']"
+       :style="{
+         textDecoration: cell.underline === false ? 'none' : 'underline',
+         display: 'inline-flex',
+         alignItems: 'center',
+         fontWeight: cell.underline === false ? 500 : undefined,
+       }">
       <q-icon v-if="cell.icon" :name="cell.icon" class="q-mr-xs"/>
       {{ cell.label }}
+      <q-tooltip v-if="cell.tooltip">{{ cell.tooltip }}</q-tooltip>
     </a>
 
     <!-- SWITCH (visual, solo lectura por default) -->
