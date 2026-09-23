@@ -22,10 +22,12 @@ sin botón.
   que cambia el **rango** (elegir otra vez lo mismo no vuelve a emitir).
 - `update:modelValue` → la selección, para `v-model`.
 
-`prev_from` / `prev_to` es el **mismo tramo del período anterior**: si el rango incluye hoy se
-compara solo la parte transcurrida (lunes a hoy contra lunes al mismo día de la semana pasada; 1 al 23
-contra 1 al 23 del mes anterior); si no, el período anterior completo. "Hoy" se compara con el mismo
-día de la semana pasada.
+`prev_from` / `prev_to` es el **mismo tramo del período anterior**. Si el rango incluye hoy se comparan
+solo los días **ya terminados**, porque hoy está en curso: el miércoles, lunes y martes contra lunes y
+martes de la semana pasada; el 23, del 1 al 22 contra del 1 al 22 del mes anterior. Si el rango ya
+pasó, se compara con el período anterior completo. Sin días terminados (el lunes en "Esta semana", o
+"Hoy") o con un rango futuro, llega `null`: todavía no hay con qué comparar. Quien consume el filtro
+debe comparar contra esos mismos días.
 
 ## Uso
 

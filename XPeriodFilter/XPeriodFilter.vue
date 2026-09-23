@@ -12,10 +12,12 @@
  * - La semana va de lunes a sábado (prop weekDays = 6): la semana de la
  *   clínica y de la comisión semanal.
  * - prev_from/prev_to: el MISMO tramo del período anterior. Si el rango
- *   incluye hoy, se compara solo la parte transcurrida (lunes a hoy contra
- *   lunes al mismo día de la semana pasada; 1 al 23 contra 1 al 23 del mes
- *   anterior); si no, el período anterior completo. "Hoy" se compara con el
- *   mismo día de la semana pasada, no con ayer (que puede ser domingo).
+ *   incluye hoy, se comparan solo los días YA TERMINADOS (hoy está en curso):
+ *   el miércoles, lunes y martes contra lunes y martes de la semana pasada; el
+ *   23, del 1 al 22 contra del 1 al 22 del mes anterior. Si el rango ya pasó,
+ *   el período anterior completo. Sin días terminados (el lunes en "Esta
+ *   semana", o "Hoy") o con un rango futuro, prev_* llega null: no hay con qué
+ *   comparar todavía. Quien consume debe comparar contra los mismos días.
  * - Las etiquetas van en español DENTRO del componente: no dependen del idioma
  *   del servidor ni de que cada app defina claves i18n.
  * - Las fechas se arman en hora local del navegador (sin UTC): 'YYYY-MM-DD'.
@@ -151,11 +153,17 @@ function resolve(s) {
   return { from, to }
 }
 
-// El mismo tramo del período anterior (ver cabecera).
+// El mismo tramo del período anterior (ver cabecera). null = no hay con qué
+// comparar todavía.
 function previousRange(mode, from, to) {
   const t = today()
+  // Un rango que todavía no empezó no tiene nada que comparar.
+  if (from > t) return null
   const includesToday = t >= from && t <= to
-  const end = includesToday ? t : to
+  // Hoy está EN CURSO: se comparan solo los días ya terminados. Comparar la
+  // mañana de hoy contra un día completo daría siempre una caída falsa.
+  const end = includesToday ? addDays(t, -1) : to
+  if (end < from) return null
   switch (mode) {
     case 'today':
     case 'date':
@@ -166,13 +174,13 @@ function previousRange(mode, from, to) {
     case 'month':
       return {
         from: shiftMonthsSameDay(from, -1),
-        to: includesToday ? shiftMonthsSameDay(t, -1) : lastOfMonth(shiftMonthsSameDay(from, -1)),
+        to: includesToday ? shiftMonthsSameDay(end, -1) : lastOfMonth(shiftMonthsSameDay(from, -1)),
       }
     case 'between_months': {
       const n = monthsBetween(from, to) + 1
       return {
         from: shiftMonthsSameDay(from, -n),
-        to: includesToday ? shiftMonthsSameDay(t, -n) : lastOfMonth(shiftMonthsSameDay(firstOfMonth(to), -n)),
+        to: includesToday ? shiftMonthsSameDay(end, -n) : lastOfMonth(shiftMonthsSameDay(firstOfMonth(to), -n)),
       }
     }
     case 'between_dates':
@@ -227,8 +235,8 @@ const resolved = computed(() => {
     mode: selection.mode,
     date_from: ymd(from),
     date_to: ymd(to),
-    prev_from: ymd(prev.from),
-    prev_to: ymd(prev.to),
+    prev_from: prev ? ymd(prev.from) : null,
+    prev_to: prev ? ymd(prev.to) : null,
     label: labelFor(selection.mode, from, to),
   }
 })
