@@ -29,6 +29,22 @@ pasó, se compara con el período anterior completo. Sin días terminados (el lu
 "Hoy") o con un rango futuro, llega `null`: todavía no hay con qué comparar. Quien consume el filtro
 debe comparar contra esos mismos días.
 
+## Personalizado
+
+Los calendarios van **dentro del panel** (desde v2.12.0; antes cada fecha abría un segundo popup encima
+del menú y, cerca del borde derecho de la pantalla, quedaba apretado contra el borde y tapaba el panel):
+
+| Modo | Cómo se elige |
+|------|---------------|
+| Por fecha | Un día en el calendario |
+| Entre fechas | Se toca la fecha inicial y luego la final (el panel lo indica) |
+| Por semana | Se toca cualquier día y se elige su semana, o se usan las flechas |
+| Por mes | Un mes en la cuadrícula de 12, con el año arriba |
+| Entre meses | Se toca el mes inicial y luego el final |
+
+Completar una elección aplica el filtro y cierra el panel; **Listo** también lo cierra. Las flechas de
+semana no lo cierran.
+
 ## Uso
 
 ```vue
