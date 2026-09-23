@@ -25,7 +25,7 @@
  *   segundo popup encima del menú: cerca del borde derecho de la pantalla no
  *   cabía, Quasar lo pegaba al borde y tapaba el propio panel.
  */
-import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 
 defineOptions({ name: 'XPeriodFilter' })
@@ -319,11 +319,13 @@ function pickRange(val) {
   menuOpen.value = false
 }
 
-// Por semana: tocar cualquier día elige su semana (de lunes a sábado).
-const weekCalendar = ref(null)
+// Por semana: tocar cualquier día elige su semana (de lunes a sábado). El lunes
+// va AL FINAL de la lista: QDate se ubica en el mes del último día del modelo
+// (al abrir y cada vez que cambia), así una semana que cruza de mes (27 oct –
+// 1 nov) se ve desde su lunes, también al moverse con las flechas.
 const weekDates = computed(() => {
   const from = mondayOf(parseYmd(selection.weekStart))
-  return Array.from({ length: props.weekDays }, (_, i) => ymd(addDays(from, i)))
+  return Array.from({ length: props.weekDays }, (_, i) => ymd(addDays(from, props.weekDays - 1 - i)))
 })
 
 function pickWeek(_val, _reason, details) {
@@ -334,9 +336,6 @@ function pickWeek(_val, _reason, details) {
 
 function shiftWeek(n) {
   selection.weekStart = ymd(addDays(mondayOf(parseYmd(selection.weekStart)), 7 * n))
-  // El calendario acompaña a la semana cuando cambia de mes.
-  const d = parseYmd(selection.weekStart)
-  nextTick(() => weekCalendar.value?.setCalendarTo(d.getFullYear(), d.getMonth() + 1))
 }
 
 const weekLabel = computed(() => {
@@ -418,17 +417,20 @@ const rangeHint = computed(() => {
         icon-right="fa-light fa-chevron-down"
         :disable="disable"
       >
+        <!-- max-height: el tope por defecto de QMenu (65vh) dejaba la vista
+             previa y "Listo" fuera de la vista en el teléfono. -->
         <q-menu
           v-model="menuOpen"
           anchor="bottom right"
           self="top right"
           :offset="[0, 6]"
+          max-height="90vh"
           class="x-period-filter__menu"
           @hide="resetPending"
         >
           <div class="x-period-filter__panel" :class="{ 'x-period-filter__panel--mobile': $q.screen.lt.sm }">
             <div class="x-period-filter__modes">
-              <div class="x-period-filter__panel-title">Elegir por</div>
+              <div v-if="!$q.screen.lt.sm" class="x-period-filter__panel-title">Elegir por</div>
               <div class="x-period-filter__mode-list">
                 <q-btn
                   v-for="m in modeOptions"
@@ -484,7 +486,6 @@ const rangeHint = computed(() => {
                   <q-btn flat round dense icon="fa-light fa-chevron-right" aria-label="Semana siguiente" @click="shiftWeek(1)" />
                 </div>
                 <q-date
-                  ref="weekCalendar"
                   :model-value="weekDates"
                   mask="YYYY-MM-DD"
                   :first-day-of-week="1"
@@ -644,6 +645,8 @@ const rangeHint = computed(() => {
   border-radius: 8px;
   font-size: 14px;
   color: #334155;
+
+  .x-period-filter__panel--mobile & { min-height: 32px; }
 
   &.is-active {
     background: rgba(26, 86, 219, .1);
