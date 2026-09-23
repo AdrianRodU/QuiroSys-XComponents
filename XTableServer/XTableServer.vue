@@ -6,8 +6,7 @@ import XInput from '../XInput/XInput.vue'
 import XTreeSelect from '../XTreeSelect/XTreeSelect.vue'
 import XDialogActive from '../XDialogAction/XDialogAction.vue'
 import XDialogDelete from '../XDialogAction/XDialogAction.vue'
-import XDatepicker from '../XDatepicker/XDatepicker.vue'
-import XDatepickerMonth from '../XDatepicker/XDatepickerMonth.vue'
+import XPeriodFilterInline from '../XPeriodFilter/XPeriodFilterInline.vue'
 import XCellColumnRenderer from './XCellColumnRenderer.vue'
 import XCellRenderer from './XCellRenderer.vue'
 import XMobileMenuAction from './XMobileMenuAction.vue'
@@ -813,6 +812,18 @@ onMounted(() => {
   fetchColumnsAndData()
 })
 
+/**
+ * Filtro de período (XPeriodFilterInline): aplica solo los campos que cambiaron
+ * (un campo ausente sigue ausente, igual que con el v-model de antes) y
+ * recarga una vez.
+ */
+function onPeriodChange(filter, v) {
+  for (const k of ['value', 'dateStart', 'dateEnd', 'monthStart', 'monthEnd']) {
+    if (filter[k] !== v[k]) filter[k] = v[k]
+  }
+  filterData()
+}
+
 const getFilterValues = () => {
   return filters.value.map(f => ({ name: f.name, value: f.value }))
 }
@@ -993,58 +1004,16 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
             @update:model-value="filterData"
           />
 
-          <div :class="filter.class" v-if="filter.name === 'period'">
-            <div class="row q-col-gutter-x-sm q-col-gutter-y-sm">
-              <div class="col" v-if="filter.options.length > 1">
-                <x-select
-                  v-model="filter.value"
-                  :label="filter.label"
-                  :options="filter.options"
-                  @update:model-value="filterData"
-                />
-              </div>
-
-              <template v-if="filter.value === 'date' || filter.value === 'between_dates'">
-                <div class="col">
-                  <x-datepicker
-                    v-model="filter.dateStart"
-                    :label="$t('components.dateFrom')"
-                    @update:model-value="filterData"
-                  />
-                </div>
-              </template>
-
-              <template v-if="filter.value === 'between_dates'">
-                <div class="col">
-                  <x-datepicker
-                    v-model="filter.dateEnd"
-                    :label="$t('components.dateTo')"
-                    @update:model-value="filterData"
-                  />
-                </div>
-              </template>
-
-              <template v-if="filter.value === 'month' || filter.value === 'between_months'">
-                <div class="col">
-                  <x-datepicker-month
-                    v-model="filter.monthStart"
-                    :label="$t('components.monthFrom')"
-                    @update:model-value="filterData"
-                  />
-                </div>
-              </template>
-
-              <template v-if="filter.value === 'between_months'">
-                <div class="col">
-                  <x-datepicker-month
-                    v-model="filter.monthEnd"
-                    :label="$t('components.monthTo')"
-                    @update:model-value="filterData"
-                  />
-                </div>
-              </template>
-            </div>
-          </div>
+          <!-- Filtro de período: el componente único del paquete (forma en
+               línea). Cambia los mismos cinco campos que antes y recarga una
+               vez por cambio: el payload al backend no cambia. -->
+          <x-period-filter-inline
+            v-if="filter.name === 'period'"
+            :model-value="filter"
+            :options="filter.options"
+            :label="filter.label"
+            @update:model-value="(v) => onPeriodChange(filter, v)"
+          />
 
           <x-select
             v-else-if="filter.type === 'select'"

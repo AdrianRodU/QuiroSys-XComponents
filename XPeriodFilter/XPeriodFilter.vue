@@ -27,6 +27,7 @@
  */
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
+import { PERIOD_MODE_LABELS } from './periodModes'
 
 defineOptions({ name: 'XPeriodFilter' })
 
@@ -96,20 +97,13 @@ watch(() => props.modelValue, (v) => {
 
 const PRESET_LABELS = { today: 'Hoy', this_week: 'Esta semana', this_month: 'Este mes' }
 const PRESET_SHORT = { today: 'Hoy', this_week: 'Semana', this_month: 'Mes' }
-const MODE_LABELS = {
-  date: 'Por fecha',
-  between_dates: 'Entre fechas',
-  week: 'Por semana',
-  month: 'Por mes',
-  between_months: 'Entre meses',
-}
 
 const isCustom = computed(() => !props.presets.includes(selection.mode))
 const presetOptions = computed(() => props.presets.map((id) => ({
   id,
   label: $q.screen.lt.sm ? PRESET_SHORT[id] : PRESET_LABELS[id],
 })))
-const modeOptions = computed(() => props.modes.map((id) => ({ id, label: MODE_LABELS[id] })))
+const modeOptions = computed(() => props.modes.map((id) => ({ id, label: PERIOD_MODE_LABELS[id] })))
 const customLabel = computed(() => ($q.screen.lt.sm ? 'Otro' : 'Personalizado'))
 const menuOpen = ref(false)
 
