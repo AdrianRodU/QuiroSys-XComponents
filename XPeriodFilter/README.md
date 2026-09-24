@@ -82,6 +82,18 @@ Los campos abren el calendario de `XDatepicker` / `XDatepickerMonth`.
 el `includeAllOption` de Caja). `dateStart`/`dateEnd` van en `YYYY-MM-DD` y `monthStart`/`monthEnd` en
 `YYYY-MM`, exactamente como los interpreta `FilterTrait::getFilterDate` de `quirosys/datatable`.
 
+### Columnas angostas (v2.15.0)
+
+Se acomoda al ancho de **su columna**, no al de la pantalla (container query): un filtro de tabla que
+ocupa 1/4 o 1/3 de la fila no tiene espacio para tres campos. Ningún texto se corta; cada campo tiene su
+mínimo medido: modo 145 px ("Entre fechas"), fecha 140 px ("04/04/2040", la más ancha hasta 2040) y
+mes 120 px.
+
+- **Un campo** (por fecha, por mes): comparte la fila con el modo si cabe; si no, baja a la siguiente.
+- **Rango** (entre fechas, entre meses): si los tres no caben, el modo va en su propia fila y las dos
+  fechas quedan juntas en la de abajo; si ni las dos caben lado a lado, cada una en su fila.
+- Una columna ancha (reportes, tablas en pantalla grande) se ve igual que antes. El payload no cambia.
+
 ### Eventos
 
 - `update:modelValue` y `change` → los cinco campos, **una vez por cada cambio del usuario**. Los que no
