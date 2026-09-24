@@ -28,6 +28,13 @@ const props = defineProps({
   // el backend (Filter::makePeriod). Sin modos: los cuatro de siempre.
   options: { type: Array, default: null },
   label: { type: String, default: 'Periodo' },
+  // Espaciado entre campos: el mismo de la grilla donde va ('sm' en los filtros
+  // de las tablas, 'md' en los formularios de reporte). Así los campos quedan
+  // alineados con los de arriba y abajo.
+  gutter: { type: String, default: 'sm' },
+  // En el teléfono, un campo por fila, como el resto de un formulario. Sin esto
+  // los campos comparten la fila (así van en las tablas).
+  stack: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])
@@ -45,6 +52,9 @@ const modeOptions = computed(() => (props.options?.length ? props.options : DEFA
   return { id, name: PERIOD_MODE_LABELS[id] || fallback }
 }))
 
+const rowClass = computed(() => `row q-col-gutter-x-${props.gutter} q-col-gutter-y-${props.gutter} x-period-filter-inline`)
+const fieldClass = computed(() => (props.stack ? 'col-24 col-sm' : 'col'))
+
 const mode = computed(() => current.value.value)
 const isDateMode = computed(() => mode.value === 'date' || mode.value === 'between_dates')
 const isMonthMode = computed(() => mode.value === 'month' || mode.value === 'between_months')
@@ -57,8 +67,8 @@ function set(field, val) {
 </script>
 
 <template>
-  <div class="row q-col-gutter-x-sm q-col-gutter-y-sm x-period-filter-inline">
-    <div v-if="modeOptions.length > 1" class="col">
+  <div :class="rowClass">
+    <div v-if="modeOptions.length > 1" :class="fieldClass">
       <x-select
         :model-value="mode"
         :label="label"
@@ -67,14 +77,14 @@ function set(field, val) {
       />
     </div>
 
-    <div v-if="isDateMode" class="col">
+    <div v-if="isDateMode" :class="fieldClass">
       <x-datepicker
         :model-value="current.dateStart"
         :label="mode === 'date' ? 'Fecha' : 'Fecha del'"
         @update:model-value="(v) => set('dateStart', v)"
       />
     </div>
-    <div v-if="mode === 'between_dates'" class="col">
+    <div v-if="mode === 'between_dates'" :class="fieldClass">
       <x-datepicker
         :model-value="current.dateEnd"
         label="Fecha al"
@@ -82,14 +92,14 @@ function set(field, val) {
       />
     </div>
 
-    <div v-if="isMonthMode" class="col">
+    <div v-if="isMonthMode" :class="fieldClass">
       <x-datepicker-month
         :model-value="current.monthStart"
         :label="mode === 'month' ? 'Mes' : 'Mes del'"
         @update:model-value="(v) => set('monthStart', v)"
       />
     </div>
-    <div v-if="mode === 'between_months'" class="col">
+    <div v-if="mode === 'between_months'" :class="fieldClass">
       <x-datepicker-month
         :model-value="current.monthEnd"
         label="Mes al"

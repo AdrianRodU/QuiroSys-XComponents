@@ -293,11 +293,20 @@ function pickDate(val) {
 
 // Entre fechas: el primer toque marca el inicio y el segundo el final. Con un
 // mismo día dos veces, QDate devuelve la fecha sola (no un objeto).
+const rangeDate = ref(null)
 const rangeModel = computed(() => (selection.dateStart === selection.dateEnd
   ? selection.dateStart
   : { from: selection.dateStart, to: selection.dateEnd }))
 
-function pickRange(val) {
+function pickRange(val, reason, details) {
+  // Tocar un día que ya está elegido (dentro del rango que se ve, o el día
+  // suelto al venir de "Hoy") QDate lo toma como "desmarcar" y emite null.
+  // Aquí ese toque también es la fecha inicial, como cualquier otro día.
+  if (reason === 'remove-range' || reason === 'remove-day') {
+    rangeDate.value?.setEditingRange({ year: details.year, month: details.month, day: details.day })
+    rangePending.value = true
+    return
+  }
   rangePending.value = false
   if (!val) return
   if (typeof val === 'string') {
@@ -460,6 +469,7 @@ const rangeHint = computed(() => {
 
               <template v-else-if="selection.mode === 'between_dates'">
                 <q-date
+                  ref="rangeDate"
                   :model-value="rangeModel"
                   mask="YYYY-MM-DD"
                   :first-day-of-week="1"

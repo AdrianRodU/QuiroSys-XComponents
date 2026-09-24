@@ -45,7 +45,7 @@ del menú y, cerca del borde derecho de la pantalla, quedaba apretado contra el 
 | Modo | Cómo se elige |
 |------|---------------|
 | Por fecha | Un día en el calendario |
-| Entre fechas | Se toca la fecha inicial y luego la final (el panel lo indica) |
+| Entre fechas | Se toca la fecha inicial y luego la final (el panel lo indica). Cualquier día sirve de inicio, también uno que ya está dentro del rango elegido |
 | Por semana | Se toca cualquier día y se elige su semana, o se usan las flechas |
 | Por mes | Un mes en la cuadrícula de 12, con el año arriba |
 | Entre meses | Se toca el mes inicial y luego el final |
@@ -75,6 +75,8 @@ Los campos abren el calendario de `XDatepicker` / `XDatepickerMonth`.
 | `modelValue` | Object | `{}` | El filtro con los nombres que lee el backend: `{ value, dateStart, dateEnd, monthStart, monthEnd }` |
 | `options` | Array | los cuatro | Modos en su orden: ids (`'month'`, …) u objetos `{ id, name }` como los manda `Filter::makePeriod`. La etiqueta sale del componente; la del backend solo si el modo es desconocido |
 | `label` | String | `'Periodo'` | Etiqueta del selector |
+| `gutter` | String | `'sm'` | Espaciado entre campos, el mismo de la grilla donde va (`'md'` en un formulario con `q-col-gutter-md`), para que queden alineados con los de arriba y abajo |
+| `stack` | Boolean | `false` | En el teléfono, un campo por fila, como el resto de un formulario. Sin esto comparten la fila (así van en las tablas) |
 
 `value` es `'month'`, `'date'`, `'between_months'`, `'between_dates'` o `'all'` ("Todas las fechas",
 el `includeAllOption` de Caja). `dateStart`/`dateEnd` van en `YYYY-MM-DD` y `monthStart`/`monthEnd` en
@@ -89,12 +91,20 @@ el `includeAllOption` de Caja). `dateStart`/`dateEnd` van en `YYYY-MM-DD` y `mon
 ### Uso
 
 `XTableServer` lo usa por dentro para el filtro `period` y aplica solo los campos que cambiaron, así el
-payload de `{resource}/records` es el mismo de siempre. En un reporte con otros nombres de campo:
+payload de `{resource}/records` es el mismo de siempre. En un formulario de reporte (grilla de 24 con
+`q-col-gutter-md`) y con otros nombres de campo:
 
 ```vue
-<XPeriodFilterInline
-  :model-value="{ value: form.period, dateStart: form.date_start, dateEnd: form.date_end, monthStart: form.month_start, monthEnd: form.month_end }"
-  :options="['month', 'date', 'between_months', 'between_dates']"
-  @update:model-value="(v) => Object.assign(form, { period: v.value, date_start: v.dateStart, date_end: v.dateEnd, month_start: v.monthStart, month_end: v.monthEnd })"
-/>
+<!-- 8 columnas por campo: modo + un campo = 16; modo + dos campos = 24 -->
+<div :class="['between_dates', 'between_months'].includes(form.period) ? 'col-24' : 'col-24 col-sm-16'">
+  <XPeriodFilterInline
+    gutter="md"
+    stack
+    :model-value="{ value: form.period, dateStart: form.date_start, dateEnd: form.date_end, monthStart: form.month_start, monthEnd: form.month_end }"
+    @update:model-value="(v) => Object.assign(form, { period: v.value, date_start: v.dateStart, date_end: v.dateEnd, month_start: v.monthStart, month_end: v.monthEnd })"
+  />
+</div>
 ```
+
+En el tenant, los tres reportes (`sale/report`, `ticket/report`, `quotation/report`) comparten ese puente
+en `src/utils/reportPeriod.js`.
