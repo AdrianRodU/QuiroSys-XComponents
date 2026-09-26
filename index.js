@@ -40,6 +40,7 @@ export { default as XTracking } from './XTracking/XTracking.vue'
 export { default as XTreeSelect } from './XTreeSelect/XTreeSelect.vue'
 export { default as XSettingToggle } from './XSettingToggle/XSettingToggle.vue'
 export { default as XHelpTip } from './XHelpTip/XHelpTip.vue'
+export { default as XCallout } from './XCallout/XCallout.vue'
 
 // Select variants
 export { default as XSelectCountry } from './select/XSelectCountry.vue'

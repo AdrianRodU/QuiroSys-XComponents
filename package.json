@@ -1,6 +1,6 @@
 {
   "name": "@quirosys/x-components",
-  "version": "2.15.0",
+  "version": "2.16.0",
   "description": "Componentes compartidos QuiroSys - Vue 3 + Quasar v2",
   "main": "index.js",
   "exports": {
@@ -52,6 +52,7 @@
     "XToggle",
     "XSettingToggle",
     "XHelpTip",
+    "XCallout",
     "XTracking",
     "XTreeSelect",
     "badge",
