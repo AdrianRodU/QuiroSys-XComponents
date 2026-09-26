@@ -115,7 +115,7 @@ const internalValue = computed({
       :color="color"
       :disable="disable"
       :indeterminate-value="indeterminateValue"
-      style="line-height: 40px; height: 40px">
+      style="min-height: 40px; line-height: 1.35">
       <!-- Tooltip si está definido -->
       <q-tooltip v-if="hasTooltip" :class="tooltipColor">
         {{ tooltipText }}
