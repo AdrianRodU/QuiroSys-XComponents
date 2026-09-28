@@ -28,6 +28,9 @@ const props = defineProps({
   options: { type: Function, default: null },
 
   autoClose: { type: Boolean, default: true },
+
+  /** Campo obligatorio: asterisco rojo en la etiqueta, como XInput (solo marca, no valida). */
+  isRequired: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])
@@ -83,7 +86,7 @@ function clear() {
       class="q-input__label mb-1"
       style="line-height: 15px;"
     >
-      {{ label }}
+      {{ label }} <span v-if="props.isRequired" class="text-negative" aria-hidden="true">*</span>
     </label>
 
     <q-input
@@ -100,7 +103,9 @@ function clear() {
         error: hasError,
         errorMessage: props.error || undefined,
         noErrorIcon: true,
-        hideBottomSpace: !hasError
+        hideBottomSpace: !hasError,
+        labelSlot: !!elementLabel && props.isRequired,
+        'aria-required': props.isRequired ? 'true' : null
       }"
       @clear="clear"
     >
@@ -125,6 +130,12 @@ function clear() {
             </q-date>
           </q-popup-proxy>
         </q-icon>
+      </template>
+
+      <!-- Etiqueta clásica con el asterisco de obligatorio (como XInput) -->
+      <template v-if="elementLabel && props.isRequired" #label>
+        <span>{{ elementLabel }}</span>
+        <span class="text-negative" aria-hidden="true">*</span>
       </template>
 
       <!-- reenvía slots -->

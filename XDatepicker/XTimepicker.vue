@@ -12,6 +12,11 @@ const props = defineProps({
     type: Boolean,
     default: formDefaults.isClassic,
   },
+  /** Campo obligatorio: asterisco rojo en la etiqueta, como XInput (solo marca, no valida). */
+  isRequired: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -35,7 +40,7 @@ const externalLabel = computed(() => {
 <template>
   <div class="app-q-input flex-grow-1" :class="attrs.class">
     <label v-if="externalLabel" class="q-input__label mb-1" style="line-height: 15px;">
-      {{ externalLabel }}
+      {{ externalLabel }} <span v-if="props.isRequired" class="text-negative" aria-hidden="true">*</span>
     </label>
     <q-input
       :model-value="modelValue"
@@ -49,7 +54,14 @@ const externalLabel = computed(() => {
       clearable
       @update:model-value="emit('update:modelValue', $event)"
       v-bind="{ ...attrs, class: null, label: elementLabel }"
+      :label-slot="!!elementLabel && props.isRequired"
+      :aria-required="props.isRequired ? 'true' : null"
     >
+      <!-- Etiqueta clásica con el asterisco de obligatorio (como XInput) -->
+      <template v-if="elementLabel && props.isRequired" #label>
+        <span>{{ elementLabel }}</span>
+        <span class="text-negative" aria-hidden="true">*</span>
+      </template>
       <template #append>
         <q-icon name="access_time" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">

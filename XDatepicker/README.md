@@ -23,6 +23,7 @@ import XDatepicker from '@/components/XDatepicker/XDatepicker.vue'
 | `valueMask` | `String` | `'YYYY-MM-DD'` | Formato del valor (v-model) |
 | `displayMask` | `String` | `'DD/MM/YYYY'` | Formato de visualizacion |
 | `options` | `Function` | `null` | Funcion para habilitar/deshabilitar fechas |
+| `isRequired` | `Boolean` | `false` | Campo obligatorio: asterisco rojo en la etiqueta, como XInput (solo marca, no valida). Tambien en `XTimepicker` (v2.18.0) |
 
 ## Eventos
 
