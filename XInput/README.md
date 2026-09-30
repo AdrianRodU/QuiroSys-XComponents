@@ -21,6 +21,11 @@ import XInput from '@/components/XInput/XInput.vue'
 | `autofocus` | `Boolean` | `false` | Auto-focus al montar |
 | `isRequired` | `Boolean` | `false` | Muestra asterisco de requerido |
 | `bgColor` | `String` | `'white'` | Fondo del control (color Quasar/CSS). Invisible sobre fondos blancos; evita que el input se mimetice sobre un card/banner de color. `''` para el comportamiento clásico (transparente). |
+| `searchButton` | `Boolean` | `false` | Muestra una lupa dentro del campo, a la derecha. Emite `search` al hacer clic o al presionar Enter (v2.19.0). |
+| `searchLoading` | `Boolean` | `false` | Lupa girando mientras se busca; no vuelve a emitir. |
+| `searchDisable` | `Boolean` | `false` | Lupa deshabilitada (p. ej. el número aún no está completo); Enter tampoco emite. |
+| `searchTooltip` | `String` | `'Buscar'` | Texto del tooltip (y `aria-label`) de la lupa. |
+| `searchIcon` | `String` | `'fal fa-search'` | Ícono de la lupa. |
 
 Ademas, soporta todos los atributos de `QInput` de Quasar como `label`, `type`, `placeholder`, `disabled`, `readonly`, etc.
 
@@ -31,6 +36,7 @@ Ademas, soporta todos los atributos de `QInput` de Quasar como `label`, `type`, 
 | `update:modelValue` | `String \| Number` | Emitido al cambiar el valor |
 | `input` | `Event` | Evento nativo de input |
 | `change` | `Event` | Evento nativo de change |
+| `search` | — | Clic en la lupa o Enter, con `searchButton` y sin `searchDisable`/`searchLoading` |
 
 ## Slots
 
@@ -59,6 +65,21 @@ Ademas, soporta todos los atributos de `QInput` de Quasar como `label`, `type`, 
 ```
 
 ## Ejemplos
+
+### Input con lupa (búsqueda)
+
+```vue
+<XInput
+  v-model="dni"
+  label="Número"
+  maxlength="8"
+  search-button
+  search-tooltip="Buscar en RENIEC"
+  :search-loading="buscando"
+  :search-disable="dni.length !== 8"
+  @search="buscarEnReniec"
+/>
+```
 
 ### Input con label externo (default)
 

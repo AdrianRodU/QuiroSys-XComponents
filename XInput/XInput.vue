@@ -20,9 +20,20 @@ const props = defineProps({
    *  el input "transparente" se mimetice al usarlo sobre un card/banner de
    *  color. Pasar '' o 'transparent' para el comportamiento clásico. */
   bgColor: { type: String, default: 'white' },
+  /** Botón de búsqueda (lupa) dentro del campo, a la derecha (v2.19.0). Emite
+   *  `search` al hacer clic o al presionar Enter. Ej.: DNI → RENIEC. */
+  searchButton: { type: Boolean, default: false },
+  /** Lupa girando mientras se busca (y no se puede volver a pedir). */
+  searchLoading: { type: Boolean, default: false },
+  /** Lupa deshabilitada (p. ej. el número todavía no está completo). */
+  searchDisable: { type: Boolean, default: false },
+  /** Texto del tooltip de la lupa. */
+  searchTooltip: { type: String, default: 'Buscar' },
+  /** Ícono de la lupa. */
+  searchIcon: { type: String, default: 'fal fa-search' },
 })
 
-const emit = defineEmits(['update:modelValue', 'input', 'change'])
+const emit = defineEmits(['update:modelValue', 'input', 'change', 'search'])
 
 const attrs = useAttrs()
 const fallbackId = `app-q-input-${Math.random().toString(36).substring(2, 9)}`
@@ -47,6 +58,14 @@ const inputType = computed(() => {
 
 function togglePwd() {
   showPwd.value = !showPwd.value
+}
+
+// --- LUPA (searchButton) ---
+// Una sola salida para el clic y el Enter: no emite si está deshabilitada o
+// buscando, así el padre no recibe dos búsquedas por el mismo número.
+function onSearch() {
+  if (!props.searchButton || props.searchDisable || props.searchLoading) return
+  emit('search')
 }
 
 // Evitamos pasar "required" e "is-required" a QInput
@@ -88,15 +107,32 @@ const filteredAttrs = computed(() => {
       @update:model-value="val => emit('update:modelValue', val)"
       @input="e => emit('input', e)"
       @change="e => emit('change', e)"
+      @keyup.enter="onSearch"
     >
 
-      <template v-if="isPwdType || $slots.append" #append>
+      <template v-if="isPwdType || searchButton || $slots.append" #append>
         <q-icon
           v-if="isPwdType"
           :name="showPwd ? 'visibility' : 'visibility_off'"
           class="cursor-pointer"
           @click="togglePwd"
         />
+        <q-btn
+          v-if="searchButton"
+          flat
+          dense
+          round
+          size="sm"
+          color="primary"
+          class="x-input-search-btn"
+          :icon="searchIcon"
+          :loading="searchLoading"
+          :disable="searchDisable"
+          :aria-label="searchTooltip"
+          @click="onSearch"
+        >
+          <q-tooltip>{{ searchTooltip }}</q-tooltip>
+        </q-btn>
         <slot name="append" />
       </template>
 

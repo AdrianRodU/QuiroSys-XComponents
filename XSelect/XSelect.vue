@@ -86,6 +86,9 @@ const props = defineProps({
    *  el input "transparente" se mimetice al usarlo sobre un card/banner de
    *  color. Pasar '' o 'transparent' para el comportamiento clásico. */
   bgColor: { type: String, default: 'white' },
+  /** Asterisco rojo de obligatorio junto al label + aria-required, como XInput
+   *  (v2.19.0). Solo marca: no activa validación nativa. */
+  isRequired: { type: Boolean, default: false },
 });
 
 const fallbackId = `app-select-${Math.random().toString(36).substring(2, 9)}`;
@@ -301,8 +304,9 @@ function onSelect(val) {
        :style="truncateStyle"
        @keydown.enter.stop.prevent
        @keyup.enter.stop>
-    <label v-if="label" :for="elementId" class="x-select-label q-mb-xs" style="line-height: 22px">
-      {{ label }}
+    <label v-if="label" :for="elementId" class="x-select-label q-mb-xs" style="line-height: 22px"
+           :aria-required="props.isRequired ? 'true' : 'false'">
+      {{ label }} <span v-if="props.isRequired" class="text-negative" aria-hidden="true">*</span>
       <XHelpTip v-if="help" :text="help" class="q-ml-xs" />
     </label>
 
@@ -321,6 +325,7 @@ function onSelect(val) {
                 'no-error-icon': true,
                 'hide-bottom-space': !props.error,
                 'bg-color': props.bgColor || undefined,
+                'aria-required': props.isRequired ? 'true' : null,
               }"
               :hide-selected="isFilterable"
               :fill-input="isFilterable"
@@ -336,7 +341,8 @@ function onSelect(val) {
               @filter="onFilter"
               @update:model-value="onSelect"
               @keydown.enter.stop
-              @keyup.enter.stop>
+              @keyup.enter.stop
+              :label-slot="!!elementLabel && props.isRequired && !$slots.label">
       <template v-for="(_, name) in $slots" #[name]="slotProps">
         <slot :name="name" v-bind="slotProps || {}"/>
       </template>
@@ -357,6 +363,13 @@ function onSelect(val) {
             <q-item-label>{{ scope.opt.label }}</q-item-label>
           </q-item-section>
         </q-item>
+      </template>
+
+      <!-- Label flotante (classic) con asterisco de obligatorio, como XInput (v2.19.0).
+           Solo con is-required: los selects sin él quedan exactamente igual. -->
+      <template v-if="elementLabel && props.isRequired && !$slots.label" #label>
+        <span>{{ elementLabel }}</span>
+        <span class="text-negative" aria-hidden="true">*</span>
       </template>
 
       <template v-if="showAddButton" #after>
