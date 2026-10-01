@@ -46,6 +46,11 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  /** Campo obligatorio: asterisco rojo en la etiqueta, como XInput (solo marca, no valida). v2.20.0 */
+  isRequired: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 // Eventos emitidos
@@ -79,11 +84,19 @@ function onInput(val) {
       error: hasError,
       errorMessage,
       clearable,
-      accept
+      accept,
+      'aria-required': isRequired ? 'true' : null
     }"
     :model-value="modelValue"
+    :label-slot="!!label && isRequired"
     @update:model-value="onInput"
   >
+    <!-- Etiqueta con el asterisco de obligatorio (v2.20.0), como XInput -->
+    <template v-if="label && isRequired" #label>
+      <span>{{ label }}</span>
+      <span class="text-negative" aria-hidden="true">*</span>
+    </template>
+
     <!-- Icono adjunto personalizado -->
     <template #append>
       <q-icon

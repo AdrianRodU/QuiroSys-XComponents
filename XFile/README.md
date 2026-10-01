@@ -23,6 +23,7 @@ import XFile from '@/components/XFile/XFile.vue'
 | `errorMessage` | `String` | `''` | Mensaje de error |
 | `clearable` | `Boolean` | `false` | Mostrar boton limpiar |
 | `accept` | `String` | `''` | Tipos de archivo aceptados |
+| `isRequired` | `Boolean` | `false` | Campo obligatorio: asterisco rojo en la etiqueta, como XInput (solo marca, no valida). v2.20.0 |
 
 ## Eventos
 
