@@ -34,6 +34,7 @@ import XCheckbox from '@/components/XCheckbox/XCheckbox.vue'
 
 | Slot | Descripcion |
 |------|-------------|
+| default | Etiqueta con marcado propio, junto a la casilla (v2.21.0). Para opciones con mas de un dato: un codigo y un nombre, un nombre y su explicacion. |
 | `hint` | Contenido personalizado para el hint |
 
 ## Uso Basico

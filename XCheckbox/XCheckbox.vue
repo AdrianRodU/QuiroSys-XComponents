@@ -110,6 +110,10 @@ const hasTooltip = computed(() => !!props.tooltipText);
         :disable="disable"
         :indeterminate-value="indeterminateValue"
       >
+        <!-- Etiqueta con marcado propio (v2.21.0): lo que venga en el slot por defecto va junto a la
+             casilla, como la etiqueta clásica. Para listas donde cada opción lleva más de un dato
+             (un código y un nombre, un nombre y su explicación). -->
+        <slot />
         <q-tooltip v-if="hasTooltip" :class="tooltipColor">{{ tooltipText }}</q-tooltip>
       </q-checkbox>
       <XHelpTip v-if="help && !showTopLabel" :text="help" class="q-ml-xs" />

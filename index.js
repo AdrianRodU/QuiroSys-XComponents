@@ -17,6 +17,7 @@ export { default as XDropdownDivider } from './XDropdownMenu/XDropdownDivider.vu
 export { default as XFile } from './XFile/XFile.vue'
 export { default as XFormatPrice } from './XFormatPrice/XFormatPrice.vue'
 export { default as XImageUpload } from './XImageUpload/XImageUpload.vue'
+export { default as XImageViewer } from './XImageViewer/XImageViewer.vue'
 export { default as XInput } from './XInput/XInput.vue'
 export { default as XInputColor } from './XInputColor/XInputColor.vue'
 export { default as XInputNumeric } from './XInputNumeric/XInputNumeric.vue'
