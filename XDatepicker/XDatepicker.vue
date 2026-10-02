@@ -27,6 +27,14 @@ const props = defineProps({
   // QDate options(dateString 'YYYY/MM/DD') => boolean
   options: { type: Function, default: null },
 
+  // Mes que muestra el calendario al abrirse cuando el campo está vacío ('YYYY/MM').
+  // Sin él, QDate abre en el mes actual: si `options` solo deja elegir fechas de un mes
+  // anterior, la persona veía todos los días apagados y tenía que retroceder a mano.
+  defaultYearMonth: { type: String, default: null },
+  // Hasta dónde deja navegar el calendario ('YYYY/MM'): no pasa de esos meses.
+  navigationMinYearMonth: { type: String, default: null },
+  navigationMaxYearMonth: { type: String, default: null },
+
   autoClose: { type: Boolean, default: true },
 
   /** Campo obligatorio: asterisco rojo en la etiqueta, como XInput (solo marca, no valida). */
@@ -122,6 +130,9 @@ function clear() {
               :model-value="normalizedValue"
               :mask="props.valueMask"
               :options="props.options || undefined"
+              :default-year-month="props.defaultYearMonth || undefined"
+              :navigation-min-year-month="props.navigationMinYearMonth || undefined"
+              :navigation-max-year-month="props.navigationMaxYearMonth || undefined"
               @update:model-value="updateFromPicker"
             >
               <div v-if="!autoClose" class="row items-center justify-end q-gutter-sm">
