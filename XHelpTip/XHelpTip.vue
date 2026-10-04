@@ -9,7 +9,16 @@
  *
  * Los componentes de formulario (XInput, XSelect, XCheckbox) lo montan solos vía
  * su prop `help`; también se puede usar suelto.
+ *
+ * En el celular (v2.23.0): el q-tooltip se abría al tocar y se cerraba al levantar el
+ * dedo, así que la ayuda no se alcanzaba a leer. En dispositivos móviles se usa un
+ * q-menu con la misma burbuja: se abre con un toque y se cierra al tocar fuera. El
+ * toque no llega al campo o casilla que contiene el "?". En escritorio sigue el
+ * tooltip al pasar el mouse.
  */
+import { computed } from 'vue'
+import { useQuasar } from 'quasar'
+
 defineOptions({ name: 'XHelpTip' })
 
 defineProps({
@@ -18,6 +27,16 @@ defineProps({
   size: { type: String, default: '15px' },
   maxWidth: { type: String, default: '260px' },
 })
+
+const $q = useQuasar()
+const isTouch = computed(() => $q.platform.is.mobile === true)
+
+// En el celular el toque solo abre la ayuda: no marca la casilla ni enfoca el campo del label.
+function onClick(evt) {
+  if (!isTouch.value) return
+  evt.stopPropagation()
+  evt.preventDefault()
+}
 </script>
 
 <template>
@@ -26,8 +45,21 @@ defineProps({
     :size="size"
     class="x-help-tip cursor-pointer"
     tabindex="0"
+    @click="onClick"
   >
+    <q-menu
+      v-if="isTouch"
+      anchor="top middle"
+      self="bottom middle"
+      :offset="[0, 6]"
+      class="x-help-tip__menu bg-grey-9 text-white"
+    >
+      <div class="x-help-tip__bubble" :style="{ maxWidth, whiteSpace: 'normal', lineHeight: 1.4 }">
+        <slot>{{ text }}</slot>
+      </div>
+    </q-menu>
     <q-tooltip
+      v-else
       anchor="top middle"
       self="bottom middle"
       :offset="[0, 6]"
