@@ -1,0 +1,166 @@
+<script setup>
+/**
+ * XSlider — barra para elegir un número dentro de un rango (escalas de 1 a 10, porcentajes…), con su
+ * etiqueta a la izquierda y el valor elegido a la derecha. Envuelve q-slider con el estilo de la casa
+ * (v2.24.0; nace para la escala "Impacto en su Vida" de la ficha de información).
+ *
+ * Uso:
+ *   <XSlider
+ *     v-model="nivel"
+ *     label="Nivel de estrés"
+ *     :min="1" :max="10"
+ *     markers
+ *     :marker-labels="[{ value: 1, label: 'Leve' }, { value: 10, label: 'Alto' }]"
+ *     value-suffix="/10"
+ *     color="#f59e0b"
+ *     value-bg="#fef3c7"
+ *   />
+ *
+ * `color` (barra, círculo y número) acepta cualquier color CSS; sin él usa el primario. `value-bg` es el
+ * fondo del número; sin él sale un tinte suave del mismo color. Para un semáforo por valor, el componente
+ * que lo usa calcula `color` y `value-bg` según el valor.
+ */
+import { computed } from 'vue'
+import XHelpTip from '../XHelpTip/XHelpTip.vue'
+
+defineOptions({ name: 'XSlider' })
+
+const props = defineProps({
+  modelValue: { type: Number, default: null },
+  label: { type: String, default: '' },
+  min: { type: Number, default: 0 },
+  max: { type: Number, default: 10 },
+  step: { type: Number, default: 1 },
+  // Igual que en q-slider: true marca cada paso; un número, cada N.
+  markers: { type: [Boolean, Number], default: false },
+  // Igual que en q-slider: [{ value, label }], un objeto { valor: texto } o true.
+  markerLabels: { type: [Boolean, Array, Object, Function], default: false },
+  showValue: { type: Boolean, default: true },
+  valueSuffix: { type: String, default: '' },
+  color: { type: String, default: '' },
+  valueBg: { type: String, default: '' },
+  trackSize: { type: String, default: '6px' },
+  thumbSize: { type: String, default: '24px' },
+  isRequired: { type: Boolean, default: false },
+  help: { type: String, default: '' },
+  disable: { type: Boolean, default: false },
+  readonly: { type: Boolean, default: false },
+})
+
+const emit = defineEmits(['update:modelValue', 'change'])
+
+const cssVars = computed(() => ({
+  '--x-slider-color': props.color || 'var(--q-primary)',
+  '--x-slider-value-bg': props.valueBg || 'color-mix(in srgb, var(--x-slider-color) 14%, transparent)',
+}))
+
+// q-slider puede emitir null (teclado): se conserva el valor que había.
+function onUpdate(val) {
+  if (val != null) emit('update:modelValue', val)
+}
+
+function onChange(val) {
+  if (val != null) emit('change', val)
+}
+</script>
+
+<template>
+  <div class="x-slider" :class="{ 'x-slider--disabled': disable }" :style="cssVars">
+    <div v-if="label || (showValue && modelValue != null)" class="x-slider__head">
+      <span v-if="label" class="x-slider__label">
+        {{ label }}
+        <span v-if="isRequired" class="text-negative" aria-hidden="true">*</span>
+        <XHelpTip v-if="help" :text="help" class="q-ml-xs" />
+      </span>
+      <span v-if="showValue && modelValue != null" class="x-slider__value">
+        <span class="x-slider__value-number">{{ modelValue }}</span>
+        <span v-if="valueSuffix" class="x-slider__value-suffix">{{ valueSuffix }}</span>
+      </span>
+    </div>
+
+    <q-slider
+      class="x-slider__slider"
+      :model-value="modelValue"
+      :min="min"
+      :max="max"
+      :step="step"
+      :markers="markers"
+      :marker-labels="markerLabels"
+      :track-size="trackSize"
+      :thumb-size="thumbSize"
+      :disable="disable"
+      :readonly="readonly"
+      :aria-label="label || undefined"
+      :aria-required="isRequired ? 'true' : undefined"
+      @update:model-value="onUpdate"
+      @change="onChange"
+    />
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.x-slider__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.x-slider__label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #334155;
+}
+
+.x-slider__value {
+  display: inline-flex;
+  align-items: baseline;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  color: var(--x-slider-color);
+  background: var(--x-slider-value-bg);
+}
+
+.x-slider__value-number {
+  font-size: 18px;
+}
+
+.x-slider__value-suffix {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.x-slider__slider {
+  // Espacio para las etiquetas de las marcas bajo la barra.
+  padding-bottom: 4px;
+
+  // Sin la prop `color`, q-slider no agrega clase text-*, pero Quasar fija `color: var(--q-primary)`
+  // directamente en la barra y el círculo: hay que alcanzarlos para que tomen el color elegido.
+  :deep(.q-slider__track),
+  :deep(.q-slider__thumb) {
+    color: var(--x-slider-color);
+  }
+
+  :deep(.q-slider__marker-labels) {
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748b;
+  }
+}
+
+.x-slider--disabled {
+  opacity: 0.6;
+}
+
+:global(.body--dark) .x-slider__label {
+  color: #e2e8f0;
+}
+
+:global(.body--dark) .x-slider__slider :deep(.q-slider__marker-labels) {
+  color: #94a3b8;
+}
+</style>
