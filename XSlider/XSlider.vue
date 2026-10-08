@@ -19,6 +19,11 @@
  * `color` (barra, círculo y número) acepta cualquier color CSS; sin él usa el primario. `value-bg` es el
  * fondo del número; sin él sale un tinte suave del mismo color. Para un semáforo por valor, el componente
  * que lo usa calcula `color` y `value-bg` según el valor.
+ *
+ * Sin respuesta: con `v-model` en null la barra no muestra el círculo (q-slider lo dejaría en el mínimo y
+ * parecería que eligió ese número) y, si se pasa `empty-text`, ese texto ocupa el lugar del número (por
+ * ejemplo "Toque la barra"). El primer toque o clic elige el valor. `error` pinta el mensaje debajo, como
+ * en XInput (String o el Array de un 422 de Laravel).
  */
 import { computed } from 'vue'
 import XHelpTip from '../XHelpTip/XHelpTip.vue'
@@ -37,17 +42,27 @@ const props = defineProps({
   markerLabels: { type: [Boolean, Array, Object, Function], default: false },
   showValue: { type: Boolean, default: true },
   valueSuffix: { type: String, default: '' },
+  // Texto en el lugar del número mientras no hay valor (v-model en null).
+  emptyText: { type: String, default: '' },
   color: { type: String, default: '' },
   valueBg: { type: String, default: '' },
   trackSize: { type: String, default: '6px' },
   thumbSize: { type: String, default: '24px' },
   isRequired: { type: Boolean, default: false },
   help: { type: String, default: '' },
+  error: { type: [String, Array], default: null },
   disable: { type: Boolean, default: false },
   readonly: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])
+
+const isEmpty = computed(() => props.modelValue == null)
+
+const errorMessage = computed(() => {
+  if (!props.error) return null
+  return Array.isArray(props.error) ? props.error[0] : props.error
+})
 
 const cssVars = computed(() => ({
   '--x-slider-color': props.color || 'var(--q-primary)',
@@ -65,17 +80,22 @@ function onChange(val) {
 </script>
 
 <template>
-  <div class="x-slider" :class="{ 'x-slider--disabled': disable }" :style="cssVars">
-    <div v-if="label || (showValue && modelValue != null)" class="x-slider__head">
+  <div
+    class="x-slider"
+    :class="{ 'x-slider--disabled': disable, 'x-slider--empty': isEmpty, 'x-slider--error': !!errorMessage }"
+    :style="cssVars"
+  >
+    <div v-if="label || (showValue && (!isEmpty || emptyText))" class="x-slider__head">
       <span v-if="label" class="x-slider__label">
         {{ label }}
         <span v-if="isRequired" class="text-negative" aria-hidden="true">*</span>
         <XHelpTip v-if="help" :text="help" class="q-ml-xs" />
       </span>
-      <span v-if="showValue && modelValue != null" class="x-slider__value">
+      <span v-if="showValue && !isEmpty" class="x-slider__value">
         <span class="x-slider__value-number">{{ modelValue }}</span>
         <span v-if="valueSuffix" class="x-slider__value-suffix">{{ valueSuffix }}</span>
       </span>
+      <span v-else-if="showValue && emptyText" class="x-slider__value x-slider__value--empty">{{ emptyText }}</span>
     </div>
 
     <q-slider
@@ -92,9 +112,12 @@ function onChange(val) {
       :readonly="readonly"
       :aria-label="label || undefined"
       :aria-required="isRequired ? 'true' : undefined"
+      :aria-invalid="errorMessage ? 'true' : undefined"
       @update:model-value="onUpdate"
       @change="onChange"
     />
+
+    <div v-if="errorMessage" class="x-slider__error" role="alert">{{ errorMessage }}</div>
   </div>
 </template>
 
@@ -134,6 +157,16 @@ function onChange(val) {
   opacity: 0.7;
 }
 
+// Sin respuesta: pastilla gris punteada con el texto de ayuda, en vez de un número.
+.x-slider__value--empty {
+  align-items: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #64748b;
+  background: #f1f5f9;
+  border: 1px dashed #94a3b8;
+}
+
 .x-slider__slider {
   // Espacio para las etiquetas de las marcas bajo la barra.
   padding-bottom: 4px;
@@ -150,6 +183,23 @@ function onChange(val) {
     font-weight: 500;
     color: #64748b;
   }
+}
+
+// Sin valor, q-slider deja el círculo en el mínimo: se oculta para que no parezca una respuesta.
+.x-slider--empty .x-slider__slider :deep(.q-slider__thumb) {
+  opacity: 0;
+}
+
+.x-slider--error .x-slider__value--empty {
+  color: var(--q-negative);
+  border-color: var(--q-negative);
+  background: #fef2f2;
+}
+
+.x-slider__error {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--q-negative);
 }
 
 .x-slider--disabled {
