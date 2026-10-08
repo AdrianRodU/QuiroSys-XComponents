@@ -342,7 +342,7 @@ function onSelect(val) {
               @update:model-value="onSelect"
               @keydown.enter.stop
               @keyup.enter.stop
-              :label-slot="!!elementLabel && props.isRequired && !$slots.label">
+              :label-slot="!!elementLabel && (props.isRequired || !!help) && !$slots.label">
       <template v-for="(_, name) in $slots" #[name]="slotProps">
         <slot :name="name" v-bind="slotProps || {}"/>
       </template>
@@ -365,11 +365,13 @@ function onSelect(val) {
         </q-item>
       </template>
 
-      <!-- Label flotante (classic) con asterisco de obligatorio, como XInput (v2.19.0).
-           Solo con is-required: los selects sin él quedan exactamente igual. -->
-      <template v-if="elementLabel && props.isRequired && !$slots.label" #label>
+      <!-- Label flotante (classic) con asterisco de obligatorio (v2.19.0) y el "?" de `help`
+           (v2.24.0), como XInput. Solo con is-required o help: los selects sin ellos quedan
+           exactamente igual. -->
+      <template v-if="elementLabel && (props.isRequired || help) && !$slots.label" #label>
         <span>{{ elementLabel }}</span>
-        <span class="text-negative" aria-hidden="true">*</span>
+        <span v-if="props.isRequired" class="text-negative" aria-hidden="true">*</span>
+        <XHelpTip v-if="help" :text="help" class="q-ml-xs" />
       </template>
 
       <template v-if="showAddButton" #after>

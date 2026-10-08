@@ -15,6 +15,12 @@
  * q-menu con la misma burbuja: se abre con un toque y se cierra al tocar fuera. El
  * toque no llega al campo o casilla que contiene el "?". En escritorio sigue el
  * tooltip al pasar el mouse.
+ *
+ * Dentro de un campo (v2.24.0): la etiqueta flotante de XInput y XSelect es la de
+ * QField, que Quasar marca con `no-pointer-events`. El "?" heredaba esa marca y el
+ * mouse caía en el input de abajo, así que el tooltip nunca se abría. El ícono vuelve
+ * a recibir el mouse (pointer-events: auto) y su clic, en escritorio y en el celular,
+ * solo muestra la ayuda: no enfoca el campo ni marca la casilla que lo contiene.
  */
 import { computed } from 'vue'
 import { useQuasar } from 'quasar'
@@ -31,10 +37,16 @@ defineProps({
 const $q = useQuasar()
 const isTouch = computed(() => $q.platform.is.mobile === true)
 
-// En el celular el toque solo abre la ayuda: no marca la casilla ni enfoca el campo del label.
+// El clic o el toque solo abre la ayuda: no marca la casilla ni enfoca el campo del label (la
+// raíz de QField es un <label>, y un clic dentro de él enfoca su input).
 function onClick(evt) {
-  if (!isTouch.value) return
   evt.stopPropagation()
+  evt.preventDefault()
+}
+
+// El mouse no le da el foco al "?": QField se pinta enfocado cuando algo suyo lo recibe. Con el
+// teclado (tabindex) sí se alcanza.
+function onMousedown(evt) {
   evt.preventDefault()
 }
 </script>
@@ -46,6 +58,7 @@ function onClick(evt) {
     class="x-help-tip cursor-pointer"
     tabindex="0"
     @click="onClick"
+    @mousedown="onMousedown"
   >
     <q-menu
       v-if="isTouch"
@@ -76,6 +89,8 @@ function onClick(evt) {
 
 <style lang="scss" scoped>
 .x-help-tip {
+  // La etiqueta flotante de QField lleva `no-pointer-events`: sin esto el "?" no recibe el mouse.
+  pointer-events: auto;
   color: #9ca3af;
   transition: color 0.15s ease;
   &:hover,
