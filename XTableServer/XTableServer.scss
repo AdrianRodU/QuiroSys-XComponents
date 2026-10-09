@@ -69,6 +69,13 @@
 // Columna izquierda y derecha con ancho FIJO proporcional (no adaptativo).
 // Asi todas las filas tienen la misma estructura visual.
 // --------------------------------------------------------------------------
+// Vista de tarjetas (v2.25.0): la tabla mide lo que su tarjeta y el texto largo se corta con "…" en vez de
+// estirar la fila fuera de ella (en un celular de 375 px quedaba fuera el menú ⋮ de la fila).
+.x-table-server__table--mobile table.q-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
 .x-table-mobile-row__content {
   display: flex;
   align-items: center;

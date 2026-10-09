@@ -248,9 +248,12 @@
       @sort="forward('sort')"
       @move="forward('move')"
     >
-      <template #header><slot name="header" /></template>
-      <template #item="slotProps"><slot name="item" v-bind="slotProps" /></template>
-      <template #footer><slot name="footer" /></template>
+      <template v-if="$slots.header" #header><slot name="header" /></template>
+      <!-- Cada ítem va dentro de un elemento real (v2.25.0): vuedraggable marca con data-draggable (lo único que
+           SortableJS arrastra) el nodo que devuelve este slot, y un <slot> reenviado es un fragmento que no llega
+           al DOM: no se podía arrastrar nada, ni en XTableServer (exportar columnas). -->
+      <template #item="slotProps"><div class="x-dnd-item"><slot name="item" v-bind="slotProps" /></div></template>
+      <template v-if="$slots.footer" #footer><slot name="footer" /></template>
     </draggable>
   
     <!-- ✅ MODO V-MODEL: usar v-model (inmutable / emit update:modelValue) -->
@@ -283,9 +286,12 @@
       @sort="forward('sort')"
       @move="forward('move')"
     >
-      <template #header><slot name="header" /></template>
-      <template #item="slotProps"><slot name="item" v-bind="slotProps" /></template>
-      <template #footer><slot name="footer" /></template>
+      <template v-if="$slots.header" #header><slot name="header" /></template>
+      <!-- Cada ítem va dentro de un elemento real (v2.25.0): vuedraggable marca con data-draggable (lo único que
+           SortableJS arrastra) el nodo que devuelve este slot, y un <slot> reenviado es un fragmento que no llega
+           al DOM: no se podía arrastrar nada, ni en XTableServer (exportar columnas). -->
+      <template #item="slotProps"><div class="x-dnd-item"><slot name="item" v-bind="slotProps" /></div></template>
+      <template v-if="$slots.footer" #footer><slot name="footer" /></template>
     </draggable>
   
     <teleport to="body" v-if="dragOverlay && isDragging">

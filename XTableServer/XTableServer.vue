@@ -1074,6 +1074,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
       :rows-per-page-options="pagination.pageSizes"
       :hide-header="isMobileView || isEmpty"
       :hide-pagination="isEmpty"
+      :class="{ 'x-table-server__table--mobile': isMobileView }"
       @request="onRequest"
     >
       <!-- Header: agrega checkbox de seleccion masiva al inicio -->
