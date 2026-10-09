@@ -99,6 +99,15 @@ Retorna la configuracion inicial de la tabla.
 }
 ```
 
+#### Ancho de columna (`width`)
+
+- `'auto'`: la columna queda pegada a su contenido (como la casilla de selección).
+- `'120px'`, `'10%'`…: el ancho de la columna, **sin tope** (desde v2.26.1). Las celdas no parten el texto, así
+  que si el contenido es más largo, la columna crece: nunca queda más angosta que su contenido. Hasta la v2.26.0
+  el ancho también era el máximo (`max-width`) y lo que no cabía se pintaba encima de la columna siguiente.
+- En el backend conviene dar ancho fijo solo a lo corto y de largo conocido (fechas, códigos, un badge de estado)
+  y dejar sin ancho lo que depende de los datos (nombres, descripciones, montos).
+
 ### POST `/{resource}/records`
 
 Retorna los datos paginados.

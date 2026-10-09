@@ -656,13 +656,16 @@ const updateVisibleColumns = (selectedColumns) => {
       }
       // Ancho de columna desde el backend (Column::width):
       //   'auto'            → columna pegada al contenido (como el checkbox select)
-      //   '64px' / '10%'/…  → ancho fijo
+      //   '64px' / '10%'/…  → ancho de la columna, SIN tope (v2.26.1): las celdas no parten el texto (nowrap),
+      //                       y con max-width lo que no cabía se pintaba encima de la columna siguiente (Caja:
+      //                       "Depósito pendiente S/ 1,600.00" sobre Estado). Sin tope, la columna nunca queda
+      //                       más angosta que su contenido.
       if (c.width === 'auto') {
         col.style = 'width: 1px; white-space: nowrap;'
         col.headerStyle = 'width: 1px; white-space: nowrap;'
       } else if (c.width) {
-        col.style = `width: ${c.width}; max-width: ${c.width};`
-        col.headerStyle = `width: ${c.width}; max-width: ${c.width};`
+        col.style = `width: ${c.width};`
+        col.headerStyle = `width: ${c.width};`
       }
       return col
     })
