@@ -15,9 +15,9 @@ import XToggle from '@/components/XToggle/XToggle.vue'
 | Prop | Tipo | Default | Descripcion |
 |------|------|---------|-------------|
 | `modelValue` | `Boolean \| Array \| String` | *required* | Valor del toggle (v-model) |
-| `isClassic` | `Boolean` | `false` | Label junto al toggle |
+| `isClassic` | `Boolean` | `true` (`formDefaults.isClassic`) | Label junto al toggle; en `false`, el label va arriba |
 | `label` | `String` | `''` | Texto del label |
-| `color` | `String` | `'primary'` | Color cuando esta activo |
+| `color` | `String` | `'primary'` | Color cuando esta activo (cualquier color de Quasar: `teal`, `purple`, `grey-7`...) |
 | `disable` | `Boolean` | `false` | Deshabilitar toggle |
 | `indeterminateValue` | `Boolean` | `false` | Valor para estado indeterminado |
 | `hint` | `String` | `''` | Texto de ayuda debajo del toggle |
@@ -58,9 +58,10 @@ const notificaciones = ref(true)
 ### Toggle con label superior
 
 ```vue
-<!-- Default: label arriba del toggle -->
+<!-- is-classic en false: label arriba del toggle -->
 <XToggle
   v-model="modoOscuro"
+  :is-classic="false"
   label="Modo oscuro"
 />
 ```

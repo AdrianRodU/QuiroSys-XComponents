@@ -9,7 +9,12 @@
 .x-toggle {
   --x-toggle-width: #{$x-toggle-width};
   --x-toggle-height: #{$x-toggle-height};
-  --x-toggle-color: #{$x-primary};
+  // Color del interruptor encendido: el del prop color. Quasar le pone text-<color> al
+  // q-toggle__inner al encenderse y el track lo toma con currentColor, asi que sirve
+  // cualquier color de Quasar (primary, teal, purple, grey-7...). Antes era el primario
+  // fijo con !important y color="teal" no se veia. Las clases x-toggle-<color> de abajo
+  // lo siguen pudiendo fijar.
+  --x-toggle-color: currentColor;
   --x-toggle-track-color: rgba(0, 0, 0, 0.38);
   --x-toggle-thumb-color: #fafafa;
   --x-toggle-border-radius: 10px;
