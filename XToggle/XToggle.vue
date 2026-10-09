@@ -1,6 +1,7 @@
 <script setup>
 import { computed, useAttrs } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
+import XHelpTip from '../XHelpTip/XHelpTip.vue'
 
 defineOptions({
   name: 'XToggle',
@@ -23,6 +24,14 @@ const props = defineProps({
 
   // Etiqueta que se muestra arriba o al lado del toggle
   label: {
+    type: String,
+    default: ''
+  },
+
+  // Texto de ayuda: ícono "?" con tooltip junto a la etiqueta (v2.26.0), como XInput.
+  // En el estilo clásico la etiqueta se dibuja en el slot del QToggle para que el "?"
+  // quede al lado del texto y su clic no mueva el interruptor (XHelpTip lo detiene).
+  help: {
     type: String,
     default: ''
   },
@@ -78,7 +87,10 @@ const elementId = computed(() =>
 
 // --- Mostrar label arriba del toggle si no es estilo clásico ---
 const showTopLabel = computed(() => !props.isClassic && props.label)
-const checkboxLabel = computed(() => props.isClassic ? props.label : undefined)
+// Con `help` en estilo clásico, la etiqueta va por el slot (QToggle fusiona el slot con el
+// prop `label`: pasarlo también duplicaría el texto).
+const classicLabelBySlot = computed(() => props.isClassic && !!props.help)
+const checkboxLabel = computed(() => (props.isClassic && !classicLabelBySlot.value ? props.label : undefined))
 
 // --- Mostrar el tooltip solo si hay texto definido ---
 const hasTooltip = computed(() => !!props.tooltipText)
@@ -100,6 +112,7 @@ const internalValue = computed({
       style="line-height: 15px; margin-top: 3px; margin-bottom: 2px"
     >
       {{ props.label }}
+      <XHelpTip v-if="help" :text="help" class="q-ml-xs" />
     </label>
 
     <!-- Toggle principal -->
@@ -116,6 +129,11 @@ const internalValue = computed({
       :disable="disable"
       :indeterminate-value="indeterminateValue"
       style="min-height: 40px; line-height: 1.35">
+      <!-- Etiqueta clásica con "?" (v2.26.0) -->
+      <template v-if="classicLabelBySlot">
+        <span>{{ props.label }}</span>
+        <XHelpTip :text="help" class="q-ml-xs" />
+      </template>
       <!-- Tooltip si está definido -->
       <q-tooltip v-if="hasTooltip" :class="tooltipColor">
         {{ tooltipText }}

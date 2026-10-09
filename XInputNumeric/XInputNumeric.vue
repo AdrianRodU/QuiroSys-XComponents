@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, useAttrs } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
+import XHelpTip from '../XHelpTip/XHelpTip.vue'
 
 defineOptions({ name: 'XInputNumeric', inheritAttrs: false })
 
@@ -12,6 +13,8 @@ const props = defineProps({
   inputDebounce: { type: [Number, String], default: 0 },
   autofocus: { type: Boolean, default: false },
   isRequired: { type: Boolean, default: false },
+  /** Texto de ayuda: muestra un ícono "?" con tooltip junto al label (v2.26.0), como XInput. */
+  help: { type: String, default: '' },
   prefix: { type: String, default: null },
   suffix: { type: String, default: null },
   /**
@@ -103,6 +106,7 @@ defineExpose({ focus, select, focusAndSelect })
     >
       {{ label }}
       <span v-if="props.isRequired" class="text-negative" aria-hidden="true">*</span>
+      <XHelpTip v-if="help" :text="help" class="q-ml-xs" />
     </label>
 
     <q-input
@@ -133,9 +137,11 @@ defineExpose({ focus, select, focusAndSelect })
       @change="e => emit('change', e)"
       @blur="onBlurClamp"
     >
+      <!-- Label slot (classic) con asterisco de obligatorio y el "?" de `help` (v2.26.0), como XInput -->
       <template v-if="elementLabel" #label>
         <span>{{ elementLabel }}</span>
         <span v-if="props.isRequired" class="text-negative" aria-hidden="true">*</span>
+        <XHelpTip v-if="help" :text="help" class="q-ml-xs" />
       </template>
 
       <template v-if="prefixValue || props.controls" #prepend>
