@@ -78,14 +78,19 @@ body {
   font-weight: 500;
 }
 
-// Pestañas con aire y esquinas redondeadas (v2.25.0; por ahora con la clase x-tabs, a modo de piloto): el hover
-// y la activa también redondeados, y la activa con un fondo suave del color primario. Las barras densas
-// (formularios y diálogos) van en su versión compacta.
-.q-tabs.x-tabs {
+// Pestañas con aire y esquinas redondeadas en todas las barras (v2.25.0): el hover y la activa también
+// redondeados, y la activa con un fondo suave de su propio color (el active-color de la barra, que Quasar le
+// pone como text-<color>; así las subpestañas en secundario no quedan con fondo primario). Las barras densas
+// (formularios y diálogos) van en su versión compacta. La separación es un gap del contenedor y no un margen
+// de cada pestaña, para que las barras justify no queden corridas a la izquierda.
+.q-tabs {
+  .q-tabs__content {
+    gap: 6px;
+  }
+
   .q-tab {
     min-height: 56px;
     padding: 6px 20px;
-    margin-right: 6px;
     border-radius: 12px;
   }
 
@@ -94,14 +99,19 @@ body {
   }
 
   .q-tab--active {
-    background: color-mix(in srgb, var(--q-primary) 7%, transparent);
+    background: color-mix(in srgb, currentColor 7%, transparent);
   }
 
-  &.q-tabs--dense .q-tab {
-    min-height: 38px;
-    padding: 2px 14px;
-    margin-right: 4px;
-    border-radius: 8px;
+  &.q-tabs--dense {
+    .q-tabs__content {
+      gap: 4px;
+    }
+
+    .q-tab {
+      min-height: 38px;
+      padding: 2px 14px;
+      border-radius: 8px;
+    }
   }
 }
 
