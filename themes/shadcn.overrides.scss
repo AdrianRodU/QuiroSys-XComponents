@@ -115,6 +115,14 @@ body {
   }
 }
 
+// Barra que encabeza una tarjeta (hija directa del q-card: perfil del paciente, Reportes de Marketing,
+// Comisiones): sin esto la activa quedaba metida en la esquina de la tarjeta y su radio se perdía contra los
+// bordes rectos. Los 16 px de los lados la alinean con el contenido de abajo (q-tab-panel y q-card-section
+// usan 16 px). Las barras de los diálogos ya tienen aire: van en la franja gris o con el padding del diálogo.
+.q-card > .q-tabs {
+  padding: 8px 16px;
+}
+
 // --------------------------------------------------------------------------
 // Items hover
 // --------------------------------------------------------------------------
