@@ -78,6 +78,33 @@ body {
   font-weight: 500;
 }
 
+// Pestañas con aire y esquinas redondeadas (v2.25.0; por ahora con la clase x-tabs, a modo de piloto): el hover
+// y la activa también redondeados, y la activa con un fondo suave del color primario. Las barras densas
+// (formularios y diálogos) van en su versión compacta.
+.q-tabs.x-tabs {
+  .q-tab {
+    min-height: 56px;
+    padding: 6px 20px;
+    margin-right: 6px;
+    border-radius: 12px;
+  }
+
+  .q-tab .q-focus-helper {
+    border-radius: inherit;
+  }
+
+  .q-tab--active {
+    background: color-mix(in srgb, var(--q-primary) 7%, transparent);
+  }
+
+  &.q-tabs--dense .q-tab {
+    min-height: 38px;
+    padding: 2px 14px;
+    margin-right: 4px;
+    border-radius: 8px;
+  }
+}
+
 // --------------------------------------------------------------------------
 // Items hover
 // --------------------------------------------------------------------------
