@@ -194,6 +194,7 @@ Si **no** se envia `mobileConfig` desde el backend, el componente genera una con
 
 - Usa las primeras 2 columnas visibles para el lado izquierdo
 - Usa las siguientes 2 columnas para el lado derecho
+- Si hay columna `is_active` (interruptor "Activo"), va siempre a la derecha, en lugar de la cuarta columna
 - El titulo del bottom sheet es la primera columna
 - El subtitulo es la segunda columna
 
@@ -276,6 +277,22 @@ Las acciones se definen por fila en el backend:
     ],
 ]
 ```
+
+## Interruptor "Activo" (v2.25.0)
+
+Convención de todas las tablas para activar y desactivar: la columna `Column::isActive()` ("Activo") con
+`Cell::activeToggle($row, $puedeCambiar)` del paquete `quirosys/datatable`. No se usan botones de activar.
+
+- **Apagar** abre el diálogo de confirmación de la tabla: `GET /{resource}/record-active/{id}` (título y texto)
+  y `POST /{resource}/active` con `{ id, is_active: false }`.
+- **Encender** va directo, sin diálogo: `POST /{resource}/active` con `{ id, is_active: true }`.
+- El interruptor no se mueve hasta que el servidor confirma; la tabla se refresca con el valor real.
+- Sin permiso (`$puedeCambiar = false`) se ve bloqueado.
+- Una acción propia (`Cell::activeToggle($row, true, 'toggle-active')`) llega al evento `actions` de la página
+  en los dos sentidos, con `value` (lo que pidió: `true` o `false`): sirve para un diálogo propio (p. ej. una
+  baja con fecha).
+
+La celda es `{ type_input: 'component', component: 'XToggle', action: { type: 'active', action } }`.
 
 ## Botones de Header
 

@@ -245,6 +245,8 @@ const visibleColumns = ref([])
 
 const recordDeleteId = ref(null)
 const recordActiveId = ref(null)
+// Valor que pidió el interruptor "Activo" al apagar; viaja en el POST del diálogo (v2.25.0).
+const activeExtraData = ref({})
 
 // evita doble fetch durante cascadas
 const suppressFilterFetch = ref(false)
@@ -340,18 +342,22 @@ const mobileConfig = computed(() => {
     return mobileConfigBackend.value
   }
 
-  // Fallback automatico: usar las primeras columnas visibles (excluyendo actions)
-  const visibleCols = columns.value.filter((c) => c.name !== 'actions')
+  // Fallback automatico: usar las primeras columnas visibles (excluyendo actions). El interruptor "Activo"
+  // (columna is_active, v2.25.0) va siempre a la derecha, aunque la columna esté al final de la tabla: sin
+  // esto, en las tablas de más de 4 columnas no se podía activar ni desactivar desde el celular.
+  const activeCol = columns.value.find((c) => c.name === 'is_active')
+  const visibleCols = columns.value.filter((c) => c.name !== 'actions' && c.name !== 'is_active')
   const leftFields = visibleCols.slice(0, 2).map((c) => ({
     field: c.name,
     label: c.label,
     position: 'left',
   }))
-  const rightFields = visibleCols.slice(2, 4).map((c) => ({
+  const rightFields = visibleCols.slice(2, activeCol ? 3 : 4).map((c) => ({
     field: c.name,
     label: c.label,
     position: 'right',
   }))
+  if (activeCol) rightFields.push({ field: activeCol.name, label: activeCol.label, position: 'right' })
 
   return {
     enabled: true,
@@ -759,7 +765,13 @@ const performAction = (button, row) => {
   }
 
   if (button.action === 'active') {
+    // Interruptor "Activo" (v2.25.0): encender no pregunta; apagar sí, con el diálogo de siempre.
+    if (button.value === true) {
+      activateRecord(row)
+      return
+    }
     recordActiveId.value = row.id
+    activeExtraData.value = button.value === false ? { is_active: false } : {}
     refDialogActiveForm.value.openDialog()
     return
   }
@@ -769,7 +781,26 @@ const performAction = (button, row) => {
     id: row.id,
     url: button.url,
     row: row,
+    // Solo el interruptor "Activo" con acción propia: el valor que pidió (true o false).
+    value: button.value,
   })
+}
+
+// Las celdas avisan con el nombre de la acción (enlaces) o con { action, value } (interruptor "Activo").
+const onCellAction = (a, row) => performAction(typeof a === 'string' ? { action: a } : a, row)
+
+// Encender desde el interruptor "Activo" (v2.25.0): POST {resource}/active con is_active=true, sin diálogo. Los
+// errores HTTP los avisa el interceptor de la app, como en XDialogAction; aquí solo el resultado del servidor.
+// Siempre refresca: así el interruptor muestra el valor real también si no se pudo.
+const activateRecord = async (row) => {
+  try {
+    const { data } = await proxy.$api.post(`/${props.resource}/active`, { id: row.id, is_active: true })
+    if (data?.message) $q.notify({ type: data.success === false ? 'error' : 'success', message: data.message })
+  } catch {
+    // El interceptor ya avisó.
+  } finally {
+    fetchData()
+  }
 }
 
 const performHeaderAction = (button) => {
@@ -1137,7 +1168,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
               </div>
             </template>
             <template v-else>
-              <x-cell-column-renderer :cell="col.value" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => performAction({ action: a }, props.row)" />
+              <x-cell-column-renderer :cell="col.value" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => onCellAction(a, props.row)" />
             </template>
           </q-td>
         </q-tr>
@@ -1160,7 +1191,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
                     <!-- Celda interactiva (interruptor, casilla...): la misma que en escritorio; su clic no abre el
                          menú de la fila (v2.25.0). Las demás, como siempre. -->
                     <span v-if="isComponentCell(getMobileFieldValue(props.row, field))" class="x-table-mobile-row__control" @click.stop>
-                      <x-cell-column-renderer :cell="getMobileFieldValue(props.row, field)" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => performAction({ action: a }, props.row)" />
+                      <x-cell-column-renderer :cell="getMobileFieldValue(props.row, field)" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => onCellAction(a, props.row)" />
                     </span>
                     <x-cell-renderer v-else :cell="getMobileFieldValue(props.row, field)" />
                   </div>
@@ -1177,7 +1208,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
                     <!-- Celda interactiva (interruptor, casilla...): la misma que en escritorio; su clic no abre el
                          menú de la fila (v2.25.0). Las demás, como siempre. -->
                     <span v-if="isComponentCell(getMobileFieldValue(props.row, field))" class="x-table-mobile-row__control" @click.stop>
-                      <x-cell-column-renderer :cell="getMobileFieldValue(props.row, field)" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => performAction({ action: a }, props.row)" />
+                      <x-cell-column-renderer :cell="getMobileFieldValue(props.row, field)" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => onCellAction(a, props.row)" />
                     </span>
                     <x-cell-renderer v-else :cell="getMobileFieldValue(props.row, field)" />
                   </div>
@@ -1195,7 +1226,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
       <!-- DESKTOP VIEW: Renderizado normal -->
       <template v-else v-slot:body-cell="props">
         <q-td :props="props" :class="props.row._row_class">
-          <x-cell-column-renderer :cell="props.value" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => performAction({ action: a }, props.row)" />
+          <x-cell-column-renderer :cell="props.value" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => onCellAction(a, props.row)" />
         </q-td>
       </template>
 
@@ -1370,6 +1401,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
       ref="refDialogActiveForm"
       :resource="resource"
       :record-id="recordActiveId"
+      :extra-data="activeExtraData"
       action="active"
       @success="successActive"
     />

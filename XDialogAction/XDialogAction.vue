@@ -16,7 +16,10 @@ defineOptions({
 const props = defineProps({
   resource: {type: String, required: true},
   recordId: null,
-  action: {type: String, required: true}
+  action: {type: String, required: true},
+  // Campos que se suman al POST (v2.25.0): el interruptor "Activo" de XTableServer manda el valor que pidió
+  // ({ is_active: false }), así el servidor guarda ese y no invierte el que tenga en ese momento.
+  extraData: {type: Object, default: () => ({})}
 });
 
 // Normaliza los colores que llegan del backend a tokens semanticos del theme.
@@ -105,7 +108,7 @@ const onSubmit = async () => {
   loadingSubmit.value = true;
 
   try {
-    const {data} = await proxy.$api.post(`/${props.resource}/${props.action}`, form.value);
+    const {data} = await proxy.$api.post(`/${props.resource}/${props.action}`, {...form.value, ...props.extraData});
     if (data.success) {
       $q.notify({type: 'success', message: data.message});
       emit('success', data.data);

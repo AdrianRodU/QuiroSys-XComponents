@@ -69,6 +69,10 @@ function buildData(template, value) {
 async function runAction(nextValue) {
   const c = props.cell
   const action = c?.action
+  if (action?.type === 'active') {
+    runActiveAction(action, nextValue)
+    return
+  }
   if (!action || action.type !== 'api') return
 
   const prev = localValue.value
@@ -124,6 +128,20 @@ async function runAction(nextValue) {
     saving.value = false
     emit('loading', false)
   }
+}
+
+/**
+ * Interruptor "Activo" de las tablas (Cell::activeToggle, v2.25.0): no llama a la API por su cuenta, se lo
+ * pasa a la tabla. Apagar abre el diálogo de confirmación de la tabla (el mismo de los antiguos botones de
+ * activar: record-active → active) y encender va directo. Una acción propia (p. ej. la de Personal, que pide
+ * la fecha de la baja) llega a la página en los dos sentidos. El interruptor no se mueve hasta que el servidor
+ * confirma (la tabla se refresca con el valor nuevo); solo se adelanta al encender con la acción estándar,
+ * porque ahí no hay nada que confirmar.
+ */
+function runActiveAction(action, nextValue) {
+  const name = action.action || 'active'
+  if (!(name === 'active' && nextValue === true)) localValue.value = props.cell.modelValue
+  emit('cell-action', { action: name, value: nextValue })
 }
 
 function onUpdateModelValue(val) {
