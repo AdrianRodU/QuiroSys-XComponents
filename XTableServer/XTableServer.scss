@@ -94,6 +94,18 @@
   gap: 2px;
 }
 
+// Celda interactiva en la tarjeta (interruptor, casilla...; v2.25.0): se alinea como el texto de su columna,
+// a la derecha en la columna derecha.
+.x-table-mobile-row__control {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.x-table-mobile-row__right .x-table-mobile-row__control {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .x-table-mobile-row__action {
   flex: 0 0 auto;
   display: flex;

@@ -376,6 +376,10 @@ const mobileRightFields = computed(
  */
 const mobileLeftWidth = computed(() => mobileConfig.value.leftWidth || '60%')
 
+// Celda interactiva del backend (Cell::actionToggle, actionSelect...): en la vista móvil se dibuja con
+// XCellColumnRenderer, como en escritorio (antes salía vacía: XCellRenderer no conoce 'component').
+const isComponentCell = (cell) => !!cell && typeof cell === 'object' && cell.type_input === 'component'
+
 function openMobileActions(row) {
   selectedRow.value = row
   showMobileActions.value = true
@@ -1152,7 +1156,12 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
               <div class="x-table-mobile-row__left" :style="{ flexBasis: mobileLeftWidth }">
                 <template v-for="(field, idx) in mobileLeftFields" :key="idx">
                   <div class="ellipsis" :class="`text-${field.align || 'left'}`">
-                    <x-cell-renderer :cell="getMobileFieldValue(props.row, field)" />
+                    <!-- Celda interactiva (interruptor, casilla...): la misma que en escritorio; su clic no abre el
+                         menú de la fila (v2.25.0). Las demás, como siempre. -->
+                    <span v-if="isComponentCell(getMobileFieldValue(props.row, field))" class="x-table-mobile-row__control" @click.stop>
+                      <x-cell-column-renderer :cell="getMobileFieldValue(props.row, field)" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => performAction({ action: a }, props.row)" />
+                    </span>
+                    <x-cell-renderer v-else :cell="getMobileFieldValue(props.row, field)" />
                   </div>
                 </template>
               </div>
@@ -1164,7 +1173,12 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
                     :class="`text-${field.align || 'right'}`"
                     :style="field.truncate ? { maxWidth: field.truncate + 'px' } : {}"
                   >
-                    <x-cell-renderer :cell="getMobileFieldValue(props.row, field)" />
+                    <!-- Celda interactiva (interruptor, casilla...): la misma que en escritorio; su clic no abre el
+                         menú de la fila (v2.25.0). Las demás, como siempre. -->
+                    <span v-if="isComponentCell(getMobileFieldValue(props.row, field))" class="x-table-mobile-row__control" @click.stop>
+                      <x-cell-column-renderer :cell="getMobileFieldValue(props.row, field)" :row="props.row" @refresh="fetchData" @loading="val => loading = val" @cell-action="(a) => performAction({ action: a }, props.row)" />
+                    </span>
+                    <x-cell-renderer v-else :cell="getMobileFieldValue(props.row, field)" />
                   </div>
                 </template>
               </div>

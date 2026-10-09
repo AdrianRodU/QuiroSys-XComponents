@@ -7,6 +7,11 @@ defineProps({
 
 // Una celda-ícono con `action` se vuelve clickeable y emite la acción hacia arriba.
 const emit = defineEmits(['cell-action']);
+
+// El color de un ícono puede ser de Quasar ('primary', 'red-7') o CSS ('#1877F2', 'rgb(...)'), como ya lo
+// acepta la celda de texto (v2.25.0): q-icon solo entiende el de Quasar (lo vuelve la clase text-<color>), así
+// que el CSS va por style. Así una celda puede llevar el color de una marca (Facebook, Instagram...).
+const isCssColor = (c) => typeof c === 'string' && /^(#|rgb|hsl)/i.test(c.trim());
 </script>
 
 <template>
@@ -70,7 +75,8 @@ const emit = defineEmits(['cell-action']);
     <!-- ÍCONO (clickeable si trae `action`) -->
     <q-icon v-else-if="cell.type_input === 'icon'"
             :name="cell.icon"
-            :color="cell.color || undefined"
+            :color="isCssColor(cell.color) ? undefined : (cell.color || undefined)"
+            :style="isCssColor(cell.color) ? { color: cell.color } : undefined"
             :title="cell.tooltip || undefined"
             :size="cell.size || undefined"
             :class="['q-mx-xs', { 'cursor-pointer': cell.action }]"
