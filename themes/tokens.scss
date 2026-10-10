@@ -52,12 +52,18 @@ $x-palette-families: (
   'brown': #795548,
 ) !default;
 
-// Colores de estado del ERP (los de Quasar si el proyecto no los redefine).
-$x-tokens-positive: if(variable-exists(positive), $positive, #21ba45);
-$x-tokens-negative: if(variable-exists(negative), $negative, #c10015);
-$x-tokens-warning: if(variable-exists(warning), $warning, #f2c037);
-$x-tokens-info: if(variable-exists(info), $info, #31ccec);
-$x-tokens-secondary: if(variable-exists(secondary), $secondary, #26a69a);
+// Colores de estado del ERP (los de Quasar si el proyecto no los redefine). Con @if y no con la función
+// if(cond, a, b): Sass 1.95+ la marca obsoleta y el dev server repetía el aviso en la terminal (v2.27.1).
+$x-tokens-positive: #21ba45;
+$x-tokens-negative: #c10015;
+$x-tokens-warning: #f2c037;
+$x-tokens-info: #31ccec;
+$x-tokens-secondary: #26a69a;
+@if variable-exists(positive) { $x-tokens-positive: $positive; }
+@if variable-exists(negative) { $x-tokens-negative: $negative; }
+@if variable-exists(warning) { $x-tokens-warning: $warning; }
+@if variable-exists(info) { $x-tokens-info: $info; }
+@if variable-exists(secondary) { $x-tokens-secondary: $secondary; }
 
 // --------------------------------------------------------------------------
 // Paleta del modo oscuro (slate)
