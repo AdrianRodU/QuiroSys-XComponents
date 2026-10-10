@@ -103,7 +103,9 @@
   }
 
   // --------------------------------------------------------------------------
-  // Mensaje de error
+  // Mensajes de abajo: el hint en el color de texto secundario y el error en rojo. Hasta la v2.27.1 todo
+  // .q-field__messages iba en rojo y un hint parecía un error de validación (v2.27.2). Con tokens: en oscuro, el gris
+  // y el rojo claros de themes/tokens.scss.
   // --------------------------------------------------------------------------
   .q-field__bottom {
     font-size: $x-font-size-sm;
@@ -111,7 +113,11 @@
   }
 
   .q-field__messages {
-    color: $x-negative;
+    color: $x-text-secondary;
+  }
+
+  .q-field--error .q-field__messages {
+    color: var(--x-negative-text, #{$x-negative});
   }
 
   // --------------------------------------------------------------------------

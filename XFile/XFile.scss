@@ -116,7 +116,8 @@
 }
 
 // --------------------------------------------------------------------------
-// Mensaje de error
+// Mensajes de abajo: el hint en el color de texto secundario y el error en rojo, como XInput (v2.27.2; antes todo
+// en rojo). La clase puede venir en la raíz del q-file o en un contenedor: el error cubre los dos casos.
 // --------------------------------------------------------------------------
 .x-file {
   .q-field__bottom {
@@ -125,7 +126,12 @@
   }
 
   .q-field__messages {
-    color: $x-negative;
+    color: $x-text-secondary;
+  }
+
+  &.q-field--error .q-field__messages,
+  .q-field--error .q-field__messages {
+    color: var(--x-negative-text, #{$x-negative});
   }
 }
 
