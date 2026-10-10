@@ -378,7 +378,8 @@ function printPdf() {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #f3f4f6; /* --ep-background-app: coincide con fondo del visor embedpdf */
+  /* --ep-background-app: coincide con el fondo del visor embedpdf (en oscuro, su #111827 ≈ --x-page). */
+  background: var(--x-page, #f3f4f6);
   overflow: hidden;
 }
 
@@ -391,9 +392,9 @@ function printPdf() {
   align-items: center;
   height: 60px;
   padding: 0 16px;
-  background: #fafafa;
+  background: var(--x-surface, #fafafa);
   color: inherit;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.24);
+  border-bottom: 1px solid var(--x-border, rgba(0, 0, 0, 0.24));
 
   &__filename {
     flex: 1 1 auto;
@@ -401,7 +402,7 @@ function printPdf() {
     font-size: 20px;
     font-weight: 600;
     line-height: 1.4;
-    color: #1d2939;
+    color: var(--x-text, #1d2939);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -420,13 +421,13 @@ function printPdf() {
     border: none;
     border-radius: 50%; /* q-btn round */
     background: transparent;
-    color: #757575; /* $x-text-secondary */
+    color: var(--x-text-muted, #757575); /* $x-text-secondary */
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
 
     &:hover:not(:disabled) {
-      background: #f2f4f7; /* gray-100 */
-      color: #1d2939;      /* gray-800 */
+      background: var(--x-surface-3, #f2f4f7); /* gray-100 */
+      color: var(--x-text, #1d2939);      /* gray-800 */
     }
   }
 }
@@ -443,7 +444,7 @@ function printPdf() {
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #aaa;
+  color: var(--x-text-subtle, #aaa);
   font-size: 14px;
 }
 
@@ -471,17 +472,17 @@ function printPdf() {
     border: none;
     border-radius: 6px;
     background: transparent;
-    color: #111827; /* --ep-foreground-primary */
+    color: var(--x-text, #111827); /* --ep-foreground-primary */
     cursor: pointer;
     transition: background 0.12s, box-shadow 0.12s;
 
     &:hover:not(:disabled) {
-      background: #f3f4f6; /* --ep-interactive-hover */
+      background: var(--x-surface-3, #f3f4f6); /* --ep-interactive-hover */
       box-shadow: 0 0 0 1px #3b82f6; /* ring-accent */
     }
 
     &:active:not(:disabled) {
-      background: #e5e7eb; /* --ep-interactive-active */
+      background: var(--x-surface-3, #e5e7eb); /* --ep-interactive-active */
     }
 
     &:disabled {
@@ -501,7 +502,7 @@ function printPdf() {
     display: flex;
     align-items: center;
     gap: 2px;
-    background: #f3f4f6; /* --ep-interactive-hover */
+    background: var(--x-surface-3, #f3f4f6); /* --ep-interactive-hover */
     border-radius: 6px;
     padding: 2px;
     margin-right: 4px;
@@ -516,7 +517,7 @@ function printPdf() {
     border: none;
     border-radius: 4px;
     background: transparent;
-    color: #6b7280;
+    color: var(--x-text-muted, #6b7280);
     font-size: 12px;
     font-weight: 600;
     line-height: 1;
@@ -525,12 +526,12 @@ function printPdf() {
     transition: background 0.12s, color 0.12s;
 
     &:hover {
-      color: #111827; /* --ep-foreground-primary */
+      color: var(--x-text, #111827); /* --ep-foreground-primary */
     }
 
     &--active {
-      background: #ffffff;
-      color: #111827;
+      background: var(--x-surface, #ffffff);
+      color: var(--x-text, #111827);
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
   }

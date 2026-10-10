@@ -91,10 +91,10 @@ function onMousedown(evt) {
 .x-help-tip {
   // La etiqueta flotante de QField lleva `no-pointer-events`: sin esto el "?" no recibe el mouse.
   pointer-events: auto;
-  color: #9ca3af;
+  color: var(--x-text-subtle, #9ca3af);
   transition: color 0.15s ease;
   &:hover,
-  &:focus-visible { color: var(--q-primary); }
+  &:focus-visible { color: var(--x-primary-text, var(--q-primary)); }
 }
 .x-help-tip__bubble {
   font-size: 12px;

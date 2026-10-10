@@ -18,7 +18,7 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 1.8rem;
-    color: #bbb;
+    color: var(--x-text-subtle, #bbb);
     pointer-events: none;
     z-index: 2;
 }
@@ -27,9 +27,9 @@
     font-size: 1.8rem;
     text-align: center;
     padding: 8px 18px 8px 44px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--x-border, #ddd);
     border-radius: 10px;
-    background: #fafbfc;
+    background: var(--x-surface-2, #fafbfc);
     box-sizing: border-box;
     position: relative;
     z-index: 1;
@@ -51,8 +51,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #eaf3f1;
-    color: #217871;
+    background: var(--x-tone-teal-soft, #eaf3f1);
+    color: var(--x-tone-teal-text, #217871);
     border: none;
     font-size: 1.15rem;
     font-weight: 600;
@@ -67,7 +67,7 @@
     text-align: center;
 }
 .quick-cash-btn:active {
-    background: #c3e5dc;
+    background: var(--x-tone-teal-soft, #c3e5dc);
 }
 .price-calc-keypad {
     display: grid;
@@ -81,7 +81,7 @@
     width: 100%;
     font-size: 1.4rem;
     border: none;
-    background: #f3f3f6;
+    background: var(--x-surface-3, #f3f3f6);
     border-radius: 12px;
     transition: background 0.15s;
     cursor: pointer;
@@ -92,10 +92,10 @@
     padding: 0;
 }
 .key:active {
-    background: #ececec;
+    background: var(--x-surface-3, #ececec);
 }
 .key.action {
-    color: #007bff;
+    color: var(--x-tone-blue-text, #007bff);
     font-weight: bold;
 }
 .key:disabled {

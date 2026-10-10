@@ -72,21 +72,21 @@ const currentIcon = computed(() => {
   &--boxed {
     padding: 8px 12px;
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.02);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: var(--x-neutral-soft, rgba(0, 0, 0, 0.02));
+    border: 1px solid var(--x-border, rgba(0, 0, 0, 0.08));
   }
   &__desc {
-    color: #6b7280;
+    color: var(--x-text-muted, #6b7280);
     line-height: 1.3;
     margin-top: 2px;
   }
   &__icon {
-    color: #9ca3af;
+    color: var(--x-text-subtle, #9ca3af);
     transition: color 0.15s ease;
-    &--on { color: var(--q-primary); }
+    &--on { color: var(--x-primary-text, var(--q-primary)); }
   }
   &__feedback {
-    color: #b45309;
+    color: var(--x-tone-orange-text, #b45309);
     line-height: 1.3;
   }
 }
@@ -95,7 +95,7 @@ const currentIcon = computed(() => {
     background: rgba(255, 255, 255, 0.03);
     border-color: rgba(255, 255, 255, 0.12);
   }
-  .x-setting-toggle__desc { color: #9ca3af; }
+  .x-setting-toggle__desc { color: var(--x-text-subtle, #9ca3af); }
   .x-setting-toggle__feedback { color: #fbbf24; }
 }
 </style>

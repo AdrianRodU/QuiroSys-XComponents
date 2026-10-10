@@ -54,19 +54,19 @@ const iconName = computed(() => props.icon || TYPES[kind.value].icon)
 
 <style lang="scss" scoped>
 .x-callout {
-  --x-callout-color: #0969da;
+  --x-callout-color: var(--x-tone-blue-text, #0969da);
   --x-callout-bg: rgba(9, 105, 218, 0.06);
   padding: 8px 14px;
   border-left: 4px solid var(--x-callout-color);
   border-radius: 0;
   background: var(--x-callout-bg);
-  color: #1f2328;
+  color: var(--x-text, #1f2328);
 
-  &--note { --x-callout-color: #0969da; --x-callout-bg: rgba(9, 105, 218, 0.06); }
-  &--tip { --x-callout-color: #1a7f37; --x-callout-bg: rgba(26, 127, 55, 0.07); }
-  &--important { --x-callout-color: #8250df; --x-callout-bg: rgba(130, 80, 223, 0.07); }
-  &--warning { --x-callout-color: #9a6700; --x-callout-bg: rgba(191, 135, 0, 0.1); }
-  &--caution { --x-callout-color: #cf222e; --x-callout-bg: rgba(207, 34, 46, 0.06); }
+  &--note { --x-callout-color: var(--x-tone-blue-text, #0969da); --x-callout-bg: rgba(9, 105, 218, 0.06); }
+  &--tip { --x-callout-color: var(--x-tone-green-text, #1a7f37); --x-callout-bg: rgba(26, 127, 55, 0.07); }
+  &--important { --x-callout-color: var(--x-tone-purple-text, #8250df); --x-callout-bg: rgba(130, 80, 223, 0.07); }
+  &--warning { --x-callout-color: var(--x-tone-amber-text, #9a6700); --x-callout-bg: rgba(191, 135, 0, 0.1); }
+  &--caution { --x-callout-color: var(--x-tone-red-text, #cf222e); --x-callout-bg: rgba(207, 34, 46, 0.06); }
 }
 
 .x-callout__title {

@@ -120,4 +120,7 @@ En un formulario que guarda todo junto, se guarda el `Blob` de `change` y se sub
   y "Quitar" vuelve a referirse a la imagen guardada.
 - En `avatar`, "Quitar" sobre una foto nueva que todavía no se guardó dice "Deshacer" y vuelve a la guardada.
 - El SVG no se recorta: se entrega tal cual.
+- Modo oscuro: en `inline` y `card` con imagen, y en el recorte de `inline`/`card`, el logo se ve sobre la placa
+  clara del tema (`--x-logo-plate`): los logos se diseñan para fondo claro y uno con letras oscuras se perdía. La foto
+  de `avatar` y su recorte redondo siguen sobre la superficie oscura. En claro nada cambia.
 - v2.27.0 reemplaza la copia local que tenía el ERP (`src/components/XImageCropperUpload`), con la misma API.

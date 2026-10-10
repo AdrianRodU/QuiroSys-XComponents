@@ -1418,7 +1418,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
       @action-button-close="showBulkConfirm = false"
     >
       <template #content>
-        <div class="text-body2" style="color: #344054;">
+        <div class="text-body2" style="color: var(--x-text-2, #344054);">
           {{ bulkConfirmMessage }}
         </div>
       </template>

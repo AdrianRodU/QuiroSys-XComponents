@@ -8,7 +8,7 @@
 // --------------------------------------------------------------------------
 .x-card {
   --x-card-border-radius: #{$x-border-radius};
-  --x-card-bg: #ffffff;
+  --x-card-bg: var(--x-surface, #ffffff);
   --x-card-shadow: #{$x-shadow-sm};
 
   background-color: var(--x-card-bg);

@@ -248,7 +248,7 @@ defineExpose({
   margin: auto;
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(0, 0, 0, .12);
+  border: 2px solid var(--x-border, rgba(0, 0, 0, .12));
   border-top-color: var(--q-primary);
   border-radius: 50%;
   opacity: 0;

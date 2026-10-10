@@ -46,7 +46,7 @@ function onHide() {
     border-radius: 8px;
     padding: 10px 12px;
     min-height: auto;
-    color: #344054; // gray-700
+    color: var(--x-text-2, #344054); // gray-700
     transition: background-color 0.15s ease, color 0.15s ease;
 
     & + .q-item--clickable {
@@ -54,16 +54,16 @@ function onHide() {
     }
 
     &:hover {
-      background-color: #f2f4f7; // gray-100
-      color: #1d2939; // gray-800
+      background-color: var(--x-surface-3, #f2f4f7); // gray-100
+      color: var(--x-text, #1d2939); // gray-800
 
       .q-icon {
-        color: #344054;
+        color: var(--x-text-2, #344054);
       }
     }
 
     .q-item__section--avatar {
-      color: #667085; // gray-500
+      color: var(--x-text-muted, #667085); // gray-500
     }
   }
 }

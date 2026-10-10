@@ -60,17 +60,17 @@ const select = () => {
 
 <style scoped>
 .x-option-card {
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--x-border, #e5e7eb);
   border-radius: 8px;
   padding: 12px 14px;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
-  background: #ffffff;
+  background: var(--x-surface, #ffffff);
   user-select: none;
 }
 
 .x-option-card:hover {
-  border-color: #93c5fd;
+  border-color: var(--x-tone-blue-border, #93c5fd);
   background: rgba(37, 99, 235, 0.03);
 }
 
@@ -100,13 +100,13 @@ const select = () => {
 .x-option-card__label {
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--x-text, #111827);
   line-height: 1.3;
 }
 
 .x-option-card__desc {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--x-text-muted, #6b7280);
   line-height: 1.4;
   margin-top: 2px;
   padding-left: 26px;

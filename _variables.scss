@@ -15,16 +15,18 @@ $x-info: $info !default;
 
 // --------------------------------------------------------------------------
 // Colores de texto
+// Modo oscuro (v2.27.0): textos, bordes y la capa de carga son tokens de themes/tokens.scss con el color claro de
+// respaldo. Por eso NO se pueden usar en funciones de color de Sass (rgba, color.adjust...): son var(), no colores.
 // --------------------------------------------------------------------------
 $x-text-primary: $body-font-color !default;
-$x-text-secondary: #757575 !default;
-$x-text-disabled: #9e9e9e !default;
-$x-text-hint: #9e9e9e !default;
+$x-text-secondary: var(--x-text-muted, #757575) !default;
+$x-text-disabled: var(--x-text-subtle, #9e9e9e) !default;
+$x-text-hint: var(--x-text-subtle, #9e9e9e) !default;
 
 // --------------------------------------------------------------------------
 // Bordes
 // --------------------------------------------------------------------------
-$x-border-color: rgba(0, 0, 0, 0.24) !default;
+$x-border-color: var(--x-border, rgba(0, 0, 0, 0.24)) !default;
 $x-border-color-focus: $x-primary !default;
 $x-border-color-error: $x-negative !default;
 $x-border-radius: $generic-border-radius !default;
@@ -103,7 +105,7 @@ $x-otp-input-font-size: 24px !default;
 $x-otp-input-gap: 8px !default;
 
 // XLoading
-$x-loading-overlay-bg: rgba(255, 255, 255, 0.7) !default;
+$x-loading-overlay-bg: var(--x-overlay, rgba(255, 255, 255, 0.7)) !default;
 $x-loading-spinner-size: 50px !default;
 
 // XBadge
@@ -112,7 +114,7 @@ $x-badge-font-size: 12px !default;
 $x-badge-border-radius: 4px !default;
 
 // XDatepicker
-$x-datepicker-icon-color: $x-primary !default;
+$x-datepicker-icon-color: var(--x-primary-text, #{$x-primary}) !default;
 
 // XCheckbox / XToggle
 $x-checkbox-size: 20px !default;
@@ -120,4 +122,4 @@ $x-toggle-width: 36px !default;
 $x-toggle-height: 20px !default;
 
 // XFile
-$x-file-icon-color: $x-primary !default;
+$x-file-icon-color: var(--x-primary-text, #{$x-primary}) !default;

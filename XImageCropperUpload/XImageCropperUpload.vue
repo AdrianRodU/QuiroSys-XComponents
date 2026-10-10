@@ -368,7 +368,7 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
     <template v-if="variant === 'inline'">
       <div class="x-image-cropper-upload" @click="triggerFileInput">
         <!-- Thumbnail -->
-        <div class="x-image-cropper-upload__thumb">
+        <div class="x-image-cropper-upload__thumb" :class="{ 'x-image-cropper-upload__thumb--filled': displayUrl }">
           <img v-if="displayUrl" :src="displayUrl" class="x-image-cropper-upload__img" />
           <q-icon v-else name="fa-light fa-image" size="28px" color="grey-5" />
         </div>
@@ -540,7 +540,7 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
 <style scoped>
 /* ─── Variant: inline ─── */
 .x-image-cropper-upload {
-  border: 2px dashed #d1d5db;
+  border: 2px dashed var(--x-border-strong, #d1d5db);
   border-radius: 8px;
   padding: 14px 16px;
   display: flex;
@@ -556,12 +556,18 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
   width: 56px;
   height: 56px;
   border-radius: 8px;
-  background: #f3f4f6;
+  background: var(--x-surface-3, #f3f4f6);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   flex-shrink: 0;
+}
+/* Un logo (pensado para fondo claro) se previsualiza en oscuro sobre la placa clara del tema; en claro, el gris de
+   siempre. Lo mismo la tarjeta con imagen y el recorte de logos, más abajo. Las fotos de persona (avatar y recorte
+   redondo) siguen sobre la superficie oscura. */
+.x-image-cropper-upload__thumb--filled {
+  background: var(--x-logo-plate, var(--x-surface-3, #f3f4f6));
 }
 .x-image-cropper-upload__img {
   width: 100%;
@@ -571,11 +577,11 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
 .x-image-cropper-upload__label {
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: var(--x-text-2, #374151);
 }
 .x-image-cropper-upload__hint {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--x-text-subtle, #9ca3af);
   margin-top: 2px;
 }
 
@@ -585,7 +591,10 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
   width: 100%;
   border-radius: 10px;
   overflow: hidden;
-  background: #f3f4f6;
+  background: var(--x-surface-3, #f3f4f6);
+}
+.x-icu-card:not(.x-icu-card--empty) {
+  background: var(--x-logo-plate, var(--x-surface-3, #f3f4f6));
 }
 .x-icu-card__img {
   width: 100%;
@@ -639,7 +648,7 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  border: 2px dashed #d1d5db;
+  border: 2px dashed var(--x-border-strong, #d1d5db);
   transition: border-color 0.2s;
 }
 .x-icu-card--empty:hover {
@@ -648,11 +657,11 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
 .x-icu-card__empty-label {
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: var(--x-text-2, #374151);
 }
 .x-icu-card__empty-hint {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--x-text-subtle, #9ca3af);
 }
 
 /* ─── Variant: avatar ─── */
@@ -677,11 +686,11 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
+  background: var(--x-surface-3, #f3f4f6);
 }
 .x-icu-avatar__circle--empty {
   background: color-mix(in srgb, var(--q-primary) 12%, transparent);
-  color: var(--q-primary);
+  color: var(--x-primary-text, var(--q-primary));
 }
 .x-icu-avatar__circle--clickable {
   cursor: pointer;
@@ -728,7 +737,7 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
   width: max(26px, calc(var(--x-icu-size) * 0.3));
   height: max(26px, calc(var(--x-icu-size) * 0.3));
   border-radius: 50%;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--x-surface, #ffffff);
   background: var(--q-primary);
   color: white;
   font-size: 13px;
@@ -749,7 +758,7 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
   border: 0;
   padding: 0;
   font: inherit;
-  color: var(--q-primary);
+  color: var(--x-primary-text, var(--q-primary));
   cursor: pointer;
 }
 .x-icu-avatar__link:hover {
@@ -759,11 +768,11 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
   color: var(--q-negative);
 }
 .x-icu-avatar__dot {
-  color: #9ca3af;
+  color: var(--x-text-subtle, #9ca3af);
 }
 .x-icu-avatar__hint {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--x-text-subtle, #9ca3af);
   text-align: center;
   max-width: 220px;
 }
@@ -773,7 +782,10 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
   max-height: 400px;
   overflow: hidden;
   border-radius: 8px;
-  background: #f3f4f6;
+  background: var(--x-surface-3, #f3f4f6);
+}
+.x-icu-crop:not(.x-icu-crop--round) {
+  background: var(--x-logo-plate, var(--x-surface-3, #f3f4f6));
 }
 /* Guía redonda (la imagen se guarda cuadrada igual) */
 .x-icu-crop--round :deep(.cropper-view-box),
@@ -791,19 +803,12 @@ defineExpose({ blob: localBlob, triggerFileInput, repositionCurrent, reset: clea
   margin-top: 12px;
 }
 .x-icu-crop-tools__icon {
-  color: #6b7280;
+  color: var(--x-text-muted, #6b7280);
 }
 .x-icu-crop-hint {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--x-text-subtle, #9ca3af);
   margin-top: 4px;
 }
 </style>
 
-<style>
-/* Modo oscuro: el borde de la cámara toma el fondo del diálogo (con :global() en el bloque scoped, Vue se quedaba
-   solo con .body--dark y perdía el resto del selector). */
-.body--dark .x-icu-avatar__cam {
-  border-color: var(--q-dark, #1d1d1d);
-}
-</style>

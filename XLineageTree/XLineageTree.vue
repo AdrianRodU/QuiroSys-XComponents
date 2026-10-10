@@ -217,18 +217,18 @@ defineExpose({ fit, relayout })
   overflow: hidden;
 }
 .x-lineage-tree__canvas--bordered {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--x-border, #e0e0e0);
 }
 .x-lineage-tree__empty {
   padding: 16px;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--x-text-muted, #6b7280);
 }
 
 /* Nodo por defecto */
 .x-lineage-node {
-  background: #fff;
-  border: 1px solid #d0d0d0;
+  background: var(--x-surface, #fff);
+  border: 1px solid var(--x-border-strong, #d0d0d0);
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 12px;
@@ -238,7 +238,7 @@ defineExpose({ fit, relayout })
   box-shadow: 0 1px 6px rgba(25, 118, 210, 0.25);
 }
 .x-lineage-node--voided {
-  background: #fff5f5;
+  background: var(--x-tone-red-soft, #fff5f5);
   border-color: #f44336;
 }
 .x-lineage-node__title {
@@ -263,10 +263,10 @@ defineExpose({ fit, relayout })
   font-size: 11px;
   line-height: 1.4;
 }
-.x-lineage-node__caption { color: #6b7280; font-size: 11px; }
+.x-lineage-node__caption { color: var(--x-text-muted, #6b7280); font-size: 11px; }
 .x-lineage-node__note {
   margin-top: 4px;
-  color: #c62828;
+  color: var(--x-tone-red-text, #c62828);
   font-size: 11px;
 }
 </style>

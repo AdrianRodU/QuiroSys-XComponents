@@ -30,7 +30,7 @@
 .x-table__title {
   font-size: 16px;
   font-weight: 600;
-  color: #1d2939; // gray-800
+  color: var(--x-text, #1d2939); // gray-800
   line-height: 1.4;
 }
 
@@ -58,20 +58,20 @@
   text-align: center;
 
   &__icon {
-    color: #d0d5dd;
+    color: var(--x-text-subtle, #d0d5dd);
     margin-bottom: 12px;
   }
 
   &__title {
     font-size: 15px;
     font-weight: 600;
-    color: #1d2939;
+    color: var(--x-text, #1d2939);
     margin-bottom: 4px;
   }
 
   &__subtitle {
     font-size: 13px;
-    color: #667085;
+    color: var(--x-text-muted, #667085);
     max-width: 320px;
     line-height: 1.5;
   }
@@ -96,7 +96,7 @@
 // --------------------------------------------------------------------------
 .x-table .x-table-row--selected,
 .x-table .x-table-row--selected:hover {
-  background-color: #ecf3ff !important; // brand-50
+  background-color: var(--x-tone-blue-soft, #ecf3ff) !important; // brand-50
 
   td {
     background-color: transparent !important;
@@ -141,7 +141,7 @@
   // regla más específica.
   .q-table thead th {
     border-top: none !important;
-    border-bottom: 1px solid #e4e7ec !important;  // gray-200
+    border-bottom: 1px solid var(--x-border, #e4e7ec) !important;  // gray-200
   }
 }
 

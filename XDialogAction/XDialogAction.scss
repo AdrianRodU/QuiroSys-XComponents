@@ -23,28 +23,28 @@
 
     // Variantes de color (TailAdmin palette)
     &--primary {
-      background-color: #ecf3ff; // brand-50
-      color: #465fff; // brand-500
+      background-color: var(--x-tone-blue-soft, #ecf3ff); // brand-50
+      color: var(--x-tone-blue-text, #465fff); // brand-500
     }
     &--success {
-      background-color: #d1fadf; // success-50
+      background-color: var(--x-tone-green-soft, #d1fadf); // success-50
       color: #12b76a; // success-500
     }
     &--danger {
-      background-color: #fee4e2; // error-50
-      color: #f04438; // error-500
+      background-color: var(--x-tone-red-soft, #fee4e2); // error-50
+      color: var(--x-tone-red-text, #f04438); // error-500
     }
     &--warning {
-      background-color: #fef0c7; // warning-50
+      background-color: var(--x-tone-amber-soft, #fef0c7); // warning-50
       color: #f79009; // warning-500
     }
     &--info {
-      background-color: #d1e9ff; // info-50
-      color: #2e90fa; // info-500
+      background-color: var(--x-tone-blue-soft, #d1e9ff); // info-50
+      color: var(--x-tone-blue-text, #2e90fa); // info-500
     }
     &--neutral {
-      background-color: #f2f4f7; // gray-100
-      color: #667085; // gray-500
+      background-color: var(--x-surface-3, #f2f4f7); // gray-100
+      color: var(--x-text-muted, #667085); // gray-500
     }
   }
 
@@ -52,7 +52,7 @@
   &__title {
     font-size: 18px;
     font-weight: 600;
-    color: #1d2939; // gray-800
+    color: var(--x-text, #1d2939); // gray-800
     margin-bottom: 8px;
     line-height: 1.4;
   }
@@ -60,7 +60,7 @@
   // --- Description ---
   &__description {
     font-size: 14px;
-    color: #667085; // gray-500
+    color: var(--x-text-muted, #667085); // gray-500
     line-height: 1.5;
     max-width: 360px;
   }

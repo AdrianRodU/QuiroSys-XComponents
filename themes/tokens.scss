@@ -1,0 +1,221 @@
+// ==========================================================================
+// Tokens de color y modo oscuro (v2.27.0)
+//
+// El modo oscuro de Quasar pone la clase body--dark. Aquí, y solo aquí, se definen los colores de ese modo como
+// variables CSS; los componentes de la librería, el tema y las pantallas del ERP las usan con su color claro de
+// siempre como respaldo:
+//
+//     background: var(--x-surface, #ffffff);   color: var(--x-text-muted, #6b7280);
+//
+// En claro las variables no existen y rige el respaldo (nada cambia); en oscuro rige la paleta de abajo. Un color
+// nuevo del modo oscuro se agrega en este archivo, no en cada componente.
+//
+// Fondos     --x-page (página) · --x-surface (tarjetas, diálogos, menús) · --x-surface-2 (franjas y zonas suaves
+//            dentro de una tarjeta: encabezados de tabla, pies de diálogo) · --x-surface-3 (hover, chips neutros)
+//            · --x-field-bg (campos)
+// Bordes     --x-border · --x-border-strong · --x-divider (líneas entre filas)
+// Texto      --x-text (títulos y fuerte) · --x-text-2 (normal) · --x-text-muted (secundario) · --x-text-subtle
+//            (pistas, marcadores)
+// Primario   --x-primary-text (enlaces, pestañas e íconos en primario: en oscuro es más claro para leerse sobre la
+//            superficie) · --x-primary-soft (fondos suaves en primario)
+// Estados    --x-{positive,negative,warning,info,secondary}-text (texto de color sobre la superficie) y -soft (fondo
+//            suave del estado)
+// Tonos      --x-tone-<familia>-soft, -border y -text (red, orange, amber, yellow, lime, green, teal, cyan, blue,
+//            indigo, purple, pink...): notas, avisos e íconos con un color propio
+// Otros      --x-neutral-soft · --x-overlay (capa de "cargando") · --x-backdrop (fondo detrás de un diálogo) ·
+//            --x-shadow-color · --x-scrollbar · --x-toggle-track (riel apagado del interruptor) · --x-logo-plate
+//            (placa clara detrás de los logos que sube cada empresa: clases x-logo-plate y x-logo-white)
+// Datos      x-data-color + --x-data-color: colores que vienen de los datos (marca de una procedencia, color de un
+//            tipo), aclarados en oscuro si son oscuros
+// ==========================================================================
+@use 'sass:color';
+
+// Familias de la paleta de Quasar (su color 500). En oscuro, sus fondos suaves (bg-*-1 a 3) pasan a un tinte
+// transparente del color y sus textos oscuros (text-*-7 a 10), pensados para un fondo claro, a una variante clara.
+$x-palette-families: (
+  'red': #f44336,
+  'pink': #e91e63,
+  'purple': #9c27b0,
+  'deep-purple': #673ab7,
+  'indigo': #3f51b5,
+  'blue': #2196f3,
+  'light-blue': #03a9f4,
+  'cyan': #00bcd4,
+  'teal': #009688,
+  'green': #4caf50,
+  'light-green': #8bc34a,
+  'lime': #cddc39,
+  'yellow': #ffeb3b,
+  'amber': #ffc107,
+  'orange': #ff9800,
+  'deep-orange': #ff5722,
+  'brown': #795548,
+) !default;
+
+// Colores de estado del ERP (los de Quasar si el proyecto no los redefine).
+$x-tokens-positive: if(variable-exists(positive), $positive, #21ba45);
+$x-tokens-negative: if(variable-exists(negative), $negative, #c10015);
+$x-tokens-warning: if(variable-exists(warning), $warning, #f2c037);
+$x-tokens-info: if(variable-exists(info), $info, #31ccec);
+$x-tokens-secondary: if(variable-exists(secondary), $secondary, #26a69a);
+
+// --------------------------------------------------------------------------
+// Paleta del modo oscuro (slate)
+// --------------------------------------------------------------------------
+.body--dark {
+  --x-page: #0f172a;
+  --x-surface: #1e293b;
+  --x-surface-2: #172135;
+  --x-surface-3: #27354a;
+  --x-field-bg: #0f172a;
+
+  --x-border: #334155;
+  --x-border-strong: #475569;
+  --x-divider: #263449;
+
+  --x-text: #f1f5f9;
+  --x-text-2: #cbd5e1;
+  --x-text-muted: #94a3b8;
+  --x-text-subtle: #64748b;
+
+  --x-primary-text: color-mix(in srgb, var(--q-primary) 55%, #ffffff);
+  --x-primary-soft: color-mix(in srgb, var(--q-primary) 24%, transparent);
+
+  --x-positive-text: #{color.mix($x-tokens-positive, #ffffff, 60%)};
+  --x-negative-text: #{color.mix($x-tokens-negative, #ffffff, 55%)};
+  --x-warning-text: #{color.mix($x-tokens-warning, #ffffff, 75%)};
+  --x-info-text: #{color.mix($x-tokens-info, #ffffff, 70%)};
+  --x-secondary-text: #{color.mix($x-tokens-secondary, #ffffff, 65%)};
+  --x-positive-soft: #{rgba($x-tokens-positive, 0.18)};
+  --x-negative-soft: #{rgba($x-tokens-negative, 0.2)};
+  --x-warning-soft: #{rgba($x-tokens-warning, 0.18)};
+  --x-info-soft: #{rgba($x-tokens-info, 0.18)};
+  --x-secondary-soft: #{rgba($x-tokens-secondary, 0.2)};
+
+  --x-neutral-soft: rgba(255, 255, 255, 0.08);
+  --x-overlay: rgba(15, 23, 42, 0.7);
+  --x-backdrop: rgba(0, 0, 0, 0.7);
+  --x-shadow-color: rgba(0, 0, 0, 0.5);
+  --x-scrollbar: #475569;
+  --x-toggle-track: rgba(255, 255, 255, 0.3);
+  --x-logo-plate: #f8fafc;
+
+  // Tonos de color (íconos de XStatCard, notas y avisos con color propio): fondo en tinte, borde más marcado y el
+  // color en su variante clara para el texto.
+  @each $name, $base in $x-palette-families {
+    --x-tone-#{$name}-soft: #{rgba($base, 0.18)};
+    --x-tone-#{$name}-border: #{rgba($base, 0.45)};
+    --x-tone-#{$name}-text: #{color.mix($base, #ffffff, 45%)};
+  }
+
+  color-scheme: dark;
+}
+
+// --------------------------------------------------------------------------
+// Logos de la empresa (x-logo-plate y x-logo-white)
+//
+// Cada empresa sube su logo y su ícono con sus colores, pensados para un fondo claro y para el papel de sus
+// comprobantes: un logo con letras oscuras se perdía sobre el fondo oscuro. Dos salidas, solo en oscuro (en claro las
+// clases no hacen nada):
+//  - x-logo-plate: sobre una placa clara; se lee siempre, sea cual sea su color. La placa es un anillo de sombra y no
+//    un padding: el logo conserva su tamaño y nada se mueve.
+//  - x-logo-white: el logo entero en blanco, sin placa. Solo para un logo con fondo transparente: con fondo propio (un
+//    JPG, un PNG sin transparencia) se pintaría un rectángulo blanco. Quien la usa lo comprueba antes y, si no, usa la
+//    placa.
+// --------------------------------------------------------------------------
+.body--dark .x-logo-plate {
+  background-color: var(--x-logo-plate);
+  box-shadow: 0 0 0 4px var(--x-logo-plate);
+  border-radius: 4px;
+}
+
+.body--dark .x-logo-white {
+  filter: brightness(0) invert(1);
+}
+
+// --------------------------------------------------------------------------
+// Colores que vienen de los datos (x-data-color)
+//
+// El color de una marca o de un registro (una procedencia con el azul marino de su web, el negro de TikTok) no es del
+// tema y no puede ser un token: sobre el fondo oscuro, uno oscuro desaparecía. Quien lo pinta pasa el color en
+// --x-data-color y lo usa como var(--x-data-color-dark, var(--x-data-color)), con la clase x-data-color. En claro rige el
+// color tal cual; en oscuro, el mismo tono con una luminosidad mínima (0.72 en OKLCH): uno oscuro se aclara y uno claro
+// queda igual. Un navegador sin color relativo (anterior a 2023) hereda el color del texto.
+// --------------------------------------------------------------------------
+.body--dark .x-data-color {
+  --x-data-color-dark: oklch(from var(--x-data-color) max(l, 0.72) c h);
+}
+
+// --------------------------------------------------------------------------
+// Fondo de los campos de la librería (XInput, XSelect, XInputNumeric: bg-color="x-field" por defecto). Antes era
+// bg-color="white" y en oscuro los campos quedaban blancos con el texto claro encima.
+// --------------------------------------------------------------------------
+.bg-x-field {
+  background: var(--x-field-bg, #ffffff) !important;
+}
+
+// --------------------------------------------------------------------------
+// Clases de color de Quasar en oscuro
+//
+// Las pantallas usan las clases de Quasar como roles: bg-white = superficie, bg-grey-2 = zona suave, text-grey-7 =
+// texto secundario, bg-blue-1 + text-blue-9 = aviso informativo. Quasar no las adapta al modo oscuro (son colores
+// fijos con !important); aquí se remapean a la paleta de arriba, así un aviso, una etiqueta o un texto gris se leen
+// bien sin tocar cada pantalla.
+//
+// Los textos llevan :not(:where(.invisible)): colors.getPaletteColor() de Quasar (el color de una barra de un gráfico,
+// de un canvas) lo lee de un div invisible con la clase text-<color>, y tiene que recibir el color de la paleta de
+// siempre, no el del texto en oscuro (las barras salían apagadas). El :where() no suma especificidad.
+// --------------------------------------------------------------------------
+$x-not-probe: ':not(:where(.invisible))';
+
+.body--dark {
+  // Neutros
+  .bg-white { background-color: var(--x-surface) !important; }
+  .bg-grey-1, .bg-grey-2, .bg-blue-grey-1 { background-color: var(--x-surface-2) !important; }
+  .bg-grey-3, .bg-grey-4, .bg-blue-grey-2 { background-color: var(--x-surface-3) !important; }
+
+  .text-black, .text-dark, .text-grey-10, .text-grey-9, .text-blue-grey-10, .text-blue-grey-9 {
+    &#{$x-not-probe} { color: var(--x-text) !important; }
+  }
+  .text-grey-8, .text-blue-grey-8 {
+    &#{$x-not-probe} { color: var(--x-text-2) !important; }
+  }
+  .text-grey-7, .text-grey-6, .text-blue-grey-7, .text-blue-grey-6 {
+    &#{$x-not-probe} { color: var(--x-text-muted) !important; }
+  }
+  .text-grey-5, .text-grey-4 {
+    &#{$x-not-probe} { color: var(--x-text-subtle) !important; }
+  }
+
+  // Sobre un fondo sólido claro (amarillo de advertencia, ámbar, lima, celeste), el texto oscuro se queda oscuro:
+  // ese fondo no cambia en oscuro (XButton de advertencia, por ejemplo).
+  :is(.bg-warning, .bg-yellow, .bg-amber, .bg-lime, .bg-info, .bg-cyan, .bg-light-green, .bg-orange) {
+    &.text-black, &.text-dark, &.text-grey-10, &.text-grey-9, &.text-grey-8 { color: rgba(0, 0, 0, 0.87) !important; }
+  }
+
+  // Primario y estados como texto sobre la superficie
+  .text-primary#{$x-not-probe} { color: var(--x-primary-text) !important; }
+  .text-negative#{$x-not-probe} { color: var(--x-negative-text) !important; }
+
+  // Familias de color: fondos suaves en tinte y textos oscuros en su variante clara
+  @each $name, $base in $x-palette-families {
+    .bg-#{$name}-1 { background-color: #{rgba($base, 0.14)} !important; }
+    .bg-#{$name}-2 { background-color: #{rgba($base, 0.2)} !important; }
+    .bg-#{$name}-3 { background-color: #{rgba($base, 0.28)} !important; }
+    .text-#{$name}-7, .text-#{$name}-8, .text-#{$name}-9, .text-#{$name}-10 {
+      &#{$x-not-probe} { color: #{color.mix($base, #ffffff, 45%)} !important; }
+    }
+    // El acento claro (A100) también es un fondo suave.
+    .bg-#{$name}-11 { background-color: #{rgba($base, 0.14)} !important; }
+  }
+
+  // XBanner pinta la advertencia con bg-yellow-7, que el proyecto redefine como un amarillo claro (en Quasar es un
+  // amarillo fuerte, por eso no se remapea en general).
+  .x-banner.bg-yellow-7 { background-color: #{rgba(#ffc107, 0.14)} !important; }
+
+  // XBadge con un color propio (prop color + is-lighten-color): tinte del color y texto en su variante clara.
+  .x-badge--custom {
+    --x-badge-custom-soft: color-mix(in srgb, var(--x-badge-custom) 22%, transparent);
+    --x-badge-custom-text: color-mix(in srgb, var(--x-badge-custom) 55%, #ffffff);
+  }
+}

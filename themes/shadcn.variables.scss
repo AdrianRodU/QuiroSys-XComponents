@@ -2,19 +2,23 @@
 // Tema shadcn/ui — Variables SCSS (compile-time)
 // Se importa en quasar.variables.scss ANTES de los !default
 // Solo define estructura visual. Los colores los maneja ColorPalette (runtime).
+//
+// Modo oscuro (v2.27.0): los colores de fondo, texto y borde son tokens (themes/tokens.scss) con el color claro de
+// respaldo: en claro valen lo mismo que antes y en oscuro toman la paleta oscura. Son var(), no colores: no se pueden
+// pasar a funciones de color de Sass.
 // ==========================================================================
 
 // --------------------------------------------------------------------------
 // Tipografia
 // --------------------------------------------------------------------------
 $typography-font-family: 'Inter', sans-serif;
-$body-font-color: #0f172a; // slate-900
+$body-font-color: var(--x-text, #0f172a); // slate-900
 $body-font-size: 14px;
 
 // --------------------------------------------------------------------------
 // Fondo
 // --------------------------------------------------------------------------
-$bg-color: #f8fafc; // slate-50
+$bg-color: var(--x-page, #f8fafc); // slate-50
 
 // --------------------------------------------------------------------------
 // Border radius
@@ -25,22 +29,22 @@ $button-border-radius: 8px;
 // --------------------------------------------------------------------------
 // Bordes
 // --------------------------------------------------------------------------
-$x-border-color: #e2e8f0; // slate-200
+$x-border-color: var(--x-border, #e2e8f0); // slate-200
 
 // --------------------------------------------------------------------------
 // Tabla
 // --------------------------------------------------------------------------
-$table-thead-bg-color: #ffffff;
-$table-th-font-color: #64748b; // slate-500
-$table-font-color: #334155; // slate-700
-$table-tbody-td-font-color: #334155; // slate-700
+$table-thead-bg-color: var(--x-surface, #ffffff);
+$table-th-font-color: var(--x-text-muted, #64748b); // slate-500
+$table-font-color: var(--x-text-2, #334155); // slate-700
+$table-tbody-td-font-color: var(--x-text-2, #334155); // slate-700
 $table-tbody-td-font-size: 13px;
 $table-td-padding: 8px 16px;
 
 // --------------------------------------------------------------------------
 // Input
 // --------------------------------------------------------------------------
-$input-label-color: #334155; // slate-700
+$input-label-color: var(--x-text-2, #334155); // slate-700
 
 // --------------------------------------------------------------------------
 // Sombras (Tailwind shadow-sm/md/lg — mucho mas sutiles)

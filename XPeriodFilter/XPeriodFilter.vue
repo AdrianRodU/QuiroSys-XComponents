@@ -554,9 +554,9 @@ const rangeHint = computed(() => {
   align-items: center;
   gap: 2px;
   padding: 3px;
-  border: 1px solid rgba(0, 0, 0, .12);
+  border: 1px solid var(--x-border, rgba(0, 0, 0, .12));
   border-radius: 10px;
-  background: #fff;
+  background: var(--x-surface, #fff);
 }
 
 .x-period-filter__btn {
@@ -565,7 +565,7 @@ const rangeHint = computed(() => {
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #334155;
+  color: var(--x-text-2, #334155);
   background: transparent;
 
   &.is-active {
@@ -594,7 +594,7 @@ const rangeHint = computed(() => {
 
 .x-period-filter__label {
   font-size: 13px;
-  color: #64748b;
+  color: var(--x-text-muted, #64748b);
 }
 
 .x-period-filter__panel {
@@ -616,19 +616,19 @@ const rangeHint = computed(() => {
 .x-period-filter__panel-title {
   font-size: 12px;
   font-weight: 500;
-  color: #64748b;
+  color: var(--x-text-muted, #64748b);
   padding: 0 4px 6px;
 }
 
 .x-period-filter__modes {
   padding-right: 14px;
-  border-right: 1px solid rgba(0, 0, 0, .08);
+  border-right: 1px solid var(--x-border, rgba(0, 0, 0, .08));
 
   .x-period-filter__panel--mobile & {
     padding-right: 0;
     padding-bottom: 10px;
     border-right: 0;
-    border-bottom: 1px solid rgba(0, 0, 0, .08);
+    border-bottom: 1px solid var(--x-border, rgba(0, 0, 0, .08));
   }
 }
 
@@ -648,13 +648,13 @@ const rangeHint = computed(() => {
   min-height: 36px;
   border-radius: 8px;
   font-size: 14px;
-  color: #334155;
+  color: var(--x-text-2, #334155);
 
   .x-period-filter__panel--mobile & { min-height: 32px; }
 
   &.is-active {
-    background: rgba(26, 86, 219, .1);
-    color: var(--q-primary);
+    background: var(--x-primary-soft, rgba(26, 86, 219, .1));
+    color: var(--x-primary-text, var(--q-primary));
     font-weight: 600;
   }
 }
@@ -668,7 +668,7 @@ const rangeHint = computed(() => {
 
 .x-period-filter__hint {
   font-size: 13px;
-  color: #64748b;
+  color: var(--x-text-muted, #64748b);
   padding-top: 4px;
 }
 
@@ -683,7 +683,7 @@ const rangeHint = computed(() => {
   text-align: center;
   font-size: 14px;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--x-text, #0f172a);
 }
 
 .x-period-filter__calendar {
@@ -707,7 +707,7 @@ const rangeHint = computed(() => {
   text-align: center;
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--x-text, #0f172a);
 }
 
 .x-period-filter__month-grid {
@@ -723,23 +723,23 @@ const rangeHint = computed(() => {
   background: transparent;
   font: inherit;
   font-size: 14px;
-  color: #334155;
+  color: var(--x-text-2, #334155);
   text-transform: capitalize;
   cursor: pointer;
 
-  &:hover { background: #f1f5f9; }
+  &:hover { background: var(--x-surface-3, #f1f5f9); }
   &:focus-visible { outline: 2px solid var(--q-primary); outline-offset: 1px; }
 
-  &.is-current { border-color: #cbd5e1; }
+  &.is-current { border-color: var(--x-border-strong, #cbd5e1); }
 
   &.is-in-range {
-    background: rgba(26, 86, 219, .1);
-    color: var(--q-primary);
+    background: var(--x-primary-soft, rgba(26, 86, 219, .1));
+    color: var(--x-primary-text, var(--q-primary));
   }
 
   &.is-selected {
     background: var(--q-primary);
-    border-color: var(--q-primary);
+    border-color: var(--x-primary-text, var(--q-primary));
     color: #fff;
     font-weight: 600;
   }
@@ -752,7 +752,7 @@ const rangeHint = computed(() => {
   gap: 8px;
   margin-top: auto;
   padding-top: 10px;
-  border-top: 1px solid rgba(0, 0, 0, .08);
+  border-top: 1px solid var(--x-border, rgba(0, 0, 0, .08));
 }
 
 .x-period-filter__done {
@@ -762,12 +762,12 @@ const rangeHint = computed(() => {
 
 .x-period-filter__preview-caption {
   font-size: 12px;
-  color: #64748b;
+  color: var(--x-text-muted, #64748b);
 }
 
 .x-period-filter__preview-label {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--x-text, #0f172a);
 }
 </style>

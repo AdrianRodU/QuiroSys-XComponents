@@ -27,11 +27,11 @@ const props = defineProps({
   min: { type: [Number, String], default: null },
   max: { type: [Number, String], default: null },
   step: { type: [Number, String], default: 1 },
-  /** Fondo del control (nombre de color Quasar/CSS). 'white' por defecto:
-   *  invisible sobre fondos blancos (la mayoría de la app), pero evita que
-   *  el input "transparente" se mimetice al usarlo sobre un card/banner de
-   *  color. Pasar '' o 'transparent' para el comportamiento clásico. */
-  bgColor: { type: String, default: 'white' },
+  /** Fondo del control (nombre de color Quasar/CSS). 'x-field' por defecto (v2.27.0): blanco en claro y el fondo
+   *  de campo del modo oscuro (themes/tokens.scss); antes era 'white' y en oscuro quedaba un campo blanco con el
+   *  texto claro encima. Evita que el input "transparente" se mimetice sobre un card/banner de color. Pasar '' o
+   *  'transparent' para el comportamiento clásico. */
+  bgColor: { type: String, default: 'x-field' },
 })
 const emit = defineEmits(['update:modelValue', 'input', 'change'])
 
@@ -173,7 +173,7 @@ defineExpose({ focus, select, focusAndSelect })
 
 <style scoped>
 .x-input-numeric__affix {
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--x-text-muted, rgba(0, 0, 0, 0.6));
   font-size: 0.875rem;
   line-height: 1;
   user-select: none;

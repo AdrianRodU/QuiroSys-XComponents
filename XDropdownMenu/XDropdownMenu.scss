@@ -8,24 +8,24 @@
 // Variables CSS personalizables
 // --------------------------------------------------------------------------
 .x-dropdown-menu {
-  --x-dropdown-bg: #ffffff;
-  --x-dropdown-border: #e4e7ec; // gray-200
+  --x-dropdown-bg: var(--x-surface, #ffffff);
+  --x-dropdown-border: var(--x-border, #e4e7ec); // gray-200
   --x-dropdown-border-radius: 12px;
-  --x-dropdown-shadow: 0 4px 16px rgba(16, 24, 40, 0.12);
+  --x-dropdown-shadow: 0 4px 16px var(--x-shadow-color, rgba(16, 24, 40, 0.12));
   --x-dropdown-padding: 12px;
 
-  --x-dropdown-header-color: #1d2939; // gray-800
-  --x-dropdown-header-meta-color: #667085; // gray-500
+  --x-dropdown-header-color: var(--x-text, #1d2939); // gray-800
+  --x-dropdown-header-meta-color: var(--x-text-muted, #667085); // gray-500
 
-  --x-dropdown-item-color: #344054; // gray-700
-  --x-dropdown-item-hover-bg: #f2f4f7; // gray-100
-  --x-dropdown-item-hover-color: #1d2939;
+  --x-dropdown-item-color: var(--x-text-2, #344054); // gray-700
+  --x-dropdown-item-hover-bg: var(--x-surface-3, #f2f4f7); // gray-100
+  --x-dropdown-item-hover-color: var(--x-text, #1d2939);
   --x-dropdown-item-radius: 8px;
   --x-dropdown-item-padding: 8px 12px;
-  --x-dropdown-item-icon-color: #667085; // gray-500
-  --x-dropdown-item-icon-hover-color: #344054;
+  --x-dropdown-item-icon-color: var(--x-text-muted, #667085); // gray-500
+  --x-dropdown-item-icon-hover-color: var(--x-text-2, #344054);
 
-  --x-dropdown-divider-color: #e4e7ec;
+  --x-dropdown-divider-color: var(--x-border, #e4e7ec);
   --x-dropdown-divider-label-color: #667085;
 }
 
@@ -132,48 +132,48 @@
 // Variantes de items
 // --------------------------------------------------------------------------
 .x-dropdown-item--danger {
-  color: #d92d20 !important; // red-600
+  color: var(--x-negative-text, #d92d20) !important; // red-600
 
-  .q-icon { color: #d92d20 !important; }
+  .q-icon { color: var(--x-negative-text, #d92d20) !important; }
 
   &:hover {
-    background-color: #fef3f2 !important; // red-50
-    color: #b42318 !important; // red-700
+    background-color: var(--x-negative-soft, #fef3f2) !important; // red-50
+    color: var(--x-negative-text, #b42318) !important; // red-700
 
-    .q-icon { color: #b42318 !important; }
+    .q-icon { color: var(--x-negative-text, #b42318) !important; }
   }
 }
 
 .x-dropdown-item--success {
-  color: #039855 !important; // green-600
+  color: var(--x-positive-text, #039855) !important; // green-600
 
-  .q-icon { color: #039855 !important; }
+  .q-icon { color: var(--x-positive-text, #039855) !important; }
 
   &:hover {
-    background-color: #ecfdf3 !important;
-    color: #027a48 !important;
+    background-color: var(--x-positive-soft, #ecfdf3) !important;
+    color: var(--x-positive-text, #027a48) !important;
   }
 }
 
 .x-dropdown-item--warning {
-  color: #b54708 !important;
+  color: var(--x-warning-text, #b54708) !important;
 
-  .q-icon { color: #b54708 !important; }
+  .q-icon { color: var(--x-warning-text, #b54708) !important; }
 
   &:hover {
-    background-color: #fffaeb !important;
-    color: #93370d !important;
+    background-color: var(--x-warning-soft, #fffaeb) !important;
+    color: var(--x-warning-text, #93370d) !important;
   }
 }
 
 .x-dropdown-item--info {
-  color: #1849a9 !important;
+  color: var(--x-info-text, #1849a9) !important;
 
-  .q-icon { color: #1849a9 !important; }
+  .q-icon { color: var(--x-info-text, #1849a9) !important; }
 
   &:hover {
-    background-color: #eff8ff !important;
-    color: #1849a9 !important;
+    background-color: var(--x-info-soft, #eff8ff) !important;
+    color: var(--x-info-text, #1849a9) !important;
   }
 }
 
@@ -203,36 +203,3 @@
   margin: 0;
 }
 
-// ==========================================================================
-// DARK MODE
-// ==========================================================================
-.body--dark {
-  .x-dropdown-menu {
-    --x-dropdown-bg: #1d2939; // gray-800
-    --x-dropdown-border: #344054; // gray-700
-    --x-dropdown-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-
-    --x-dropdown-header-color: #f2f4f7;
-    --x-dropdown-header-meta-color: #98a2b3;
-
-    --x-dropdown-item-color: #d0d5dd;
-    --x-dropdown-item-hover-bg: #344054;
-    --x-dropdown-item-hover-color: #f2f4f7;
-    --x-dropdown-item-icon-color: #98a2b3;
-    --x-dropdown-item-icon-hover-color: #d0d5dd;
-
-    --x-dropdown-divider-color: #344054;
-    --x-dropdown-divider-label-color: #98a2b3;
-  }
-
-  .x-dropdown-item--danger {
-    color: #fda29b !important;
-
-    .q-icon { color: #fda29b !important; }
-
-    &:hover {
-      background-color: rgba(217, 45, 32, 0.15) !important;
-      color: #fda29b !important;
-    }
-  }
-}

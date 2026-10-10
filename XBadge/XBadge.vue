@@ -60,6 +60,8 @@ const badgeClasses = computed(() => [
   props.type ? `x-badge-${props.type}` : '',
   props.variant === 'solid' ? 'x-badge-solid' : '',
   props.icon ? 'x-badge-with-icon' : '',
+  // Color propio con fondo aclarado: en oscuro, tinte y texto claro (themes/tokens.scss).
+  resolvedColor.value && props.variant !== 'solid' ? 'x-badge--custom' : '',
 ])
 
 // --- Estilo inline solo si NO hay variant solid (porque solid usa clases) ---
@@ -68,7 +70,14 @@ const inlineStyle = computed(() => {
   if (props.variant === 'solid') {
     return { color: '#fff', backgroundColor: resolvedColor.value }
   }
-  return { color: resolvedColor.value, backgroundColor: bgColor.value }
+  // Variables y no colores directos (v2.27.0): en claro valen lo mismo que antes; en oscuro, el tinte y el texto
+  // claro que define tokens.scss para .x-badge--custom.
+  return {
+    '--x-badge-custom': resolvedColor.value,
+    '--x-badge-custom-bg': bgColor.value,
+    color: 'var(--x-badge-custom-text, var(--x-badge-custom))',
+    backgroundColor: 'var(--x-badge-custom-soft, var(--x-badge-custom-bg))',
+  }
 })
 </script>
 

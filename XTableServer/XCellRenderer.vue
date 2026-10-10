@@ -12,6 +12,9 @@ const emit = defineEmits(['cell-action']);
 // acepta la celda de texto (v2.25.0): q-icon solo entiende el de Quasar (lo vuelve la clase text-<color>), así
 // que el CSS va por style. Así una celda puede llevar el color de una marca (Facebook, Instagram...).
 const isCssColor = (c) => typeof c === 'string' && /^(#|rgb|hsl)/i.test(c.trim());
+// Un color CSS viene de los datos (el de una marca, una procedencia...): va en --x-data-color con la clase x-data-color,
+// así en oscuro uno oscuro se aclara conservando su tono (themes/tokens.scss, v2.27.0). En claro, el color tal cual.
+const dataColorStyle = (c) => ({ '--x-data-color': c, color: 'var(--x-data-color-dark, var(--x-data-color))' });
 </script>
 
 <template>
@@ -41,8 +44,9 @@ const isCssColor = (c) => typeof c === 'string' && /^(#|rgb|hsl)/i.test(c.trim()
 
     <!-- TEXTO (con estilos) -->
     <span v-else-if="cell.type_input === 'text'"
+          :class="{ 'x-data-color': isCssColor(cell.color) }"
           :style="{
-          color: cell.color || undefined,
+          ...(isCssColor(cell.color) ? dataColorStyle(cell.color) : { color: cell.color || undefined }),
           fontSize: cell.size || undefined,
           fontWeight: cell.bold ? 'bold' : undefined
         }">
@@ -76,10 +80,10 @@ const isCssColor = (c) => typeof c === 'string' && /^(#|rgb|hsl)/i.test(c.trim()
     <q-icon v-else-if="cell.type_input === 'icon'"
             :name="cell.icon"
             :color="isCssColor(cell.color) ? undefined : (cell.color || undefined)"
-            :style="isCssColor(cell.color) ? { color: cell.color } : undefined"
+            :style="isCssColor(cell.color) ? dataColorStyle(cell.color) : undefined"
             :title="cell.tooltip || undefined"
             :size="cell.size || undefined"
-            :class="['q-mx-xs', { 'cursor-pointer': cell.action }]"
+            :class="['q-mx-xs', { 'cursor-pointer': cell.action, 'x-data-color': isCssColor(cell.color) }]"
             @click="cell.action && emit('cell-action', cell.action)"/>
 
     <!-- AVATAR: la foto o, sin foto (v2.27.0, Cell::avatar de quirosys/datatable 2.3.0), las iniciales; sin
@@ -142,7 +146,7 @@ const isCssColor = (c) => typeof c === 'string' && /^(#|rgb|hsl)/i.test(c.trim()
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
+  background: var(--x-surface-3, #f3f4f6);
   border-radius: 4px;
   overflow: hidden;
   flex-shrink: 0;

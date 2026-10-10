@@ -35,38 +35,38 @@
 // --------------------------------------------------------------------------
 .x-badge-success {
   background-color: rgba($x-positive, 0.15) !important;
-  color: color.adjust($x-positive, $lightness: -10%) !important;
+  color: var(--x-positive-text, #{color.adjust($x-positive, $lightness: -10%)}) !important;
 }
 
 .x-badge-danger,
 .x-badge-error {
   background-color: rgba($x-negative, 0.15) !important;
-  color: color.adjust($x-negative, $lightness: -5%) !important;
+  color: var(--x-negative-text, #{color.adjust($x-negative, $lightness: -5%)}) !important;
 }
 
 .x-badge-warning {
   background-color: rgba($x-warning, 0.2) !important;
-  color: color.adjust($x-warning, $lightness: -25%) !important;
+  color: var(--x-warning-text, #{color.adjust($x-warning, $lightness: -25%)}) !important;
 }
 
 .x-badge-info {
   background-color: rgba($x-info, 0.15) !important;
-  color: color.adjust($x-info, $lightness: -15%) !important;
+  color: var(--x-info-text, #{color.adjust($x-info, $lightness: -15%)}) !important;
 }
 
 .x-badge-primary {
   background-color: rgba($x-primary, 0.15) !important;
-  color: $x-primary !important;
+  color: var(--x-primary-text, #{$x-primary}) !important;
 }
 
 .x-badge-secondary {
   background-color: rgba($x-secondary, 0.15) !important;
-  color: color.adjust($x-secondary, $lightness: -10%) !important;
+  color: var(--x-secondary-text, #{color.adjust($x-secondary, $lightness: -10%)}) !important;
 }
 
 .x-badge-neutral,
 .x-badge-default {
-  background-color: rgba(#000, 0.08) !important;
+  background-color: var(--x-neutral-soft, rgba(0, 0, 0, 0.08)) !important;
   color: $x-text-secondary !important;
 }
 

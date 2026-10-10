@@ -15,7 +15,7 @@
   // fijo con !important y color="teal" no se veia. Las clases x-toggle-<color> de abajo
   // lo siguen pudiendo fijar.
   --x-toggle-color: currentColor;
-  --x-toggle-track-color: rgba(0, 0, 0, 0.38);
+  --x-toggle-track-color: var(--x-toggle-track, rgba(0, 0, 0, 0.38));
   --x-toggle-thumb-color: #fafafa;
   --x-toggle-border-radius: 10px;
   --x-toggle-label-color: #{$x-text-primary};
@@ -95,6 +95,7 @@
 
     .q-toggle__thumb {
       left: calc(var(--x-toggle-width) - var(--x-toggle-height) + 2px);
+      // El pulgar encendido sigue blanco también en oscuro (no es una superficie).
       background-color: white;
     }
   }
@@ -112,7 +113,7 @@
     cursor: not-allowed;
 
     .q-toggle__track {
-      background-color: rgba(0, 0, 0, 0.12);
+      background-color: var(--x-neutral-soft, rgba(0, 0, 0, 0.12));
     }
   }
 

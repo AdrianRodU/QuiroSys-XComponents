@@ -28,10 +28,10 @@ defineProps({
 .x-format-price {
   display: flex;
   align-items: center;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--x-border, #e0e0e0);
   border-radius: 4px;
   padding: 4px 8px;
-  background: #fafafa;
+  background: var(--x-surface-2, #fafafa);
 }
 .x-format-price .currency-type-symbol {
   font-weight: 600;
@@ -43,7 +43,7 @@ defineProps({
 }
 .x-format-price .information .label {
   font-size: 10px;
-  color: #888;
+  color: var(--x-text-muted, #888);
   line-height: 1.2;
 }
 .x-format-price .information .price {

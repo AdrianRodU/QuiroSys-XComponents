@@ -135,7 +135,7 @@ function onChange(val) {
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
-  color: #334155;
+  color: var(--x-text-2, #334155);
 }
 
 .x-slider__value {
@@ -162,8 +162,8 @@ function onChange(val) {
   align-items: center;
   font-size: 12.5px;
   font-weight: 600;
-  color: #64748b;
-  background: #f1f5f9;
+  color: var(--x-text-muted, #64748b);
+  background: var(--x-surface-3, #f1f5f9);
   border: 1px dashed #94a3b8;
 }
 
@@ -181,7 +181,7 @@ function onChange(val) {
   :deep(.q-slider__marker-labels) {
     font-size: 12px;
     font-weight: 500;
-    color: #64748b;
+    color: var(--x-text-muted, #64748b);
   }
 }
 
@@ -193,7 +193,7 @@ function onChange(val) {
 .x-slider--error .x-slider__value--empty {
   color: var(--q-negative);
   border-color: var(--q-negative);
-  background: #fef2f2;
+  background: var(--x-tone-red-soft, #fef2f2);
 }
 
 .x-slider__error {
@@ -211,6 +211,6 @@ function onChange(val) {
 }
 
 :global(.body--dark) .x-slider__slider :deep(.q-slider__marker-labels) {
-  color: #94a3b8;
+  color: var(--x-text-subtle, #94a3b8);
 }
 </style>

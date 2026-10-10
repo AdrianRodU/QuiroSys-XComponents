@@ -105,7 +105,7 @@ function clear(e) {
 
 <style scoped>
 .x-image-upload {
-  border: 2px dashed #d1d5db;
+  border: 2px dashed var(--x-border-strong, #d1d5db);
   border-radius: 8px;
   padding: 14px 16px;
   display: flex;
@@ -121,7 +121,7 @@ function clear(e) {
   width: 56px;
   height: 56px;
   border-radius: 8px;
-  background: #f3f4f6;
+  background: var(--x-surface-3, #f3f4f6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,11 +136,11 @@ function clear(e) {
 .x-image-upload__label {
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: var(--x-text-2, #374151);
 }
 .x-image-upload__hint {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--x-text-subtle, #9ca3af);
   margin-top: 2px;
 }
 </style>

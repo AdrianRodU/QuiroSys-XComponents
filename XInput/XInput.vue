@@ -15,11 +15,11 @@ const props = defineProps({
   isRequired: { type: Boolean, default: false },
   /** Texto de ayuda: muestra un ícono "?" con tooltip junto al label. */
   help: { type: String, default: '' },
-  /** Fondo del control (nombre de color Quasar/CSS). 'white' por defecto:
-   *  invisible sobre fondos blancos (la mayoría de la app), pero evita que
-   *  el input "transparente" se mimetice al usarlo sobre un card/banner de
-   *  color. Pasar '' o 'transparent' para el comportamiento clásico. */
-  bgColor: { type: String, default: 'white' },
+  /** Fondo del control (nombre de color Quasar/CSS). 'x-field' por defecto (v2.27.0): blanco en claro y el fondo
+   *  de campo del modo oscuro (themes/tokens.scss); antes era 'white' y en oscuro quedaba un campo blanco con el
+   *  texto claro encima. Evita que el input "transparente" se mimetice sobre un card/banner de color. Pasar '' o
+   *  'transparent' para el comportamiento clásico. */
+  bgColor: { type: String, default: 'x-field' },
   /** Botón de búsqueda (lupa) dentro del campo, a la derecha (v2.19.0). Emite
    *  `search` al hacer clic o al presionar Enter. Ej.: DNI → RENIEC. */
   searchButton: { type: Boolean, default: false },

@@ -1,5 +1,6 @@
 <script setup>
 import { computed, useAttrs } from 'vue'
+import { useQuasar } from 'quasar'
 import VueApexCharts from 'vue3-apexcharts'
 import XChartHeader from './XChartHeader.vue'
 import XChartFooter from './XChartFooter.vue'
@@ -98,6 +99,13 @@ const props = defineProps({
 })
 
 const attrs = useAttrs()
+const $q = useQuasar()
+
+// Modo oscuro (v2.27.0): ApexCharts pinta con atributos SVG, que no admiten var(); los colores del tema se leen de los
+// tokens (themes/tokens.scss) al dibujar y el gráfico se redibuja al cambiar de modo. En claro, los de siempre.
+const isDark = computed(() => $q.dark.isActive)
+const themeColor = (token, light) =>
+  (isDark.value && getComputedStyle(document.body).getPropertyValue(token).trim()) || light
 
 const hasHeader = computed(() =>
   props.title || props.value || props.percentage || props.icon,
@@ -115,6 +123,8 @@ const mergedOptions = computed(() => {
       sparkline: { enabled: false },
       toolbar: { show: false },
       zoom: { enabled: false },
+      // Leyenda y textos sin color propio (en claro, el gris oscuro de ApexCharts).
+      ...(isDark.value ? { foreColor: themeColor('--x-text-2', '#373d3f') } : {}),
     },
     dataLabels: {
       enabled: false,
@@ -130,7 +140,7 @@ const mergedOptions = computed(() => {
         hideOverlappingLabels: true,
         style: {
           fontSize: '11px',
-          colors: '#9CA3AF',
+          colors: themeColor('--x-text-muted', '#9CA3AF'),
         },
       },
       axisBorder: { show: false },
@@ -154,12 +164,12 @@ const mergedOptions = computed(() => {
       labels: {
         style: {
           fontSize: '12px',
-          colors: '#9CA3AF',
+          colors: themeColor('--x-text-muted', '#9CA3AF'),
         },
       },
     },
     grid: {
-      borderColor: '#F3F4F6',
+      borderColor: themeColor('--x-divider', '#F3F4F6'),
       strokeDashArray: 4,
     },
     legend: {
@@ -175,8 +185,10 @@ const mergedOptions = computed(() => {
       },
     },
     tooltip: {
-      theme: 'light',
+      theme: isDark.value ? 'dark' : 'light',
     },
+    // El total encima de una barra apilada: ApexCharts lo pinta con su gris oscuro fijo (no sigue a foreColor).
+    ...(isDark.value ? { plotOptions: { bar: { dataLabels: { total: { style: { color: themeColor('--x-text-2', '#373d3f') } } } } } } : {}),
     fill: {
       type: props.type === 'area' ? 'gradient' : 'solid',
       gradient: {

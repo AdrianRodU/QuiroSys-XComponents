@@ -91,7 +91,7 @@
     cursor: not-allowed;
 
     .q-checkbox__bg {
-      background-color: #f5f5f5;
+      background-color: var(--x-surface-3, #f5f5f5);
     }
   }
 

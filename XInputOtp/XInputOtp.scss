@@ -97,7 +97,7 @@
 .x-input-otp.q-field--disabled {
   .q-field__control {
     opacity: 0.6;
-    background-color: #f5f5f5;
+    background-color: var(--x-surface-3, #f5f5f5);
     cursor: not-allowed;
   }
 

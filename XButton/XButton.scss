@@ -58,7 +58,7 @@
   // Variante flat
   &.q-btn--flat {
     &:hover {
-      background-color: rgba(0, 0, 0, 0.05);
+      background-color: var(--x-neutral-soft, rgba(0, 0, 0, 0.05));
     }
   }
 }

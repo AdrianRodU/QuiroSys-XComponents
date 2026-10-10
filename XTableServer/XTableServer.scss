@@ -135,8 +135,8 @@
 }
 
 .x-cell-avatar--empty {
-  background-color: color-mix(in srgb, var(--q-primary) 12%, transparent);
-  color: var(--q-primary);
+  background-color: var(--x-primary-soft, color-mix(in srgb, var(--q-primary) 12%, transparent));
+  color: var(--x-primary-text, var(--q-primary));
   font-weight: 600;
 
   .q-avatar__content {
@@ -171,20 +171,20 @@
   text-align: center;
 
   &__icon {
-    color: #d0d5dd;
+    color: var(--x-text-subtle, #d0d5dd);
     margin-bottom: 12px;
   }
 
   &__title {
     font-size: 16px;
     font-weight: 600;
-    color: #1d2939;
+    color: var(--x-text, #1d2939);
     margin-bottom: 4px;
   }
 
   &__subtitle {
     font-size: 13px;
-    color: #667085;
+    color: var(--x-text-muted, #667085);
     max-width: 320px;
     line-height: 1.5;
   }
@@ -203,20 +203,20 @@
   text-align: center;
 
   &__icon {
-    color: #f04438; // TailAdmin red-500
+    color: var(--x-tone-red-text, #f04438); // TailAdmin red-500
     margin-bottom: 12px;
   }
 
   &__title {
     font-size: 16px;
     font-weight: 600;
-    color: #1d2939;
+    color: var(--x-text, #1d2939);
     margin-bottom: 4px;
   }
 
   &__subtitle {
     font-size: 13px;
-    color: #667085;
+    color: var(--x-text-muted, #667085);
     max-width: 420px;
     line-height: 1.5;
     word-break: break-word;
@@ -250,10 +250,10 @@
 // Filas seleccionadas
 // --------------------------------------------------------------------------
 .x-table-row--selected {
-  background-color: #f5f8ff !important; // brand-50 mas claro
+  background-color: var(--x-primary-soft, #f5f8ff) !important; // brand-50 mas claro
 
   &:hover {
-    background-color: #ecf3ff !important; // brand-50
+    background-color: var(--x-primary-soft, #ecf3ff) !important; // brand-50
   }
 }
 
