@@ -33,6 +33,12 @@ const isComponentCell = computed(() =>
   props.cell && typeof props.cell === 'object' && props.cell.type_input === 'component'
 )
 
+// Interruptor y casilla (v2.27.0): van en un envoltorio en línea para que sigan la alineación de su columna
+// (centrados en "Activo"). La raíz de XToggle y XCheckbox es un bloque a todo el ancho de la celda, así que el
+// text-align de la celda no los movía y quedaban siempre a la izquierda. Un campo o un select sí llenan la celda.
+const INLINE_CONTROLS = ['XToggle', 'XCheckbox']
+const isInlineControl = computed(() => isComponentCell.value && INLINE_CONTROLS.includes(props.cell.component))
+
 const localValue = ref(null)
 const saving = ref(false)
 let debounceTimer = null
@@ -158,8 +164,17 @@ function onUpdateModelValue(val) {
 </script>
 
 <template>
-  <!-- 1) Celda interactiva -->
-  <template v-if="isComponentCell">
+  <!-- 1) Celda interactiva: interruptor y casilla en línea, alineados como su columna -->
+  <span v-if="isInlineControl" class="x-cell-control">
+    <component
+      :is="componentsMap[cell.component]"
+      v-model="localValue"
+      v-bind="cell.props"
+      :disable="(cell.props?.disable ?? false) || saving"
+      @update:modelValue="onUpdateModelValue"
+    />
+  </span>
+  <template v-else-if="isComponentCell">
     <component
       :is="componentsMap[cell.component]"
       v-model="localValue"

@@ -303,6 +303,17 @@ Convención de todas las tablas para activar y desactivar: la columna `Column::i
 
 La celda es `{ type_input: 'component', component: 'XToggle', action: { type: 'active', action } }`.
 
+Desde v2.27.0 el interruptor (y una casilla, `XCheckbox`) sigue la alineación de su columna: centrado en "Activo".
+Antes quedaba a la izquierda, porque la raíz de XToggle ocupa todo el ancho de la celda; ahora
+XCellColumnRenderer los pone en un envoltorio en línea (`.x-cell-control`). Un campo o un select siguen llenando la
+celda.
+
+## Foto de una fila (v2.27.0)
+
+`Column::photo()` y `Cell::avatar($url, $nombre, '32px', 'JN')` de `quirosys/datatable` 2.3.0: la foto en un
+círculo, que no se deforma (`object-fit: cover`). Sin foto (`$url` null), las iniciales sobre el primario suave; sin
+iniciales, un ícono de persona.
+
 ## Botones de Header
 
 ```php

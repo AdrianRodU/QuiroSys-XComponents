@@ -39,6 +39,12 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  // Compacta (v2.27.0): para secciones dentro de un formulario o un diálogo. Encabezado de 44 px y título de
+  // 15 px en lugar de 60 px y text-h6.
+  dense: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const slots = useSlots()
@@ -47,12 +53,12 @@ const hasHeader = computed(() => props.title || props.subtitle || props.icon || 
 </script>
 
 <template>
-  <q-card :flat="flat" class="x-card" :class="{ 'full-height': fullHeight }">
+  <q-card :flat="flat" class="x-card" :class="{ 'full-height': fullHeight, 'x-card--dense': dense }">
     <q-card-section v-if="hasHeader" class="q-py-none x-card-section-title" :class="{ 'x-card-section-title--with-subtitle': subtitle }">
       <div class="row items-center no-wrap col">
-        <q-icon v-if="icon" :name="icon" size="20px" class="q-mr-md flex-shrink-0"/>
+        <q-icon v-if="icon" :name="icon" :size="dense ? '18px' : '20px'" class="flex-shrink-0" :class="dense ? 'q-mr-sm' : 'q-mr-md'"/>
         <div>
-          <div class="text-h6" style="margin-bottom: 0; line-height: 1.2">{{ title }}</div>
+          <div :class="dense ? 'x-card__title' : 'text-h6'" style="margin-bottom: 0; line-height: 1.2">{{ title }}</div>
           <div v-if="subtitle" class="text-caption text-grey-5">{{ subtitle }}</div>
         </div>
       </div>

@@ -113,6 +113,37 @@
   justify-content: flex-end;
 }
 
+// Interruptor o casilla en una celda (v2.27.0, XCellColumnRenderer): en línea, así sigue el text-align de su
+// columna (centrado en "Activo"). Sin esto, la raíz del XToggle (una columna flex a todo el ancho) quedaba a la
+// izquierda aunque la columna fuera centrada.
+.x-cell-control {
+  display: inline-flex;
+  vertical-align: middle;
+
+  // Sin etiqueta, QToggle y QCheckbox dibujan igual su caja de etiqueta (vacía, 8 px a la derecha): se oculta para
+  // que el centrado sea exacto.
+  .q-toggle__label:empty,
+  .q-checkbox__label:empty {
+    display: none;
+  }
+}
+
+// Foto de una fila (Cell::avatar, v2.27.0): la imagen llena el círculo sin deformarse; sin foto, las iniciales
+// sobre el primario suave, como el menú del usuario del ERP.
+.x-cell-avatar img {
+  object-fit: cover;
+}
+
+.x-cell-avatar--empty {
+  background-color: color-mix(in srgb, var(--q-primary) 12%, transparent);
+  color: var(--q-primary);
+  font-weight: 600;
+
+  .q-avatar__content {
+    font-size: 0.4em;
+  }
+}
+
 .x-table-mobile-row__action {
   flex: 0 0 auto;
   display: flex;

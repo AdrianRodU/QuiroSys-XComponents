@@ -33,6 +33,26 @@
   }
 
   // --------------------------------------------------------------------------
+  // Dense (v2.27.0): secciones dentro de un formulario o un diálogo. El !important le gana al encabezado de los
+  // temas (tailadmin lo fija con !important).
+  // --------------------------------------------------------------------------
+  &.x-card--dense {
+    .x-card-section-title {
+      min-height: 44px !important;
+      padding: 8px #{$x-spacing-md} !important;
+
+      &--with-subtitle {
+        min-height: 56px !important;
+      }
+    }
+
+    .x-card__title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+  }
+
+  // --------------------------------------------------------------------------
   // Form section content: padding controlled by contentPadding prop
   // --------------------------------------------------------------------------
 

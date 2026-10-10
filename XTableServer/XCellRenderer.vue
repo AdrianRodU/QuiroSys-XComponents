@@ -82,11 +82,14 @@ const isCssColor = (c) => typeof c === 'string' && /^(#|rgb|hsl)/i.test(c.trim()
             :class="['q-mx-xs', { 'cursor-pointer': cell.action }]"
             @click="cell.action && emit('cell-action', cell.action)"/>
 
-    <!-- AVATAR -->
+    <!-- AVATAR: la foto o, sin foto (v2.27.0, Cell::avatar de quirosys/datatable 2.3.0), las iniciales; sin
+         iniciales, un ícono de persona -->
     <q-avatar v-else-if="cell.type_input === 'avatar'"
               :size="cell.size || '32px'"
-              class="q-mx-xs">
-      <img :src="cell.src" :alt="cell.alt || ''" />
+              :class="['q-mx-xs x-cell-avatar', { 'x-cell-avatar--empty': !cell.src }]">
+      <img v-if="cell.src" :src="cell.src" :alt="cell.alt || ''" />
+      <template v-else-if="cell.initials">{{ cell.initials }}</template>
+      <q-icon v-else name="fa-light fa-user" />
     </q-avatar>
 
     <!-- IMAGE (rectangular, object-fit contain) -->
