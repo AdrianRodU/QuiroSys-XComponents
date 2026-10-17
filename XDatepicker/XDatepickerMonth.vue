@@ -14,6 +14,9 @@ const props = defineProps({
   clearable: { type: Boolean, default: false },
 
   error: { type: String, default: null },
+  /** Asterisco rojo de obligatorio junto a la etiqueta + aria-required, como XDatepicker y XTimepicker
+   *  (v2.28.0). Solo marca: no activa validación nativa. */
+  isRequired: { type: Boolean, default: false },
 
   valueMask: { type: String, default: 'YYYY-MM' },
   displayMask: { type: String, default: 'MM/YYYY' },
@@ -96,7 +99,7 @@ function clear() {
       class="q-input__label mb-1"
       style="line-height: 15px;"
     >
-      {{ label }}
+      {{ label }} <span v-if="props.isRequired" class="text-negative" aria-hidden="true">*</span>
     </label>
 
     <q-input
@@ -115,8 +118,15 @@ function clear() {
         noErrorIcon: true,
         hideBottomSpace: !hasError
       }"
+      :label-slot="!!elementLabel && props.isRequired"
+      :aria-required="props.isRequired ? 'true' : null"
       @clear="clear"
     >
+      <!-- Etiqueta clásica con el asterisco de obligatorio (como XInput y XTimepicker) -->
+      <template v-if="elementLabel && props.isRequired" #label>
+        <span>{{ elementLabel }}</span>
+        <span class="text-negative" aria-hidden="true">*</span>
+      </template>
       <template #append>
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy ref="popupRef" cover transition-show="scale" transition-hide="scale">
