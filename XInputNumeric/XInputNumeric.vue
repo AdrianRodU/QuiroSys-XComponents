@@ -2,6 +2,8 @@
 import { computed, ref, useAttrs } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
 import XHelpTip from '../XHelpTip/XHelpTip.vue'
+import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
+import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
 
 defineOptions({ name: 'XInputNumeric', inheritAttrs: false })
 
@@ -13,10 +15,9 @@ const props = defineProps({
   inputDebounce: { type: [Number, String], default: 0 },
   autofocus: { type: Boolean, default: false },
   isRequired: { type: Boolean, default: false },
-  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: el mismo de XInputPhone en
-   *  todos los campos). Por defecto (null) solo en los obligatorios (is-required); true lo muestra también en un
-   *  campo opcional; false, nunca. */
-  check: { type: Boolean, default: null },
+  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
+  check: { type: Boolean, default: true },
   /** Texto de ayuda: muestra un ícono "?" con tooltip junto al label (v2.26.0), como XInput. */
   help: { type: String, default: '' },
   prefix: { type: String, default: null },
@@ -39,8 +40,8 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'input', 'change'])
 
-// Check verde (prop `check`): hay valor y no hay error.
-const showOk = computed(() => (props.check === true || (props.check !== false && props.isRequired)) && props.modelValue !== null && props.modelValue !== undefined && props.modelValue !== '' && !props.error)
+// Check verde (XFieldCheck): hay valor (0 cuenta), no hay error y el campo no es de solo lectura ni está deshabilitado.
+const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(props.modelValue) && !props.error)
 
 const attrs = useAttrs()
 const fallbackId = `app-q-input-${Math.random().toString(36).slice(2, 11)}`
@@ -164,7 +165,7 @@ defineExpose({ focus, select, focusAndSelect })
       </template>
 
       <template v-if="suffixValue || props.controls || showOk" #append>
-        <q-icon v-if="showOk" name="check_circle" color="teal-7" size="18px" class="x-field__ok" />
+        <x-field-check v-if="showOk" />
         <span v-if="suffixValue" class="x-input-numeric__affix">{{ suffixValue }}</span>
         <q-btn
           v-if="props.controls"

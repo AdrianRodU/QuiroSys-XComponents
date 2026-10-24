@@ -261,3 +261,8 @@ $x-input-height-dense: 36px;
 - Usa `clearable` para permitir quitar el archivo seleccionado
 - Para subir archivos, usa `FormData` como se muestra en los ejemplos
 - El prop `accept` filtra los archivos en el dialogo de seleccion
+
+## Check verde (v2.30.0)
+
+Con un archivo elegido y sin error, el campo muestra el check verde de [XFieldCheck](../XFieldCheck/README.md), como todos los
+campos de la librería; nunca en solo lectura o deshabilitado. `:check="false"` lo apaga.

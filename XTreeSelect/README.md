@@ -20,3 +20,8 @@ dibujar el árbol.
 npm install --save @zanmato/vue3-treeselect
 # o
 yarn add @zanmato/vue3-treeselect
+
+## Check verde (v2.30.0)
+
+Con una opción elegida y sin error, el campo muestra el check verde de [XFieldCheck](../XFieldCheck/README.md), como todos los
+campos de la librería; nunca en solo lectura o deshabilitado. `:check="false"` lo apaga.

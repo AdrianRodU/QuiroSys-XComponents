@@ -14,6 +14,7 @@ export { default as XDnd } from './XDnd/XDnd.vue'
 export { default as XDropdownMenu } from './XDropdownMenu/XDropdownMenu.vue'
 export { default as XDropdownItem } from './XDropdownMenu/XDropdownItem.vue'
 export { default as XDropdownDivider } from './XDropdownMenu/XDropdownDivider.vue'
+export { default as XFieldCheck } from './XFieldCheck/XFieldCheck.vue'
 export { default as XFile } from './XFile/XFile.vue'
 export { default as XFormatPrice } from './XFormatPrice/XFormatPrice.vue'
 export { default as XImageUpload } from './XImageUpload/XImageUpload.vue'
@@ -58,6 +59,9 @@ export { default as XDialogMail } from './dialog/XDialogMail.vue'
 
 // Teléfonos (XInputPhone/phone.js): leer, mostrar y armar el enlace de WhatsApp con la misma regla del campo
 export { formatPhone, phoneDigits, whatsappLink, toE164, isValidPhone, parsePhone } from './XInputPhone/phone.js'
+
+// Check verde de los campos (XFieldCheck/isFilled.js): la regla de "tiene valor" y "está inactivo"
+export { isFilled, isInactive } from './XFieldCheck/isFilled.js'
 
 // Composables
 export { useNotify } from './XNotify/useNotify'

@@ -2,6 +2,8 @@
 <script setup>
 import { computed, useAttrs, ref } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
+import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
+import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
 
 defineOptions({ name: 'XDatepickerMonth', inheritAttrs: false })
 
@@ -12,6 +14,9 @@ const props = defineProps({
   dense: { type: Boolean, default: true },
   outlined: { type: Boolean, default: formDefaults.outlined },
   clearable: { type: Boolean, default: false },
+  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
+  check: { type: Boolean, default: true },
 
   error: { type: String, default: null },
   /** Asterisco rojo de obligatorio junto a la etiqueta + aria-required, como XDatepicker y XTimepicker
@@ -40,6 +45,8 @@ const label = computed(() => (props.isClassic ? null : attrs.label))
 const hasError = computed(() => !!props.error)
 
 const normalizedValue = computed(() => (props.modelValue ?? ''))
+// Check verde (XFieldCheck): hay mes, no hay error y el campo no está inactivo.
+const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(normalizedValue.value) && !hasError.value)
 
 // Para q-date necesitamos formato YYYY/MM (con día para que funcione)
 const qDateValue = computed(() => {
@@ -128,6 +135,7 @@ function clear() {
         <span class="text-negative" aria-hidden="true">*</span>
       </template>
       <template #append>
+        <x-field-check v-if="showOk" class="q-mr-xs" />
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy ref="popupRef" cover transition-show="scale" transition-hide="scale">
             <q-date

@@ -1,6 +1,8 @@
 <script setup>
 import { computed, ref, useAttrs, watch } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
+import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
+import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
 
 defineOptions({
   name: 'XTreeSelect',
@@ -21,6 +23,9 @@ const emit = defineEmits([
 const attrs = useAttrs()
 
 const props = defineProps({
+  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
+  check: { type: Boolean, default: true },
   modelValue: {
     type: [String, Number, Array, null],
     default: null
@@ -52,6 +57,9 @@ const label = computed(() =>
 )
 
 // attrs seguros para QInput (quitamos class, options, multiple, label)
+// Check verde (XFieldCheck): hay opción elegida, no hay error y el campo no está inactivo.
+const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(props.modelValue) && !attrs.error)
+
 const safeInputAttrs = computed(() => {
   // eslint-disable-next-line no-unused-vars
   const { class: _class, options, multiple, label, ...rest } = attrs
@@ -332,6 +340,7 @@ function onFieldBlur () {
       </template>
 
       <template #append>
+        <x-field-check v-if="showOk" />
         <q-icon
           name="arrow_drop_down"
           class="cursor-pointer"

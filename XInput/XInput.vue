@@ -2,6 +2,8 @@
 import { computed, useAttrs, ref, toValue } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
 import XHelpTip from '../XHelpTip/XHelpTip.vue'
+import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
+import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
 
 defineOptions({ name: 'XInput', inheritAttrs: false })
 
@@ -13,10 +15,9 @@ const props = defineProps({
   autofocus: { type: Boolean, default: false },
   /** Solo muestra asterisco/aria, no activa validación nativa */
   isRequired: { type: Boolean, default: false },
-  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: el mismo de XInputPhone en
-   *  todos los campos). Por defecto (null) solo en los obligatorios (is-required); true lo muestra también en un
-   *  campo opcional; false, nunca. */
-  check: { type: Boolean, default: null },
+  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
+  check: { type: Boolean, default: true },
   /** Texto de ayuda: muestra un ícono "?" con tooltip junto al label. */
   help: { type: String, default: '' },
   /** Fondo del control (nombre de color Quasar/CSS). 'x-field' por defecto (v2.27.0): blanco en claro y el fondo
@@ -52,9 +53,8 @@ const errorMessage = computed(() => {
   return Array.isArray(e) ? e[0] : e
 })
 
-// Check verde (prop `check`): hay valor y no hay error.
-const filled = computed(() => props.modelValue !== null && props.modelValue !== undefined && String(props.modelValue).trim() !== '')
-const showOk = computed(() => (props.check === true || (props.check !== false && props.isRequired)) && filled.value && !errorMessage.value)
+// Check verde (XFieldCheck): hay valor, no hay error y el campo no es de solo lectura ni está deshabilitado.
+const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(props.modelValue) && !errorMessage.value)
 
 // --- PASSWORD TOGGLE ---
 const isPwdType = computed(() => (attrs.type || 'text').toLowerCase() === 'password')
@@ -119,7 +119,7 @@ const filteredAttrs = computed(() => {
     >
 
       <template v-if="isPwdType || searchButton || showOk || $slots.append" #append>
-        <q-icon v-if="showOk" name="check_circle" color="teal-7" size="18px" class="x-field__ok" />
+        <x-field-check v-if="showOk" />
         <q-icon
           v-if="isPwdType"
           :name="showPwd ? 'visibility' : 'visibility_off'"

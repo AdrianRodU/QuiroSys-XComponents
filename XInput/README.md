@@ -20,7 +20,7 @@ import XInput from '@/components/XInput/XInput.vue'
 | `error` | `String` | `null` | Mensaje de error a mostrar |
 | `autofocus` | `Boolean` | `false` | Auto-focus al montar |
 | `isRequired` | `Boolean` | `false` | Muestra asterisco de requerido |
-| `check` | `Boolean` | `null` | Check verde cuando el campo tiene valor y no está en error (v2.30.0). `null`: solo si es `is-required`; `true`: también en un campo opcional; `false`: nunca |
+| `check` | `Boolean` | `true` | Check verde cuando el campo tiene valor y no está en error (v2.30.0, [XFieldCheck](../XFieldCheck/README.md)); nunca en solo lectura o deshabilitado. `false` lo apaga |
 | `bgColor` | `String` | `'white'` | Fondo del control (color Quasar/CSS). Invisible sobre fondos blancos; evita que el input se mimetice sobre un card/banner de color. `''` para el comportamiento clásico (transparente). |
 | `searchButton` | `Boolean` | `false` | Muestra una lupa dentro del campo, a la derecha. Emite `search` al hacer clic o al presionar Enter (v2.19.0). |
 | `searchLoading` | `Boolean` | `false` | Lupa girando mientras se busca; no vuelve a emitir. |

@@ -1,11 +1,17 @@
 <script setup>
-import { ref, getCurrentInstance } from 'vue'
-defineProps({
+import { ref, getCurrentInstance, computed } from 'vue'
+import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
+import { isFilled } from '../XFieldCheck/isFilled.js'
+const props = defineProps({
+  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
+  check: { type: Boolean, default: true },
   modelValue: { type: [String, Number], default: null },
   label: { type: String, default: 'Ubigeo' },
   error: { type: String, default: null },
 })
 const emit = defineEmits(['update:modelValue'])
+const showOk = computed(() => props.check && isFilled(props.modelValue) && !props.error)
 const { proxy } = getCurrentInstance()
 const options = ref([])
 const search = ref('')
@@ -21,5 +27,7 @@ const onFilter = async (val, update) => {
 }
 </script>
 <template>
-  <q-select v-model="search" :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" :label="label" :options="options" use-input emit-value map-options @filter="onFilter" :loading="loading" outlined dense :error="!!error" :error-message="error" />
+  <q-select v-model="search" :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" :label="label" :options="options" use-input emit-value map-options @filter="onFilter" :loading="loading" outlined dense :error="!!error" :error-message="error">
+    <template v-if="showOk" #append><x-field-check /></template>
+  </q-select>
 </template>

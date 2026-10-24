@@ -2,6 +2,7 @@
 import { computed, ref, toValue, useAttrs, watch } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
 import XHelpTip from '../XHelpTip/XHelpTip.vue'
+import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
 import { useFormChild } from 'quasar'
 import {
   DEFAULT_COUNTRY,
@@ -312,8 +313,8 @@ defineExpose({ focus: () => inputRef.value?.focus?.(), country, isValid: () => v
         </div>
       </template>
 
-      <template v-if="validOk || $slots.append" #append>
-        <q-icon v-if="validOk" name="check_circle" color="teal-7" size="18px" class="x-input-phone__ok" />
+      <template v-if="(validOk && !inactive) || $slots.append" #append>
+        <x-field-check v-if="validOk && !inactive" class="x-input-phone__ok" />
         <slot name="append" />
       </template>
 

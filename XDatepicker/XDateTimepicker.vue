@@ -3,6 +3,8 @@
 import { computed, useAttrs } from 'vue'
 import { date as DateUtils } from 'quasar'
 import { formDefaults } from '@esolutions/js-utils'
+import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
+import { isFilled } from '../XFieldCheck/isFilled.js'
 
 defineOptions({ name: 'XDateTimepicker', inheritAttrs: false })
 
@@ -13,6 +15,9 @@ const props = defineProps({
   dense: { type: Boolean, default: true },
   outlined: { type: Boolean, default: formDefaults.outlined },
   clearable: { type: Boolean, default: false },
+  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
+  check: { type: Boolean, default: true },
 
   error: { type: String, default: null },
 
@@ -46,6 +51,8 @@ const hasError = computed(() => !!props.error)
 const isLocked = computed(() => props.withCheckbox && !props.checkboxModel)
 
 const normalizedValue = computed(() => (props.modelValue ?? ''))
+// Check verde (XFieldCheck): hay fecha y hora, no hay error y el campo no está bloqueado.
+const showOk = computed(() => props.check && !isLocked.value && isFilled(normalizedValue.value) && !hasError.value)
 
 const displayValue = computed(() => {
   const v = normalizedValue.value
@@ -141,6 +148,7 @@ function clear() {
 
       <!-- HORA -->
       <template #append>
+        <x-field-check v-if="showOk" class="q-mr-xs" />
         <q-icon
           name="access_time"
           :class="isLocked ? 'text-grey-5' : 'cursor-pointer'"

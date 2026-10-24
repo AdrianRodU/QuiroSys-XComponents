@@ -2,6 +2,8 @@
 import { computed, getCurrentInstance, ref, useAttrs, useSlots, nextTick } from 'vue';
 import { formDefaults } from '@esolutions/js-utils'
 import XHelpTip from '../XHelpTip/XHelpTip.vue'
+import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
+import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
 
 defineOptions({
   name: 'XSelect',
@@ -23,15 +25,12 @@ const externalFilter = computed(() => (typeof attrs.onFilter === 'function' ? at
 
 const selectRef = ref(null);
 
-// Check verde (prop `check`): hay un valor elegido y no hay error. El v-model puede venir como prop o como attr.
+// Check verde (XFieldCheck): hay una opción elegida, no hay error y el select no es de solo lectura ni está
+// deshabilitado. El v-model puede venir como prop o como attr.
 const slots = useSlots();
 const forwardedSlots = computed(() => Object.fromEntries(Object.keys(slots).filter((n) => n !== 'append').map((n) => [n, slots[n]])));
 const selectedValue = computed(() => (props.modelValue !== undefined ? props.modelValue : attrs.modelValue));
-const showOk = computed(() => {
-  const v = selectedValue.value;
-  const filled = Array.isArray(v) ? v.length > 0 : v !== null && v !== undefined && v !== '';
-  return (props.check === true || (props.check !== false && props.isRequired)) && filled && !props.error;
-});
+const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(selectedValue.value) && !props.error);
 const remoteOptions = ref([]);
 const localFilteredOptions = ref(null);
 
@@ -99,10 +98,9 @@ const props = defineProps({
   /** Asterisco rojo de obligatorio junto al label + aria-required, como XInput
    *  (v2.19.0). Solo marca: no activa validación nativa. */
   isRequired: { type: Boolean, default: false },
-  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: el mismo de XInputPhone en
-   *  todos los campos). Por defecto (null) solo en los obligatorios (is-required); true lo muestra también en un
-   *  campo opcional; false, nunca. */
-  check: { type: Boolean, default: null },
+  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
+  check: { type: Boolean, default: true },
 });
 
 const fallbackId = `app-select-${Math.random().toString(36).substring(2, 9)}`;
@@ -363,7 +361,7 @@ function onSelect(val) {
 
       <!-- Check verde (prop `check`, v2.30.0) delante de lo que el padre ponga en append -->
       <template v-if="showOk || $slots.append" #append>
-        <q-icon v-if="showOk" name="check_circle" color="teal-7" size="18px" class="x-field__ok" />
+        <x-field-check v-if="showOk" />
         <slot name="append" />
       </template>
 

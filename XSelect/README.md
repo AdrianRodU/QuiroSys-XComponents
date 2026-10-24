@@ -16,7 +16,7 @@ import XSelect from '@/components/XSelect/XSelect.vue'
 |------|------|---------|-------------|
 | `bgColor` | `String` | `'white'` | Fondo del control (color Quasar/CSS). Invisible sobre fondos blancos; evita que el select se mimetice sobre un card/banner de color. `''` para el comportamiento clásico (transparente). |
 | `isRequired` | `Boolean` | `false` | Asterisco rojo de obligatorio junto al label y `aria-required` (v2.19.0). Solo marca, no valida. |
-| `check` | `Boolean` | `null` | Check verde cuando hay un valor elegido y no hay error (v2.30.0). `null`: solo si es `is-required`; `true`: también en un select opcional; `false`: nunca |
+| `check` | `Boolean` | `true` | Check verde cuando hay una opción elegida y no hay error (v2.30.0, [XFieldCheck](../XFieldCheck/README.md)); nunca en solo lectura o deshabilitado. `false` lo apaga |
 | `includeAllOption` | `Boolean` | `false` | Agrega opcion "Todos" al inicio |
 | `isClassic` | `Boolean` | `false` | Usa label flotante dentro del select |
 | `dense` | `Boolean` | `true` | Modo compacto |

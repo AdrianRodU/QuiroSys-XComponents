@@ -26,6 +26,7 @@
     "XDialogAction",
     "XDnd",
     "XDropdownMenu",
+    "XFieldCheck",
     "XFile",
     "XImageViewer",
     "XInput",

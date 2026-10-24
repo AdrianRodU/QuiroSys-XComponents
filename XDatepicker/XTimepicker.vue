@@ -2,8 +2,13 @@
 import { computed, useAttrs } from 'vue'
 import { QInput, QPopupProxy, QTime, QBtn, QIcon } from 'quasar'
 import { formDefaults } from '@esolutions/js-utils'
+import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
+import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
 
 const props = defineProps({
+  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
+  check: { type: Boolean, default: true },
   modelValue: {
     type: String,
     default: null,
@@ -20,6 +25,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+// Check verde (XFieldCheck): hay hora, no hay error y el campo no está inactivo.
+const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(props.modelValue) && !attrs.error)
 
 defineOptions({
   name: 'XTimepicker',
@@ -63,6 +70,7 @@ const externalLabel = computed(() => {
         <span class="text-negative" aria-hidden="true">*</span>
       </template>
       <template #append>
+        <x-field-check v-if="showOk" class="q-mr-xs" />
         <q-icon name="access_time" class="cursor-pointer">
           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
             <q-time
