@@ -22,6 +22,7 @@ export { default as XInput } from './XInput/XInput.vue'
 export { default as XInputColor } from './XInputColor/XInputColor.vue'
 export { default as XInputNumeric } from './XInputNumeric/XInputNumeric.vue'
 export { default as XInputOtp } from './XInputOtp/XInputOtp.vue'
+export { default as XInputPhone } from './XInputPhone/XInputPhone.vue'
 export { default as XInputSearchPerson } from './XInputSearchPerson/XInputSearchPerson.vue'
 export { default as XLineageTree } from './XLineageTree/XLineageTree.vue'
 export { default as XLoading } from './XLoading/XLoading.vue'
@@ -53,6 +54,9 @@ export { default as XInputDate } from './input/XInputDate.vue'
 
 // Dialog variants
 export { default as XDialogMail } from './dialog/XDialogMail.vue'
+
+// Teléfonos (XInputPhone/phone.js): leer, mostrar y armar el enlace de WhatsApp con la misma regla del campo
+export { formatPhone, phoneDigits, whatsappLink, toE164, isValidPhone, parsePhone } from './XInputPhone/phone.js'
 
 // Composables
 export { useNotify } from './XNotify/useNotify'

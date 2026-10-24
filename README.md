@@ -56,7 +56,7 @@ El proyecto activa el modo con `$q.dark.set(true)`; la preferencia y en qué pan
 
 Más de 40 componentes con prefijo `X*`, entre ellos:
 
-- **Formularios**: XInput, XInputNumeric, XInputOtp, XInputSearchPerson, XSelect, XTreeSelect, XDatepicker, XCheckbox, XToggle, XSlider, XFile, XImageUpload, XImageCropperUpload
+- **Formularios**: XInput, XInputNumeric, XInputOtp, XInputPhone (teléfono con código de país), XInputSearchPerson, XSelect, XTreeSelect, XDatepicker, XCheckbox, XToggle, XSlider, XFile, XImageUpload, XImageCropperUpload
 - **Tablas**: XTable, XTableServer (server-side con filtros, exportación Excel y persistencia de columnas), XTableCard
 - **Diálogos y feedback**: XDialog, XDialogAction, XNotify, XLoading, XBanner, XHelpTip, XCallout
 - **Visualización**: XChart, XBadge, XCard, XLineageTree, XTracking, XPdfPreview, XPdfViewer, XImageViewer
