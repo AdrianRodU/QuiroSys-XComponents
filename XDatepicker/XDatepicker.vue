@@ -4,7 +4,8 @@ import { computed, ref, useAttrs } from 'vue'
 import { date as DateUtils } from 'quasar'
 import { formDefaults } from '@esolutions/js-utils'
 import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
-import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
+import { isInactive } from '../XFieldCheck/isFilled.js'
+import { useFieldCheck } from '../XFieldCheck/useFieldCheck.js'
 
 defineOptions({ name: 'XDatepicker', inheritAttrs: false })
 
@@ -42,8 +43,10 @@ const props = defineProps({
   /** Campo obligatorio: asterisco rojo en la etiqueta, como XInput (solo marca, no valida). */
   isRequired: { type: Boolean, default: false },
   /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
-   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
-  check: { type: Boolean, default: true },
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. `check="dirty"`
+   *  (v2.31.0, filtros): solo cuando el usuario cambia el valor respecto del que venía (un "Todos" por defecto no
+   *  lleva check hasta que se cambia, y lo pierde si se vuelve a "Todos"). */
+  check: { type: [Boolean, String], default: true },
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])
@@ -66,7 +69,12 @@ const hasError = computed(() => !!props.error)
 // normaliza null -> ''
 const normalizedValue = computed(() => (props.modelValue ?? ''))
 // Check verde (prop `check`): hay fecha y no hay error.
-const showOk = computed(() => props.check && !props.readonly && !isInactive(attrs) && isFilled(normalizedValue.value) && !hasError.value)
+const { showOk, markUserChange } = useFieldCheck({
+  check: () => props.check,
+  value: () => normalizedValue.value,
+  inactive: () => props.readonly || isInactive(attrs),
+  error: () => hasError.value,
+})
 
 const displayValue = computed(() => {
   const v = normalizedValue.value
@@ -80,6 +88,7 @@ const displayValue = computed(() => {
 
 function updateFromPicker(val) {
   const next = val ?? ''
+  markUserChange()
   emit('update:modelValue', next)
   emit('change', next)
   if (props.autoClose) {
@@ -88,6 +97,7 @@ function updateFromPicker(val) {
 }
 
 function clear() {
+  markUserChange()
   emit('update:modelValue', '')
   emit('change', '')
 }

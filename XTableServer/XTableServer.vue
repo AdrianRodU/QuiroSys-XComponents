@@ -1034,6 +1034,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
           <!-- clearable: la "x" solo aparece con texto; limpiar dispara la
                recarga igual que escribir (pedido de Adrián 2026-09-07). -->
           <x-input
+            check="dirty"
             v-if="filter.type === 'input'"
             v-model="filter.value"
             :label="filter.label"
@@ -1054,6 +1055,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
           />
 
           <x-select
+            check="dirty"
             v-else-if="filter.type === 'select'"
             v-model="filter.value"
             :label="filter.label"
@@ -1070,6 +1072,7 @@ defineExpose({ filterData, getFilterValues, setFilterValues, clearFilters, clear
           />
 
           <x-tree-select
+            check="dirty"
             v-else-if="filter.type === 'tree-select'"
             v-model="filter.value"
             :label="filter.label"

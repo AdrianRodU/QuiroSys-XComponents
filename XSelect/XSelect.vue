@@ -3,7 +3,8 @@ import { computed, getCurrentInstance, ref, useAttrs, useSlots, nextTick } from 
 import { formDefaults } from '@esolutions/js-utils'
 import XHelpTip from '../XHelpTip/XHelpTip.vue'
 import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
-import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
+import { isInactive } from '../XFieldCheck/isFilled.js'
+import { useFieldCheck } from '../XFieldCheck/useFieldCheck.js'
 
 defineOptions({
   name: 'XSelect',
@@ -25,14 +26,6 @@ const externalFilter = computed(() => (typeof attrs.onFilter === 'function' ? at
 
 const selectRef = ref(null);
 
-// Check verde (XFieldCheck): hay una opción elegida, no hay error y el select no es de solo lectura ni está
-// deshabilitado. El v-model puede venir como prop o como attr.
-const slots = useSlots();
-// Funcion y no computed: los slots no son reactivos (Vue muta el mismo objeto), asi que se recalcula en cada render,
-// igual que antes con $slots; un slot condicional del padre sigue entrando y saliendo.
-const forwardedSlots = () => Object.fromEntries(Object.keys(slots).filter((n) => n !== 'append').map((n) => [n, slots[n]]));
-const selectedValue = computed(() => (props.modelValue !== undefined ? props.modelValue : attrs.modelValue));
-const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(selectedValue.value) && !props.error);
 const remoteOptions = ref([]);
 const localFilteredOptions = ref(null);
 
@@ -101,8 +94,24 @@ const props = defineProps({
    *  (v2.19.0). Solo marca: no activa validación nativa. */
   isRequired: { type: Boolean, default: false },
   /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
-   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
-  check: { type: Boolean, default: true },
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. `check="dirty"`
+   *  (v2.31.0, filtros): solo cuando el usuario cambia el valor respecto del que venía (un "Todos" por defecto no
+   *  lleva check hasta que se cambia, y lo pierde si se vuelve a "Todos"). */
+  check: { type: [Boolean, String], default: true },
+});
+
+// Check verde (XFieldCheck; va después de defineProps porque useFieldCheck lee el valor al arrancar): hay una opción elegida, no hay error y el select no es de solo lectura ni está
+// deshabilitado. El v-model puede venir como prop o como attr.
+const slots = useSlots();
+// Funcion y no computed: los slots no son reactivos (Vue muta el mismo objeto), asi que se recalcula en cada render,
+// igual que antes con $slots; un slot condicional del padre sigue entrando y saliendo.
+const forwardedSlots = () => Object.fromEntries(Object.keys(slots).filter((n) => n !== 'append').map((n) => [n, slots[n]]));
+const selectedValue = computed(() => (props.modelValue !== undefined ? props.modelValue : attrs.modelValue));
+const { showOk, markUserChange } = useFieldCheck({
+  check: () => props.check,
+  value: () => selectedValue.value,
+  inactive: () => isInactive(attrs),
+  error: () => !!props.error,
 });
 
 const fallbackId = `app-select-${Math.random().toString(36).substring(2, 9)}`;
@@ -274,6 +283,7 @@ function onSelect(val) {
     emit('click-new');
     return;
   }
+  markUserChange();
 
   const opt = (optionsToShow.value || []).find(o => o.value === val) || null;
 

@@ -3,7 +3,8 @@ import { computed, ref, useAttrs } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
 import XHelpTip from '../XHelpTip/XHelpTip.vue'
 import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
-import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
+import { isInactive } from '../XFieldCheck/isFilled.js'
+import { useFieldCheck } from '../XFieldCheck/useFieldCheck.js'
 
 defineOptions({ name: 'XInputNumeric', inheritAttrs: false })
 
@@ -16,8 +17,10 @@ const props = defineProps({
   autofocus: { type: Boolean, default: false },
   isRequired: { type: Boolean, default: false },
   /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
-   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
-  check: { type: Boolean, default: true },
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. `check="dirty"`
+   *  (v2.31.0, filtros): solo cuando el usuario cambia el valor respecto del que venía (un "Todos" por defecto no
+   *  lleva check hasta que se cambia, y lo pierde si se vuelve a "Todos"). */
+  check: { type: [Boolean, String], default: true },
   /** Texto de ayuda: muestra un ícono "?" con tooltip junto al label (v2.26.0), como XInput. */
   help: { type: String, default: '' },
   prefix: { type: String, default: null },
@@ -40,8 +43,14 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'input', 'change'])
 
-// Check verde (XFieldCheck): hay valor (0 cuenta), no hay error y el campo no es de solo lectura ni está deshabilitado.
-const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(props.modelValue) && !props.error)
+// Check verde (XFieldCheck): hay valor (0 cuenta), no hay error y el campo no es de solo lectura ni está deshabilitado;
+// con check="dirty", solo cuando el usuario lo cambió.
+const { showOk, markUserChange } = useFieldCheck({
+  check: () => props.check,
+  value: () => props.modelValue,
+  inactive: () => isInactive(attrs),
+  error: () => !!props.error,
+})
 
 const attrs = useAttrs()
 const fallbackId = `app-q-input-${Math.random().toString(36).slice(2, 11)}`
@@ -140,7 +149,7 @@ defineExpose({ focus, select, focusAndSelect })
       no-error-icon
       :hide-bottom-space="!error"
       :label-slot="!!elementLabel"
-      @update:model-value="val => emit('update:modelValue', toNum(val))"
+      @update:model-value="val => { markUserChange(); emit('update:modelValue', toNum(val)) }"
       @input="e => emit('input', e)"
       @change="e => emit('change', e)"
       @blur="onBlurClamp"

@@ -1,9 +1,11 @@
 <script setup>
 import { computed, useAttrs, ref, toValue } from 'vue'
+import { useFormChild } from 'quasar'
 import { formDefaults } from '@esolutions/js-utils'
 import XHelpTip from '../XHelpTip/XHelpTip.vue'
 import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
-import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
+import { isInactive } from '../XFieldCheck/isFilled.js'
+import { useFieldCheck } from '../XFieldCheck/useFieldCheck.js'
 
 defineOptions({ name: 'XInput', inheritAttrs: false })
 
@@ -16,8 +18,12 @@ const props = defineProps({
   /** Solo muestra asterisco/aria, no activa validación nativa */
   isRequired: { type: Boolean, default: false },
   /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
-   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
-  check: { type: Boolean, default: true },
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. `check="dirty"`
+   *  (v2.31.0, filtros): solo cuando el usuario cambia el valor respecto del que venía (un "Todos" por defecto no
+   *  lleva check hasta que se cambia, y lo pierde si se vuelve a "Todos"). */
+  check: { type: [Boolean, String], default: true },
+  /** Con type="email": acepta varios correos separados por coma o punto y coma (v2.31.0). */
+  multiple: { type: Boolean, default: false },
   /** Texto de ayuda: muestra un ícono "?" con tooltip junto al label. */
   help: { type: String, default: '' },
   /** Fondo del control (nombre de color Quasar/CSS). 'x-field' por defecto (v2.27.0): blanco en claro y el fondo
@@ -53,8 +59,53 @@ const errorMessage = computed(() => {
   return Array.isArray(e) ? e[0] : e
 })
 
-// Check verde (XFieldCheck): hay valor, no hay error y el campo no es de solo lectura ni está deshabilitado.
-const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(props.modelValue) && !errorMessage.value)
+// Correo (v2.31.0, Adrián: "no hay validación para email, al escribir cualquier cosa valida; debe estar centralizado"):
+// con type="email" el campo valida solo, avisa al salir del campo (o al enviar un q-form) y el check verde sale solo
+// con un correo válido. El servidor sigue validando con su regla `email`; esto es la primera capa, en un solo lugar.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const isEmailType = computed(() => String(attrs.type || '').toLowerCase() === 'email')
+const emailStatus = computed(() => {
+  if (!isEmailType.value) return null
+  const raw = String(props.modelValue ?? '').trim()
+  if (!raw) return null
+  const parts = props.multiple ? raw.split(/[,;]+/).map((p) => p.trim()).filter(Boolean) : [raw]
+  if (parts.every((p) => EMAIL_RE.test(p))) return null
+  return props.multiple
+    ? 'Escribe correos válidos separados por coma (nombre@dominio.com).'
+    : 'Escribe un correo válido (nombre@dominio.com).'
+})
+const touched = ref(false)
+const visibleError = computed(() => errorMessage.value || (touched.value && emailStatus.value) || null)
+
+// Dentro de un <q-form>, su validate() (y el envío) se frenan con un correo mal escrito, con el mismo mensaje.
+function validate() {
+  touched.value = true
+  return !emailStatus.value
+}
+useFormChild({
+  validate,
+  resetValidation: () => {
+    touched.value = false
+  },
+  requiresInput: false,
+})
+
+// Check verde (XFieldCheck): hay valor, no hay error (del servidor ni del correo) y el campo no es de solo lectura ni
+// está deshabilitado; con check="dirty", solo cuando el usuario lo cambió.
+const { showOk, markUserChange } = useFieldCheck({
+  check: () => props.check,
+  value: () => props.modelValue,
+  inactive: () => isInactive(attrs),
+  error: () => !!errorMessage.value || !!emailStatus.value,
+})
+
+function onInput(val) {
+  markUserChange()
+  emit('update:modelValue', val)
+}
+function onBlur() {
+  touched.value = true
+}
 
 // --- PASSWORD TOGGLE ---
 const isPwdType = computed(() => (attrs.type || 'text').toLowerCase() === 'password')
@@ -82,6 +133,7 @@ const filteredAttrs = computed(() => {
   const { class: _c, label: _l, type: _t, id: _i, required: _r, 'is-required': _ir, ...rest } = attrs
   return rest
 })
+defineExpose({ validate })
 </script>
 
 <template>
@@ -107,12 +159,13 @@ const filteredAttrs = computed(() => {
         'bg-color': props.bgColor || undefined
       }"
       :model-value="modelValue"
-      :error="!!errorMessage"
-      :error-message="errorMessage"
+      :error="!!visibleError"
+      :error-message="visibleError"
       no-error-icon
-      :hide-bottom-space="!errorMessage"
+      :hide-bottom-space="!visibleError"
       :label-slot="!!elementLabel"
-      @update:model-value="val => emit('update:modelValue', val)"
+      @update:model-value="onInput"
+      @blur="onBlur"
       @input="e => emit('input', e)"
       @change="e => emit('change', e)"
       @keyup.enter="onSearch"

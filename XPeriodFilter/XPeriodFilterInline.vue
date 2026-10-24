@@ -76,6 +76,7 @@ function set(field, val) {
   <div :class="rowClass">
     <div v-if="modeOptions.length > 1" :class="[fieldClass, 'x-period-filter-inline__mode']">
       <x-select
+        check="dirty"
         :model-value="mode"
         :label="label"
         :options="modeOptions"
@@ -85,6 +86,7 @@ function set(field, val) {
 
     <div v-if="isDateMode" :class="[fieldClass, 'x-period-filter-inline__field']">
       <x-datepicker
+        check="dirty"
         :model-value="current.dateStart"
         :label="mode === 'date' ? 'Fecha' : 'Fecha del'"
         @update:model-value="(v) => set('dateStart', v)"
@@ -92,6 +94,7 @@ function set(field, val) {
     </div>
     <div v-if="mode === 'between_dates'" :class="[fieldClass, 'x-period-filter-inline__field']">
       <x-datepicker
+        check="dirty"
         :model-value="current.dateEnd"
         label="Fecha al"
         @update:model-value="(v) => set('dateEnd', v)"
@@ -100,6 +103,7 @@ function set(field, val) {
 
     <div v-if="isMonthMode" :class="[fieldClass, 'x-period-filter-inline__field x-period-filter-inline__field--month']">
       <x-datepicker-month
+        check="dirty"
         :model-value="current.monthStart"
         :label="mode === 'month' ? 'Mes' : 'Mes del'"
         @update:model-value="(v) => set('monthStart', v)"
@@ -107,6 +111,7 @@ function set(field, val) {
     </div>
     <div v-if="mode === 'between_months'" :class="[fieldClass, 'x-period-filter-inline__field x-period-filter-inline__field--month']">
       <x-datepicker-month
+        check="dirty"
         :model-value="current.monthEnd"
         label="Mes al"
         @update:model-value="(v) => set('monthEnd', v)"

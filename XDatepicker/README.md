@@ -24,7 +24,7 @@ import XDatepicker from '@/components/XDatepicker/XDatepicker.vue'
 | `displayMask` | `String` | `'DD/MM/YYYY'` | Formato de visualizacion |
 | `options` | `Function` | `null` | Funcion para habilitar/deshabilitar fechas |
 | `isRequired` | `Boolean` | `false` | Campo obligatorio: asterisco rojo en la etiqueta, como XInput (solo marca, no valida). Tambien en `XTimepicker` (v2.18.0) |
-| `check` | `Boolean` | `true` | Check verde cuando hay fecha y no hay error (v2.30.0, [XFieldCheck](../XFieldCheck/README.md)); también en XDatepickerMonth, XDateTimepicker y XTimepicker; nunca en solo lectura. `false` lo apaga |
+| `check` | `Boolean` o `'dirty'` | `true` | Check verde cuando hay fecha y no hay error (v2.30.0, [XFieldCheck](../XFieldCheck/README.md)); también en XDatepickerMonth, XDateTimepicker y XTimepicker; nunca en solo lectura. `false` lo apaga; `'dirty'` (v2.31.0, filtros) solo cuando el usuario cambia la fecha respecto de la que venía |
 | `defaultYearMonth` | `String` | `null` | Mes que muestra el calendario al abrirse cuando el campo esta vacio (`'YYYY/MM'`). Sin el, abre en el mes actual: si `options` solo deja elegir fechas de un mes anterior, todos los dias salian apagados (v2.22.0) |
 | `navigationMinYearMonth` | `String` | `null` | Mes mas antiguo al que deja navegar el calendario (`'YYYY/MM'`) (v2.22.0) |
 | `navigationMaxYearMonth` | `String` | `null` | Mes mas reciente al que deja navegar el calendario (`'YYYY/MM'`) (v2.22.0) |

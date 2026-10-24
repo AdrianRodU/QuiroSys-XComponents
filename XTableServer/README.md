@@ -356,3 +356,8 @@ En dispositivos moviles (`$q.platform.is.mobile || $q.screen.lt.lg`):
 `Cell::component('XPhoneLink', $telefono)` pinta el número con [XPhoneLink](../XPhoneLink/README.md): bandera del
 país, número como se lee y enlace a WhatsApp en verde si es celular (`tel:` si es fijo). Es la misma fuente de
 estilo que las tarjetas de las pantallas, así el teléfono se ve igual en todos lados.
+
+## Check verde en los filtros (v2.31.0)
+
+Los filtros de la tabla (búsqueda, selects, árbol y período) llevan `check="dirty"`: el check sale solo cuando el
+usuario cambia el filtro respecto del valor con el que vino (un "Todos" por defecto no lleva check).

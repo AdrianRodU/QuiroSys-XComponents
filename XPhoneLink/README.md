@@ -40,6 +40,7 @@ Cell::component('XPhoneLink', $patient->phone);
 | `flags` | `Boolean` | `true` | Bandera SVG del país |
 | `color` | `String` | `'green-7'` | Color Quasar del enlace de WhatsApp |
 | `tooltip` | `String` | `'Escribirle por WhatsApp'` | Tooltip del enlace de WhatsApp |
+| `text` | `String` | `''` | Mensaje listo para enviar: va en el enlace de WhatsApp (v2.31.0) |
 | `telTooltip` | `String` | `'Llamar'` | Tooltip del enlace `tel:` |
 | `empty` | `String` | `''` | Texto cuando no hay número; vacío, no pinta nada |
 

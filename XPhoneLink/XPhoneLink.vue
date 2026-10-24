@@ -7,7 +7,7 @@
  * no se entiende sale tal cual, sin enlace ni bandera, nunca vacío.
  */
 import { computed } from 'vue'
-import { DEFAULT_COUNTRY, formatPhone, isMobileType, parsePhone } from '../XInputPhone/phone.js'
+import { DEFAULT_COUNTRY, formatPhone, isMobileType, parsePhone, whatsappLink } from '../XInputPhone/phone.js'
 
 defineOptions({ name: 'XPhoneLink' })
 
@@ -23,6 +23,8 @@ const props = defineProps({
   /** Color Quasar del enlace de WhatsApp. */
   color: { type: String, default: 'green-7' },
   tooltip: { type: String, default: 'Escribirle por WhatsApp' },
+  /** Mensaje listo para enviar por WhatsApp (v2.31.0): va en el enlace (wa.me/…?text=…). */
+  text: { type: String, default: '' },
   telTooltip: { type: String, default: 'Llamar' },
   /** Texto cuando no hay número; vacío, no pinta nada (quien lo usa decide su "Sin registrar"). */
   empty: { type: String, default: '' },
@@ -38,7 +40,7 @@ const iso = computed(() => (valid.value ? pn.value.country : null))
 const whatsapp = computed(() => valid.value && isMobileType(pn.value))
 const href = computed(() => {
   if (!valid.value) return null
-  return whatsapp.value ? `https://wa.me/${pn.value.number.slice(1)}` : `tel:${pn.value.number}`
+  return whatsapp.value ? whatsappLink(pn.value.number, props.text) : `tel:${pn.value.number}`
 })
 const flagClass = (code) => `fi fi-${String(code).toLowerCase()} x-phone-link__flag`
 </script>

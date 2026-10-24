@@ -2,7 +2,8 @@
 import { computed, ref, useAttrs, watch } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
 import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
-import { isFilled, isInactive } from '../XFieldCheck/isFilled.js'
+import { isInactive } from '../XFieldCheck/isFilled.js'
+import { useFieldCheck } from '../XFieldCheck/useFieldCheck.js'
 
 defineOptions({
   name: 'XTreeSelect',
@@ -24,8 +25,10 @@ const attrs = useAttrs()
 
 const props = defineProps({
   /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: en todos los campos, en
-   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. */
-  check: { type: Boolean, default: true },
+   *  todos lados). Nunca en un campo de solo lectura o deshabilitado. `:check="false"` lo apaga. `check="dirty"`
+   *  (v2.31.0, filtros): solo cuando el usuario cambia el valor respecto del que venía (un "Todos" por defecto no
+   *  lleva check hasta que se cambia, y lo pierde si se vuelve a "Todos"). */
+  check: { type: [Boolean, String], default: true },
   modelValue: {
     type: [String, Number, Array, null],
     default: null
@@ -58,7 +61,12 @@ const label = computed(() =>
 
 // attrs seguros para QInput (quitamos class, options, multiple, label)
 // Check verde (XFieldCheck): hay opción elegida, no hay error y el campo no está inactivo.
-const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(props.modelValue) && !attrs.error)
+const { showOk, markUserChange } = useFieldCheck({
+  check: () => props.check,
+  value: () => props.modelValue,
+  inactive: () => isInactive(attrs),
+  error: () => !!attrs.error,
+})
 
 const safeInputAttrs = computed(() => {
   // eslint-disable-next-line no-unused-vars
@@ -188,6 +196,7 @@ const placeholder = computed(() => attrs.placeholder ?? '')
 // Handlers de selección
 function onSelectedChange (val) {
   if (props.multiple) return
+  markUserChange()
 
   // Permitimos que val sea null (deselección)
   internalSelected.value = val
@@ -206,6 +215,7 @@ function onSelectedChange (val) {
 
 function onTickedChange (vals) {
   if (!props.multiple) return
+  markUserChange()
 
   const arr = Array.isArray(vals) ? vals : []
   const old = Array.isArray(props.modelValue) ? props.modelValue : []

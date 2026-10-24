@@ -62,6 +62,7 @@ export { formatPhone, phoneDigits, whatsappLink, toE164, isValidPhone, parsePhon
 
 // Check verde de los campos (XFieldCheck/isFilled.js): la regla de "tiene valor" y "está inactivo"
 export { isFilled, isInactive } from './XFieldCheck/isFilled.js'
+export { useFieldCheck } from './XFieldCheck/useFieldCheck.js'
 
 // Composables
 export { useNotify } from './XNotify/useNotify'

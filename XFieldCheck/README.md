@@ -19,3 +19,11 @@ deshabilitado. En cada componente se apaga con `:check="false"`.
 <x-field-check />           <!-- solo el icono: check_circle teal-7 de 18px -->
 <x-input v-model="x" :check="false" />   <!-- sin check en este campo -->
 ```
+
+## `check="dirty"` para filtros (v2.31.0)
+
+Adrián (24/10/2026): "los que vienen por defecto no deben tener check, solo cuando se modifica a un valor". Con
+`check="dirty"` el check sale solo cuando el usuario cambió el valor respecto del que el campo tenía antes de tocarlo
+(`useFieldCheck.js`); si vuelve al valor base, se va. Los filtros internos de `XTableServer` y los del filtro de período
+ya lo usan; un filtro propio de una pantalla se marca con `check="dirty"`. Lo entienden XInput, XInputNumeric, XSelect,
+XDatepicker, XDatepickerMonth y XTreeSelect.

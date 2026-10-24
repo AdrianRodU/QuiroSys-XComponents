@@ -20,7 +20,8 @@ import XInput from '@/components/XInput/XInput.vue'
 | `error` | `String` | `null` | Mensaje de error a mostrar |
 | `autofocus` | `Boolean` | `false` | Auto-focus al montar |
 | `isRequired` | `Boolean` | `false` | Muestra asterisco de requerido |
-| `check` | `Boolean` | `true` | Check verde cuando el campo tiene valor y no está en error (v2.30.0, [XFieldCheck](../XFieldCheck/README.md)); nunca en solo lectura o deshabilitado. `false` lo apaga |
+| `check` | `Boolean` o `'dirty'` | `true` | Check verde cuando el campo tiene valor y no está en error (v2.30.0, [XFieldCheck](../XFieldCheck/README.md)); nunca en solo lectura o deshabilitado. `false` lo apaga; `'dirty'` (v2.31.0, filtros) solo cuando el usuario cambia el valor respecto del que venía |
+| `multiple` | `Boolean` | `false` | Con `type="email"`: varios correos separados por coma o punto y coma (v2.31.0) |
 | `bgColor` | `String` | `'white'` | Fondo del control (color Quasar/CSS). Invisible sobre fondos blancos; evita que el input se mimetice sobre un card/banner de color. `''` para el comportamiento clásico (transparente). |
 | `searchButton` | `Boolean` | `false` | Muestra una lupa dentro del campo, a la derecha. Emite `search` al hacer clic o al presionar Enter (v2.19.0). |
 | `searchLoading` | `Boolean` | `false` | Lupa girando mientras se busca; no vuelve a emitir. |
@@ -234,4 +235,15 @@ Muestra un ícono **"?"** con tooltip informativo junto al label (usa [XHelpTip]
 
 ```vue
 <XInput label="Incluye IGV" help="El precio ya trae el IGV incluido." />
+```
+
+## Correo (v2.31.0)
+
+Con `type="email"` el campo valida solo: avisa al salir del campo ("Escribe un correo válido (nombre@dominio.com)"),
+el check verde sale solo con un correo válido, dentro de un `<q-form>` frena el envío y expone `validate()`. Con
+`multiple`, acepta varios separados por coma. El servidor sigue validando con su regla `email`; esto es la primera
+capa, en un solo lugar.
+
+```vue
+<x-input v-model="form.email" label="Correo electrónico" type="email" :error="errors.email" />
 ```
