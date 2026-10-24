@@ -28,7 +28,9 @@ const selectRef = ref(null);
 // Check verde (XFieldCheck): hay una opción elegida, no hay error y el select no es de solo lectura ni está
 // deshabilitado. El v-model puede venir como prop o como attr.
 const slots = useSlots();
-const forwardedSlots = computed(() => Object.fromEntries(Object.keys(slots).filter((n) => n !== 'append').map((n) => [n, slots[n]])));
+// Funcion y no computed: los slots no son reactivos (Vue muta el mismo objeto), asi que se recalcula en cada render,
+// igual que antes con $slots; un slot condicional del padre sigue entrando y saliendo.
+const forwardedSlots = () => Object.fromEntries(Object.keys(slots).filter((n) => n !== 'append').map((n) => [n, slots[n]]));
 const selectedValue = computed(() => (props.modelValue !== undefined ? props.modelValue : attrs.modelValue));
 const showOk = computed(() => props.check && !isInactive(attrs) && isFilled(selectedValue.value) && !props.error);
 const remoteOptions = ref([]);
@@ -355,7 +357,7 @@ function onSelect(val) {
               @keydown.enter.stop
               @keyup.enter.stop
               :label-slot="!!elementLabel && (props.isRequired || !!help) && !$slots.label">
-      <template v-for="(_, name) in forwardedSlots" #[name]="slotProps">
+      <template v-for="(_, name) in forwardedSlots()" #[name]="slotProps">
         <slot :name="name" v-bind="slotProps || {}"/>
       </template>
 
