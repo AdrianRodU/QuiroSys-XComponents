@@ -21,8 +21,8 @@ import XInputPhone from '@quirosys/x-components/XInputPhone/XInputPhone.vue'
 Necesita `libphonenumber-js` (peer dependency opcional de la librería): `pnpm add libphonenumber-js`.
 
 Las banderas son SVG del paquete `flag-icons` (clases `fi fi-pe`): la app lo instala (`pnpm add flag-icons`) y carga su
-CSS una vez; en el tenant va en la primera línea de `src/css/app.scss`:
-`@use 'flag-icons/sass/flag-icons' with ($flag-icons-use-square: false);`. Sin ese CSS, `:flags="false"` muestra el
+CSS una vez desde JS (en el tenant, el boot `src/boot/flags.js` con `import 'flag-icons/css/flag-icons.min.css'`;
+desde Sass con `@use` las url() de los SVG quedaban relativas a la página). Sin ese CSS, `:flags="false"` muestra el
 código ISO en su lugar.
 
 ## v-model
