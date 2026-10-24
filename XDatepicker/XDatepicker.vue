@@ -39,6 +39,10 @@ const props = defineProps({
 
   /** Campo obligatorio: asterisco rojo en la etiqueta, como XInput (solo marca, no valida). */
   isRequired: { type: Boolean, default: false },
+  /** Check verde cuando el campo tiene valor y no está en error (v2.30.0, Adrián 24/10: el mismo de XInputPhone en
+   *  todos los campos). Por defecto (null) solo en los obligatorios (is-required); true lo muestra también en un
+   *  campo opcional; false, nunca. */
+  check: { type: Boolean, default: null },
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])
@@ -60,6 +64,8 @@ const hasError = computed(() => !!props.error)
 
 // normaliza null -> ''
 const normalizedValue = computed(() => (props.modelValue ?? ''))
+// Check verde (prop `check`): hay fecha y no hay error.
+const showOk = computed(() => (props.check === true || (props.check !== false && props.isRequired)) && !!normalizedValue.value && !hasError.value)
 
 const displayValue = computed(() => {
   const v = normalizedValue.value
@@ -118,6 +124,7 @@ function clear() {
       @clear="clear"
     >
       <template #append>
+        <q-icon v-if="showOk" name="check_circle" color="teal-7" size="18px" class="x-field__ok q-mr-xs" />
         <q-icon name="event" :class="props.readonly ? 'cursor-not-allowed' : 'cursor-pointer'">
           <q-popup-proxy
             v-if="!props.readonly"

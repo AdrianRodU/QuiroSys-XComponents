@@ -2,6 +2,7 @@
 import { computed, ref, toValue, useAttrs, watch } from 'vue'
 import { formDefaults } from '@esolutions/js-utils'
 import XHelpTip from '../XHelpTip/XHelpTip.vue'
+import { useFormChild } from 'quasar'
 import {
   DEFAULT_COUNTRY,
   SHORT_LIST,
@@ -108,14 +109,17 @@ watch(() => props.defaultCountry, (iso) => {
   if (!text.value) country.value = iso
 })
 
-// Lo que sale por v-model: E.164 si el número sirve, '' si está vacío o a medias.
+// Lo que sale por v-model: E.164 si el número sirve; '' si está vacío. Si lo escrito NO sirve (a medias, con un dígito
+// de más, un fijo donde va un celular) sale tal cual lo escrito (24/10/2026, bug que encontró Adrián: antes salía ''
+// y el formulario guardaba el celular como vacío sin que nada lo frenara): así el servidor lo rechaza con
+// Rules\PhoneE164 y el formulario no guarda, use q-form o no.
 function publish() {
   status.value = validationMessage(text.value, country.value, props.type)
   const digits = text.value.replace(/\D/g, '')
   let out = ''
-  if (digits && !status.value) {
-    const pn = parsePhone(text.value, country.value)
-    out = pn ? pn.number : ''
+  if (digits) {
+    const pn = status.value ? null : parsePhone(text.value, country.value)
+    out = pn ? pn.number : text.value.trim()
   }
   if (out !== lastEmitted.value) {
     lastEmitted.value = out
@@ -145,6 +149,21 @@ function onBlur() {
   touched.value = true
   status.value = validationMessage(text.value, country.value, props.type)
 }
+
+// Dentro de un <q-form>, su validate() (y el envío) se frenan si lo escrito no sirve, con el mismo mensaje.
+function validate() {
+  touched.value = true
+  status.value = validationMessage(text.value, country.value, props.type)
+  return !status.value
+}
+useFormChild({
+  validate,
+  resetValidation: () => {
+    touched.value = false
+    status.value = null
+  },
+  requiresInput: false,
+})
 
 // ── Selector de país ────────────────────────────────────────────────────────
 const menu = ref(false)
@@ -192,7 +211,7 @@ const filteredAttrs = computed(() => {
   return rest
 })
 
-defineExpose({ focus: () => inputRef.value?.focus?.(), country, isValid: () => validOk.value })
+defineExpose({ focus: () => inputRef.value?.focus?.(), country, isValid: () => validOk.value, validate })
 </script>
 
 <template>

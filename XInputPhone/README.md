@@ -27,10 +27,11 @@ código ISO en su lugar.
 
 ## v-model
 
-UNA cadena en formato internacional E.164: `"+51987654321"`. Sale `''` cuando el campo está vacío o lo escrito
-todavía no es un número válido, así el formulario nunca guarda un número a medias (el error propio se ve al salir
-del campo y el servidor lo exige igual con la regla `PhoneE164`). Un valor viejo sin `+` (9 dígitos peruanos, con o
-sin 51 delante) se lee como de Perú y se muestra formateado; no se vuelve a emitir hasta que alguien lo toque.
+Lleva el número en E.164 (`"+51987654321"`) cuando lo escrito sirve y `''` cuando está vacío. Si lo escrito **no
+sirve** (a medias, con un dígito de más, un fijo donde va un celular), el v-model lleva lo escrito tal cual: así el
+servidor lo rechaza con su regla (`Rules\PhoneE164`) y el formulario no guarda, use `q-form` o no (hasta la v2.29.0
+salía `''` y un celular a medias se guardaba como vacío). Dentro de un `<q-form>`, además, el campo frena el envío
+con el mismo mensaje (`useFormChild`); también expone `validate()`.
 
 ## Props
 
