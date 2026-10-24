@@ -46,6 +46,8 @@ const props = defineProps({
   type: { type: String, default: 'mobile', validator: (v) => ['mobile', 'any'].includes(v) },
   /** Cuándo se muestra el error propio: al salir del campo ('blur'), siempre ('always') o nunca ('never'). */
   showError: { type: String, default: 'blur' },
+  /** Bandera SVG junto al país (clases `fi fi-xx` del paquete flag-icons, cuyo CSS carga la app); con false, el código ISO. */
+  flags: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['update:modelValue', 'invalid', 'country'])
@@ -66,6 +68,7 @@ const lastEmitted = ref(undefined) // último valor que salió por v-model (para
 const inputRef = ref(null)
 
 const dial = computed(() => dialCode(country.value))
+const flagClass = (iso) => `fi fi-${String(iso).toLowerCase()} x-input-phone__flag`
 const placeholder = computed(() => (attrs.placeholder != null ? attrs.placeholder : examplePlaceholder(country.value)))
 const validOk = computed(() => !!text.value.replace(/\D/g, '') && !status.value && !serverError.value)
 
@@ -240,7 +243,8 @@ defineExpose({ focus: () => inputRef.value?.focus?.(), country, isValid: () => v
           @keydown.enter.prevent="openMenu"
           @keydown.space.prevent="openMenu"
         >
-          <span class="x-input-phone__iso">{{ country }}</span>
+          <span v-if="flags" :class="flagClass(country)" aria-hidden="true"></span>
+          <span v-else class="x-input-phone__iso">{{ country }}</span>
           <span class="x-input-phone__dial">{{ dial }}</span>
           <q-icon name="arrow_drop_down" size="18px" class="x-input-phone__caret" />
           <q-menu
@@ -273,6 +277,7 @@ defineExpose({ focus: () => inputRef.value?.focus?.(), country, isValid: () => v
                 active-class="x-input-phone__item--active"
                 @click="selectCountry(o.iso)"
               >
+                <q-item-section v-if="flags" side><span :class="flagClass(o.iso)" aria-hidden="true"></span></q-item-section>
                 <q-item-section side><span class="x-input-phone__iso">{{ o.iso }}</span></q-item-section>
                 <q-item-section side class="x-input-phone__dial">{{ o.dial }}</q-item-section>
                 <q-item-section>{{ o.name }}</q-item-section>
@@ -346,6 +351,14 @@ defineExpose({ focus: () => inputRef.value?.focus?.(), country, isValid: () => v
 
 .x-input-phone__dial {
   color: var(--x-text-muted, #6b7280);
+}
+
+.x-input-phone__flag {
+  width: 21px;
+  height: 15px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
 }
 
 .x-input-phone__caret {

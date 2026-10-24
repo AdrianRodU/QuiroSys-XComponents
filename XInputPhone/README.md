@@ -20,6 +20,11 @@ import XInputPhone from '@quirosys/x-components/XInputPhone/XInputPhone.vue'
 
 Necesita `libphonenumber-js` (peer dependency opcional de la librería): `pnpm add libphonenumber-js`.
 
+Las banderas son SVG del paquete `flag-icons` (clases `fi fi-pe`): la app lo instala (`pnpm add flag-icons`) y carga su
+CSS una vez; en el tenant va en la primera línea de `src/css/app.scss`:
+`@use 'flag-icons/sass/flag-icons' with ($flag-icons-use-square: false);`. Sin ese CSS, `:flags="false"` muestra el
+código ISO en su lugar.
+
 ## v-model
 
 UNA cadena en formato internacional E.164: `"+51987654321"`. Sale `''` cuando el campo está vacío o lo escrito
@@ -42,6 +47,7 @@ sin 51 delante) se lee como de Perú y se muestra formateado; no se vuelve a emi
 | `countries` | `Array \| 'all'` | lista corta | Países de la lista (ISO, en ese orden). La búsqueda siempre mira todos |
 | `type` | `'mobile' \| 'any'` | `'mobile'` | `mobile` exige celular (pacientes, apoderados: es el WhatsApp); `any` acepta fijos (sedes, centros, empresas) |
 | `showError` | `'blur' \| 'always' \| 'never'` | `'blur'` | Cuándo se muestra el error propio |
+| `flags` | `Boolean` | `true` | Bandera SVG junto al país (clases de `flag-icons`); con `false`, el código ISO |
 
 Además acepta los atributos de `QInput` (`label`, `placeholder`, `disable`, `readonly`, `hint`, `autofocus`…). Sin
 `placeholder` muestra un ejemplo de celular del país ("912 345 678").
@@ -61,8 +67,8 @@ Además acepta los atributos de `QInput` (`label`, `placeholder`, `disable`, `re
   Venezuela", "No es un celular: aquí va el número de WhatsApp".
 - Con número válido aparece una marca ✓ a la derecha; el slot `append` sigue disponible (p. ej. el botón de enviar
   por WhatsApp).
-- Lista corta por defecto: PE, VE, CO, EC, CL, AR, BO, BR, US, ES, MX. Sin imágenes de banderas: el código ISO y el
-  prefijo se leen igual en Windows (que no dibuja las banderas emoji) y en el celular.
+- Lista corta por defecto: PE, VE, CO, EC, CL, AR, BO, BR, US, ES, MX. Bandera SVG (flag-icons) y prefijo en el
+  campo; bandera, código ISO, prefijo y nombre en la lista. Sin emoji: Windows no dibuja las banderas emoji.
 
 ## Ayudantes (`XInputPhone/phone.js`)
 
