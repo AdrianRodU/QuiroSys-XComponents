@@ -350,3 +350,9 @@ En dispositivos moviles (`$q.platform.is.mobile || $q.screen.lt.lg`):
 - `XMobileMenuAction.vue` - Bottom sheet para acciones movil
 - `MobileLinkAction.vue` - Item de accion en el bottom sheet
 - `MobileLinkTitle.vue` - Titulo del bottom sheet
+
+## Celda de teléfono (v2.30.0)
+
+`Cell::component('XPhoneLink', $telefono)` pinta el número con [XPhoneLink](../XPhoneLink/README.md): bandera del
+país, número como se lee y enlace a WhatsApp en verde si es celular (`tel:` si es fijo). Es la misma fuente de
+estilo que las tarjetas de las pantallas, así el teléfono se ve igual en todos lados.

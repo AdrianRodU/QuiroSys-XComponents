@@ -9,6 +9,8 @@ import XToggle from '../XToggle/XToggle.vue'
 import XCheckbox from '../XCheckbox/XCheckbox.vue'
 import XInput from '../XInput/XInput.vue'
 import XSelect from '../XSelect/XSelect.vue'
+// Solo lectura (v2.30.0): teléfono con bandera y enlace a WhatsApp o tel: (Cell::component('XPhoneLink', $telefono)).
+import XPhoneLink from '../XPhoneLink/XPhoneLink.vue'
 
 defineOptions({ name: 'XCellColumnRenderer' })
 
@@ -27,6 +29,7 @@ const componentsMap = {
   XCheckbox,
   XInput,
   XSelect,
+  XPhoneLink,
 }
 
 const isComponentCell = computed(() =>
