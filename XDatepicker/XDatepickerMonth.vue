@@ -1,6 +1,7 @@
 <!-- src/components/XDatepicker/XDatepickerMonth.vue -->
 <script setup>
 import { computed, useAttrs, ref } from 'vue'
+import { useQuasar } from 'quasar'
 import { formDefaults } from '@esolutions/js-utils'
 import XFieldCheck from '../XFieldCheck/XFieldCheck.vue'
 import { isInactive } from '../XFieldCheck/isFilled.js'
@@ -33,6 +34,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'change'])
 
 const attrs = useAttrs()
+const $q = useQuasar()
 const popupRef = ref(null)
 
 const fallbackId = Math.random().toString(36).substring(2, 9)
@@ -55,6 +57,11 @@ const { showOk, markUserChange } = useFieldCheck({
   inactive: () => isInactive(attrs),
   error: () => hasError.value,
 })
+// "x" para borrar (prop clearable, v2.32.1). La de QField no se dibuja: el q-input va siempre readonly (la fecha se
+// elige en el calendario) y QField solo pinta su "x" en un campo editable, así que clearable nunca se vio (Adrián,
+// 29/10: en Promociones "no me permite eliminar las fechas de inicio y fin"). Se dibuja en el #append, con el ícono
+// y la clase de la de Quasar.
+const showClear = computed(() => props.clearable && !isInactive(attrs) && !!normalizedValue.value)
 
 // Para q-date necesitamos formato YYYY/MM (con día para que funcione)
 const qDateValue = computed(() => {
@@ -129,7 +136,6 @@ function clear() {
         dense: props.dense,
         outlined: props.outlined,
         readonly: true,
-        clearable: props.clearable,
         error: hasError,
         errorMessage: props.error || undefined,
         noErrorIcon: true,
@@ -137,7 +143,6 @@ function clear() {
       }"
       :label-slot="!!elementLabel && props.isRequired"
       :aria-required="props.isRequired ? 'true' : null"
-      @clear="clear"
     >
       <!-- Etiqueta clásica con el asterisco de obligatorio (como XInput y XTimepicker) -->
       <template v-if="elementLabel && props.isRequired" #label>
@@ -145,6 +150,16 @@ function clear() {
         <span class="text-negative" aria-hidden="true">*</span>
       </template>
       <template #append>
+        <q-icon
+          v-if="showClear"
+          :name="$q.iconSet.field.clear"
+          class="q-field__focusable-action x-datepicker__clear q-mr-xs"
+          tag="button"
+          type="button"
+          tabindex="0"
+          aria-label="Borrar"
+          @click.stop.prevent="clear"
+        />
         <x-field-check v-if="showOk" class="q-mr-xs" />
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy ref="popupRef" cover transition-show="scale" transition-hide="scale">

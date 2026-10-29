@@ -86,16 +86,16 @@
   }
 
   // --------------------------------------------------------------------------
-  // Boton clear
+  // Boton clear: la "x" de clearable que dibuja el componente (v2.32.1; la de QField no sale en un campo readonly y
+  // este bloque apuntaba a .q-field__clearable, que Quasar 2 no pinta). Va después del ícono del calendario: le gana.
   // --------------------------------------------------------------------------
-  .q-field__clearable {
-    .q-icon {
-      font-size: 18px;
-      color: $x-text-secondary;
+  .q-field__append .x-datepicker__clear {
+    font-size: 18px;
+    color: $x-text-secondary;
 
-      &:hover {
-        color: $x-negative;
-      }
+    &:hover {
+      color: $x-negative;
+      transform: none;
     }
   }
 }

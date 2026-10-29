@@ -16,3 +16,13 @@
     padding: 0 12px;
   }
 }
+
+// La "x" de clearable (v2.32.1): gris como la de los demás campos, roja al pasar el mouse.
+.x-input-date-timepicker .q-field__append .x-datepicker__clear {
+  font-size: 18px;
+  color: var(--x-text-muted, #757575);
+
+  &:hover {
+    color: var(--x-negative-text, #c10015);
+  }
+}
