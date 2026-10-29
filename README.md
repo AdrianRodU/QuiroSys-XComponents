@@ -61,7 +61,7 @@ Más de 40 componentes con prefijo `X*`, entre ellos:
 - **Diálogos y feedback**: XDialog, XDialogAction, XNotify, XLoading, XBanner, XHelpTip, XCallout
 - **Visualización**: XChart, XBadge, XCard, XLineageTree, XTracking, XPdfPreview, XPdfViewer, XImageViewer, XPhoneLink (teléfono con bandera y WhatsApp), XFieldCheck (el check verde de los campos con valor)
 - **Navegación**: XMainMenu, XDropdownMenu, XModulesTreePicker, XNested, XDnd
-- **Otros**: XFormatPrice, XPriceCalculator, XTokenDisplay, XVerifiedBadge, Mobile/, PrintTemplates/
+- **Otros**: XFormatPrice, XPriceCalculator, XTokenDisplay, XVerifiedBadge, XCoupon (cupón para recortar: oferta, código y vigencia), Mobile/, PrintTemplates/
 
 Ver [PACKAGES.md](PACKAGES.md) para la arquitectura del ecosistema de paquetes.
 
