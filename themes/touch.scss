@@ -1,0 +1,131 @@
+// ==========================================================================
+// Controles para tocar (v2.34.0): la clase `x-touch`
+//
+// Para formularios que se llenan con el dedo y que leen personas de cualquier edad (la ficha del paciente del ERP):
+// dentro de un contenedor con la clase `x-touch`, los X* toman su tamaño para tocar. Fuera de esa clase nada cambia.
+//
+//   - Campos (XInput, XInputPhone): la pregunta arriba del campo en 16 px y negrita (usar :is-classic="false": una
+//     etiqueta que se achica dentro del campo hace perder de qué era al escribir), texto de 16 px (con menos, el iPhone
+//     hace zoom al escribir), esquinas de 12 px, borde de 1.5 px y el error debajo del campo, en su lugar y con su ícono
+//     (Quasar lo pone flotando en una línea y, con dos, se monta sobre lo siguiente).
+//   - Botones (XButton): 48 px de alto y esquinas de 12 px; los redondos, al menos 44 × 44.
+//   - XButtonToggle `pill`: 48 px.
+//   - Foco visible con el teclado y, si el celular pide menos movimiento, sin animaciones.
+//
+// Se importa DESPUÉS del tema (shadcn.overrides): a igual especificidad gana el último.
+//
+//   @import '@quirosys/x-components/themes/touch';
+//
+// Un diálogo vive fuera de la página (q-portal): su tarjeta también lleva la clase.
+// ==========================================================================
+
+.x-touch {
+  --x-touch-radius: 12px;
+  --x-button-toggle-pill-height: 48px;
+
+  // ---------- Campos ----------
+  .x-input .q-input__label {
+    display: block;
+    margin-bottom: 8px !important;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35 !important;
+    color: var(--x-text, #1e293b);
+  }
+
+  .q-field--outlined .q-field__control {
+    border-radius: var(--x-touch-radius);
+  }
+
+  .q-field--outlined .q-field__control:before {
+    border: 1.5px solid var(--x-border-strong, #cbd5e1);
+  }
+
+  .q-field--outlined:not(.q-field--focused):not(.q-field--error):not(.q-field--disabled) .q-field__control:hover:before {
+    border-color: var(--x-text-subtle, #94a3b8);
+  }
+
+  .q-field__native,
+  .q-field__input {
+    font-size: 16px;
+    color: var(--x-text, #1e293b);
+  }
+
+  .q-field__native::placeholder,
+  .q-field__input::placeholder {
+    color: var(--x-text-subtle, #94a3b8);
+    opacity: 1;
+  }
+
+  // Solo lectura: gris, para que se note que no se cambia ahí.
+  .q-field--disabled .q-field__control {
+    background-color: var(--x-surface-2, #f1f5f9) !important;
+  }
+
+  .q-field--disabled .q-field__native {
+    color: var(--x-text-2, #334155);
+  }
+
+  .q-field--with-bottom.q-field--error {
+    padding-bottom: 0;
+  }
+
+  .q-field--error .q-field__bottom {
+    position: static;
+    transform: none;
+    padding: 8px 0 0;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .q-field--error .q-field__messages > div {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .q-field--error .q-field__messages > div::before {
+    content: 'error_outline';
+    font-family: 'Material Icons';
+    font-size: 16px;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+
+  // Área de texto: se ve como área desde el inicio.
+  .q-textarea .q-field__native {
+    line-height: 1.45;
+    padding-top: 12px;
+  }
+
+  // ---------- Botones ----------
+  .x-button:not(.q-btn--round) {
+    --x-button-height: 48px;
+    --x-button-border-radius: var(--x-touch-radius);
+    --x-button-padding-x: 18px;
+    font-size: 15px;
+  }
+
+  .x-button.q-btn--round {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .x-button:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--q-primary);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .x-touch *,
+  .x-touch *::before,
+  .x-touch *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

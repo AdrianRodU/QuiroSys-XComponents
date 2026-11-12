@@ -52,11 +52,30 @@ Quasar activa el modo oscuro con la clase `body--dark`. Sus colores viven en un 
 
 El proyecto activa el modo con `$q.dark.set(true)`; la preferencia y en qué pantallas se permite son del proyecto.
 
+## Formularios para tocar (desde v2.34.0)
+
+Para un formulario que se llena con el dedo y que leen personas de cualquier edad (la ficha del paciente del ERP), sin
+estilos propios encima de los X*:
+
+- **Clase `x-touch`** ([themes/touch.scss](themes/touch.scss)) en el contenedor del formulario. Dentro, los campos llevan
+  la pregunta arriba en 16 px y negrita (con `:is-classic="false"`), texto de 16 px, esquinas de 12 px, borde de 1.5 px y
+  el error debajo del campo con su ícono; los XButton, 48 px de alto (los redondos, 44 × 44); foco visible con el teclado
+  y sin animaciones si el celular pide menos movimiento. Fuera de la clase nada cambia. Se importa después del tema:
+  `@import '@quirosys/x-components/themes/touch';`. Un diálogo vive fuera de la página: su tarjeta también lleva la clase.
+- **`XButtonToggle` con `pill`**: cada opción es una píldora suelta y la elegida lleva borde y fondo suave del primario y
+  ✓ (el color solo no basta). Los colores salen del primario y de los tokens; `error` pinta de rojo las opciones de una
+  pregunta obligatoria sin responder. Alto en `--x-button-toggle-pill-height` (44 px; 48 dentro de `x-touch`).
+
+```vue
+<x-button-toggle v-model="answer" pill :error="missing" size="16px" spread
+  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]" option-label="label" option-value="value" />
+```
+
 ## Componentes
 
 Más de 40 componentes con prefijo `X*`, entre ellos:
 
-- **Formularios**: XInput, XInputNumeric, XInputOtp, XInputPhone (teléfono con código de país), XInputSearchPerson, XSelect, XTreeSelect, XDatepicker, XCheckbox, XToggle, XSlider, XFile, XImageUpload, XImageCropperUpload
+- **Formularios**: XInput, XInputNumeric, XInputOtp, XInputPhone (teléfono con código de país), XInputSearchPerson, XSelect, XTreeSelect, XDatepicker, XCheckbox, XToggle, XButtonToggle (opciones en grupo o en píldoras), XSlider, XFile, XImageUpload, XImageCropperUpload
 - **Tablas**: XTable, XTableServer (server-side con filtros, exportación Excel y persistencia de columnas), XTableCard
 - **Diálogos y feedback**: XDialog, XDialogAction, XNotify, XLoading, XBanner, XHelpTip, XCallout, XSaveBar (barra de guardado pegada arriba: estado, Descartar y Guardar)
 - **Visualización**: XChart, XBadge, XCard, XLineageTree, XTracking, XPdfPreview, XPdfViewer, XImageViewer, XPhoneLink (teléfono con bandera y WhatsApp), XFieldCheck (el check verde de los campos con valor)

@@ -46,3 +46,57 @@
 .body--dark .x-button-toggle--unelevated .q-btn[aria-pressed="false"] {
   border-color: var(--x-button-toggle-border-dark, rgba(255, 255, 255, 0.22)) !important;
 }
+
+/* Píldoras (v2.34.0, prop `pill`): cada opción suelta con su borde (el grupo deja de unirlas) y la elegida con borde y
+   fondo suave del primario y ✓. Colores de themes/tokens.scss, con el claro de siempre como respaldo: sirve en oscuro.
+   El alto es una variable: la clase x-touch (themes/touch.scss) la sube a 48 px. */
+.x-button-toggle--pill {
+  height: auto;
+  gap: 8px;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.x-button-toggle--pill .q-btn {
+  min-height: var(--x-button-toggle-pill-height, 44px);
+  padding: 0 12px;
+  border-radius: 999px !important;
+  border: 1.5px solid var(--x-button-toggle-pill-border, var(--x-border-strong, #cbd5e1));
+  background: var(--x-surface, #ffffff) !important;
+  color: var(--x-text, #1e293b) !important;
+  font-weight: 500;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+/* El borde va en la píldora: el ::before que une los botones del grupo se apaga. */
+.x-button-toggle--pill .q-btn.q-btn-item:before {
+  border: 0 !important;
+  box-shadow: none;
+}
+
+.x-button-toggle--pill .q-btn:hover {
+  border-color: var(--x-text-subtle, #94a3b8);
+}
+
+.x-button-toggle--pill .q-btn[aria-pressed="true"] {
+  border-color: var(--q-primary);
+  background: var(--x-primary-soft, color-mix(in srgb, var(--q-primary) 8%, #ffffff)) !important;
+  color: var(--x-primary-text, var(--q-primary)) !important;
+  font-weight: 600;
+}
+
+.x-button-toggle--pill .q-btn .q-icon {
+  font-size: 1.15em;
+  margin-right: 6px;
+}
+
+.x-button-toggle--pill .q-btn:focus-visible {
+  outline: 2px solid var(--q-primary);
+  outline-offset: 2px;
+}
+
+.x-button-toggle--pill.x-button-toggle--error .q-btn:not([aria-pressed="true"]) {
+  border-color: var(--x-tone-red-border, #fca5a5);
+}
