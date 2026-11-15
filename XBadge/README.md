@@ -15,8 +15,9 @@ import XBadge from '@/components/XBadge/XBadge.vue'
 | Prop | Tipo | Default | Descripcion |
 |------|------|---------|-------------|
 | `label` | `String` | `''` | Texto del badge |
-| `color` | `String` | `null` | Color personalizado (hex o rgb) |
-| `isLightenColor` | `Boolean` | `false` | Aclarar el color de fondo |
+| `color` | `String` | `null` | Color propio: un nombre del mapa (`green`, `orange`, `yellow`, `teal`, `grey`, `success`, `danger`…; también `positive` y `negative` de Quasar) o un color CSS (hex, rgb). Un nombre que no se puede pintar (p. ej. `orange-8`) sale gris y avisa en la consola. |
+| `isLightenColor` | `Boolean` | sin pasar | Con `color`: sin pasarlo (o `true`), fondo suave y texto en el color; `false`, fondo fuerte y texto blanco (desde v2.36.0; antes, sin pasarlo, fondo y texto salían del mismo color). |
+| `variant` | `String` | `'light'` | `'light'` (fondo suave) o `'solid'` (fondo fuerte y texto blanco). |
 | `type` | `String` | `null` | Tipo predefinido de estilo |
 
 ### Tipos Disponibles
@@ -50,17 +51,15 @@ import XBadge from '@/components/XBadge/XBadge.vue'
 <XBadge label="Inactivo" type="neutral" />
 ```
 
-### Color personalizado
+### Color propio
 
 ```vue
-<XBadge label="Custom" color="#9c27b0" />
-```
-
-### Color aclarado para fondo
-
-```vue
-<!-- Texto con color, fondo aclarado -->
+<!-- Fondo suave y texto en el color (desde v2.36.0, también sin is-lighten-color) -->
+<XBadge label="doc. pendiente" color="orange" />
 <XBadge label="Soft" color="#1976d2" is-lighten-color />
+
+<!-- Fondo fuerte y texto blanco -->
+<XBadge label="Pagado" color="green" variant="solid" />
 ```
 
 ### En una tabla
@@ -175,6 +174,7 @@ $x-badge-border-radius: 6px;
 
 ## Notas
 
-- El prop `isLightenColor` usa la funcion `lightenColor` del mixin `lib.js` para aclarar colores hex
+- El fondo suave usa `lightenColor` de `@esolutions/js-utils` (aclara colores hex)
+- Un color que no es del mapa ni un color CSS (p. ej. `orange-8`, `amber-8`, `blue-grey-7`) sale gris y deja un aviso en la consola (una vez por nombre): antes salía con el fondo azul por defecto de QBadge o sin fondo
 - Los tipos predefinidos usan los colores de Quasar (`$x-positive`, `$x-negative`, etc.)
 - El badge aplica `margin: 0 !important` para evitar espaciados no deseados

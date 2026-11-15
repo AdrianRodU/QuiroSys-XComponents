@@ -1,5 +1,13 @@
+<script>
+// Una vez por nombre en toda la app, no por insignia (ver warnUnknownColor).
+const WARNED = new Set()
+// Los nombres de Quasar que se usan en q-btn o q-icon; en el mapa de js-utils son success y danger (v2.36.0).
+const QUASAR_ALIASES = { positive: 'success', negative: 'danger' }
+const isCssColor = (c) => typeof CSS === 'undefined' || !CSS.supports || CSS.supports('color', c)
+</script>
+
 <script setup>
-import { computed, useAttrs } from 'vue'
+import { computed, useAttrs, watch } from 'vue'
 import { resolveColor, lightenColor } from '@esolutions/js-utils'
 
 defineOptions({
@@ -17,9 +25,13 @@ const props = defineProps({
     type: String,
     default: null
   },
+  /**
+   * Fondo de un `color` propio (v2.36.0). Sin pasarlo, la variante 'light' aclara el fondo y el texto va en el color;
+   * antes el fondo salía del mismo color que el texto y la etiqueta no se veía. `false`: fondo fuerte y texto blanco.
+   */
   isLightenColor: {
     type: Boolean,
-    default: false
+    default: undefined
   },
   type: {
     type: String,
@@ -47,12 +59,31 @@ const props = defineProps({
 const attrs = useAttrs()
 
 // --- Color resuelto (nombre/alias → hex) ---
-const resolvedColor = computed(() => resolveColor(props.color))
+// Un color que no se puede pintar (p. ej. 'orange-8', un tono de Quasar) sale gris y avisa en la consola, en vez del azul
+// por defecto de QBadge o de una insignia sin fondo (v2.36.0).
+const nameOf = (color) => (color ? QUASAR_ALIASES[color.toLowerCase()] || color : null)
+const resolvedColor = computed(() => {
+  const name = nameOf(props.color)
+  if (!name) return null
+  const c = resolveColor(name)
+  return isCssColor(c) ? c : resolveColor('neutral')
+})
 
-// --- Color de fondo calculado si se pasa color ---
+// --- Fondo fuerte (solid o is-lighten-color en false) o suave (lo demás) ---
+const strong = computed(() => props.variant === 'solid' || props.isLightenColor === false)
 const bgColor = computed(() =>
-  resolvedColor.value ? (props.isLightenColor ? lightenColor(resolvedColor.value) : resolvedColor.value) : null
+  resolvedColor.value ? (strong.value ? resolvedColor.value : lightenColor(resolvedColor.value)) : null
 )
+
+function warnUnknownColor(color) {
+  if (!color || WARNED.has(color) || isCssColor(resolveColor(nameOf(color)))) return
+  WARNED.add(color)
+  console.warn(
+    `[XBadge] "${color}" no es un color del mapa (green, orange, yellow, teal, grey, positive…) ni un color CSS: ` +
+      'la insignia sale gris. Usa un nombre del mapa o un hex.',
+  )
+}
+watch(() => props.color, warnUnknownColor, { immediate: true })
 
 // --- Clases dinamicas ---
 const badgeClasses = computed(() => [
@@ -61,13 +92,13 @@ const badgeClasses = computed(() => [
   props.variant === 'solid' ? 'x-badge-solid' : '',
   props.icon ? 'x-badge-with-icon' : '',
   // Color propio con fondo aclarado: en oscuro, tinte y texto claro (themes/tokens.scss).
-  resolvedColor.value && props.variant !== 'solid' ? 'x-badge--custom' : '',
+  resolvedColor.value && !strong.value ? 'x-badge--custom' : '',
 ])
 
 // --- Estilo inline solo si NO hay variant solid (porque solid usa clases) ---
 const inlineStyle = computed(() => {
   if (!resolvedColor.value) return undefined
-  if (props.variant === 'solid') {
+  if (strong.value) {
     return { color: '#fff', backgroundColor: resolvedColor.value }
   }
   // Variables y no colores directos (v2.27.0): en claro valen lo mismo que antes; en oscuro, el tinte y el texto

@@ -99,13 +99,22 @@ usan:
   ]" />
 ```
 
+## Estado vacío e insignias (desde v2.36.0)
+
+- **XEmptyState**: el estado vacío de la casa fuera de una tabla (ícono, título, texto y botones), con el aspecto del
+  vacío de XTable. Ver `XEmptyState/README.md`.
+- **XBadge** con `color`: sin `is-lighten-color` ahora sale con fondo suave y el texto en el color (antes, fondo y texto
+  del mismo color: la etiqueta no se veía). `is-lighten-color="false"` da fondo fuerte con texto blanco. Acepta
+  `positive` y `negative` (los nombres de Quasar). Un color que no se puede pintar (`orange-8`) sale gris y avisa en la
+  consola.
+
 ## Componentes
 
 Más de 40 componentes con prefijo `X*`, entre ellos:
 
 - **Formularios**: XInput, XInputNumeric, XInputOtp, XInputPhone (teléfono con código de país), XInputSearchPerson, XSelect, XTreeSelect, XDatepicker, XCheckbox, XToggle, XButtonToggle (opciones en grupo o en píldoras), XSlider, XFile, XImageUpload, XImageCropperUpload
 - **Tablas**: XTable (local; grupos de columnas, columnas fijas y fila de total para informes), XTableServer (server-side con filtros, exportación Excel y persistencia de columnas), XTableCard
-- **Diálogos y feedback**: XDialog, XDialogAction, XNotify, XLoading, XBanner, XHelpTip, XCallout, XSaveBar (barra de guardado pegada arriba: estado, Descartar y Guardar)
+- **Diálogos y feedback**: XDialog, XDialogAction, XNotify, XLoading, XBanner, XHelpTip, XCallout, XSaveBar (barra de guardado pegada arriba: estado, Descartar y Guardar), XEmptyState (estado vacío fuera de una tabla)
 - **Visualización**: XChart, XBadge, XCard, XLineageTree, XTracking, XPdfPreview, XPdfViewer, XImageViewer, XPhoneLink (teléfono con bandera y WhatsApp), XFieldCheck (el check verde de los campos con valor)
 - **Navegación**: XMainMenu, XDropdownMenu, XModulesTreePicker, XNested, XDnd
 - **Otros**: XFormatPrice, XPriceCalculator, XTokenDisplay, XVerifiedBadge, XCoupon (cupón para recortar: oferta, código y vigencia), Mobile/, PrintTemplates/
