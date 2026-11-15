@@ -176,3 +176,78 @@
   justify-content: center;
   width: 24px;
 }
+
+// --------------------------------------------------------------------------
+// Tablas de informe (v2.35.0): grupos de columnas, columnas fijas, fila de total,
+// fila con clic y modo compacto. Solo aplica a las tablas que usan esas props.
+// --------------------------------------------------------------------------
+.x-table .q-table {
+  // Grupo de columnas: fila de arriba de la cabecera, centrada y subrayada
+  .x-table__group {
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 2px solid var(--x-primary-soft, rgba(26, 86, 219, 0.15));
+  }
+
+  // Línea vertical que separa un grupo del anterior (cabecera y cuerpo)
+  .x-table__group-start {
+    border-left: 1px solid var(--x-border, #e4e7ec);
+  }
+
+  // Columnas fijas al desplazar en horizontal: llevan fondo propio para tapar lo que pasa por debajo
+  .x-table__sticky {
+    position: sticky;
+    z-index: 1;
+    background: var(--x-surface, #fff);
+  }
+  thead .x-table__sticky {
+    z-index: 2;
+  }
+  .x-table__sticky--left {
+    left: 0;
+    box-shadow: 1px 0 0 var(--x-border, #e4e7ec);
+  }
+  .x-table__sticky--right {
+    right: 0;
+    box-shadow: -1px 0 0 var(--x-border, #e4e7ec), -6px 0 8px -6px rgba(15, 23, 42, 0.12);
+  }
+
+  // Fila de total al pie
+  .x-table__summary td {
+    font-weight: 700;
+    background: var(--x-surface-2, #f9fafb);
+    border-bottom: 0;
+  }
+
+  // Fila con @row-click: mano, fondo al pasar (también en las celdas fijas) y foco visible con el teclado
+  .x-table__row--clickable {
+    cursor: pointer;
+
+    &:hover > td {
+      background: var(--x-surface-2, #f9fafb);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--q-primary);
+      outline-offset: -2px;
+    }
+  }
+}
+
+// Compacto: muchas columnas de números en poco ancho
+.x-table.x-table--compact .q-table {
+  th,
+  td {
+    padding: 7px 10px;
+    height: auto;
+  }
+
+  th {
+    font-size: 12px;
+  }
+
+  td {
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+}

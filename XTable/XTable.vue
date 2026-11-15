@@ -1,8 +1,9 @@
 <script setup>
 import { computed, ref, useSlots, watch, onMounted, onUnmounted, getCurrentInstance } from 'vue'
-import { useQuasar } from 'quasar'
+import { useQuasar, QTh } from 'quasar'
 import XLoading from '../XLoading/XLoading.vue'
 import XInput from '../XInput/XInput.vue'
+import XHelpTip from '../XHelpTip/XHelpTip.vue'
 import XMobileMenuAction from '../XTableServer/XMobileMenuAction.vue'
 import MobileLinkTitle from '../Mobile/MobileLinkTitle.vue'
 
@@ -114,6 +115,39 @@ const props = defineProps({
     type: [Function, String],
     default: null,
   },
+  /**
+   * Grupos de columnas (v2.35.0): una fila arriba de la cabecera con el nombre de cada grupo sobre sus columnas.
+   * [{ label: 'R2 / RV2', columns: ['r2_closes', 'r2_rate', 'r2_amount'], help: 'Qué cuenta el grupo' }]
+   * Las columnas de un grupo van seguidas; las que no están en ningún grupo ocupan las dos filas de la cabecera.
+   * Las columnas también aceptan `sticky: 'left' | 'right'` (fija al desplazar en horizontal) y `help` ("?" en la cabecera).
+   */
+  headerGroups: {
+    type: Array,
+    default: () => [],
+  },
+  /**
+   * Fila de total al pie (v2.35.0): un valor por nombre de columna, { name: 'Total por persona', total: '3,017.06' }.
+   * Cada celda admite el slot `summary-cell-{name}`; en las tarjetas, el slot `mobile-summary`.
+   */
+  summary: {
+    type: Object,
+    default: null,
+  },
+  /**
+   * Desde qué ancho de Quasar pasa a tarjetas (v2.35.0): 'sm' | 'md' | 'lg' | 'xl'. Vacío = como siempre: tarjetas en un
+   * celular o una tablet y bajo 1440 px ('lg'). Con un valor, manda solo el ancho: una tablet horizontal o una laptop de
+   * 1366 px ven la tabla (con columnas fijas si las hay). Para tablas de informe con muchas columnas: 'md'.
+   */
+  mobileBelow: {
+    type: String,
+    default: '',
+    validator: (v) => ['', 'sm', 'md', 'lg', 'xl'].includes(v),
+  },
+  /** Celdas compactas (7 × 10 px, 13 px) y números de ancho fijo: tablas de informe con muchas columnas (v2.35.0). */
+  compact: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 // Helper para resolver la clase de fila
@@ -131,7 +165,51 @@ const instance = getCurrentInstance()
 const hasRowClickListener = computed(() => !!instance?.vnode.props?.onRowClick)
 
 // --- Mobile detection ---
-const isMobileView = computed(() => $q.platform.is.mobile || $q.screen.lt.lg)
+// Sin `mobileBelow`, como siempre (celular o tablet, o bajo 1440 px); con `mobileBelow`, solo el ancho.
+const isMobileView = computed(() => (props.mobileBelow ? $q.screen.lt[props.mobileBelow] : $q.platform.is.mobile || $q.screen.lt.lg))
+
+// --- Cabecera con grupos, columnas fijas y ayuda (v2.35.0) ---
+const groupOf = computed(() => {
+  const map = {}
+  for (const g of props.headerGroups) for (const name of g.columns || []) map[name] = g
+  return map
+})
+// La primera columna de cada grupo lleva la línea que lo separa del anterior.
+const groupStart = computed(() => new Set(props.headerGroups.map((g) => (g.columns || [])[0]).filter(Boolean)))
+// La cabecera propia solo cuando hace falta; si no, la de q-table de siempre (ordenar, etc.).
+const useCustomHeader = computed(
+  () => !isMobileView.value && (props.headerGroups.length > 0 || props.columns.some((c) => c.sticky || c.help)),
+)
+// Fila de arriba: los grupos (colspan) y las columnas sueltas (rowspan 2), en el orden de las columnas visibles. La key
+// de una columna suelta es su nombre: q-th la usa para encontrar la columna.
+function headerTop(cols) {
+  const out = []
+  for (let i = 0; i < cols.length; i++) {
+    const g = groupOf.value[cols[i].name]
+    if (!g) {
+      out.push({ key: cols[i].name, col: cols[i] })
+      continue
+    }
+    let span = 1
+    while (i + span < cols.length && groupOf.value[cols[i + span].name] === g) span++
+    out.push({ key: `group-${cols[i].name}`, group: g, span, first: cols[i].name })
+    i += span - 1
+  }
+  return out
+}
+function cellClass(col) {
+  return {
+    'x-table__sticky': !!col.sticky,
+    'x-table__sticky--left': col.sticky === 'left',
+    'x-table__sticky--right': col.sticky === 'right',
+    'x-table__group-start': groupStart.value.has(col.name),
+  }
+}
+// Clic en fila en escritorio: con el slot `body` propio, q-table no emite row-click, así que lo emite la fila (también
+// con Enter, para el teclado). Solo si el padre escucha @row-click.
+function onDesktopRowClick(evt, row, idx) {
+  if (hasRowClickListener.value) emit('row-click', { row, idx, evt })
+}
 
 // --- First load tracking ---
 // Evita el "flash" del empty-state mientras los datos vienen async. Solo
@@ -294,7 +372,7 @@ defineExpose({ clearSearch, closeMobileActions })
 </script>
 
 <template>
-  <q-card class="x-table" :class="{ 'x-table--no-border': noBorder }" :flat="flat">
+  <q-card class="x-table" :class="{ 'x-table--no-border': noBorder, 'x-table--compact': compact }" :flat="flat">
     <!-- Header opcional (title + search + buttons) -->
     <q-card-section v-if="hasHeaderSlot" class="x-table__header q-py-sm">
       <div class="x-table__header-content">
@@ -331,11 +409,45 @@ defineExpose({ clearSearch, closeMobileActions })
       :hide-header="isMobileView"
       @row-click="(evt, row, idx) => emit('row-click', { row, idx, evt })"
     >
+      <!-- Cabecera propia (v2.35.0), solo con grupos, columnas fijas o ayuda: arriba los grupos y las columnas sueltas
+           (rowspan 2), abajo las columnas de cada grupo. q-th con :props conserva el orden por columna. -->
+      <template v-if="useCustomHeader" v-slot:header="hp">
+        <q-tr>
+          <!-- Un solo v-for sobre <component>: q-th busca su columna por la key del vnode (que debe ser el nombre de la
+               columna) y dentro de un v-if Vue le pondría key 0, con lo que q-th no dibujaba nada. -->
+          <component
+            :is="cell.col ? QTh : 'th'"
+            v-for="cell in headerTop(hp.cols)"
+            :key="cell.key"
+            v-bind="cell.col ? { props: hp, rowspan: headerGroups.length ? 2 : 1 } : { colspan: cell.span }"
+            :class="cell.col ? cellClass(cell.col) : ['x-table__group', { 'x-table__group-start': groupStart.has(cell.first) }]"
+          >
+            <template v-if="cell.col">
+              {{ cell.col.label }}<x-help-tip v-if="cell.col.help" :text="cell.col.help" class="q-ml-xs" />
+            </template>
+            <template v-else>
+              {{ cell.group.label }}<x-help-tip v-if="cell.group.help" :text="cell.group.help" class="q-ml-xs" />
+            </template>
+          </component>
+        </q-tr>
+        <q-tr v-if="headerGroups.length">
+          <q-th v-for="col in hp.cols.filter((c) => groupOf[c.name])" :key="col.name" :props="hp" :class="cellClass(col)">
+            {{ col.label }}<x-help-tip v-if="col.help" :text="col.help" class="q-ml-xs" />
+          </q-th>
+        </q-tr>
+      </template>
+
       <!-- DESKTOP: render de fila completa para poder aplicar rowClass al <q-tr>.
            Despacha body-cell-{name} dinamicamente para cada columna. -->
       <template v-if="!isMobileView" v-slot:body="props">
-        <q-tr :props="props" :class="getRowClass(props.row, props.rowIndex)">
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+        <q-tr
+          :props="props"
+          :class="[getRowClass(props.row, props.rowIndex), { 'x-table__row--clickable': hasRowClickListener }]"
+          :tabindex="hasRowClickListener ? 0 : undefined"
+          @click="onDesktopRowClick($event, props.row, props.rowIndex)"
+          @keydown.enter="onDesktopRowClick($event, props.row, props.rowIndex)"
+        >
+          <q-td v-for="col in props.cols" :key="col.name" :props="props" :class="cellClass(col)">
             <slot
               :name="`body-cell-${col.name}`"
               v-bind="props"
@@ -350,7 +462,7 @@ defineExpose({ clearSearch, closeMobileActions })
       </template>
 
       <!-- MOBILE: render custom de fila como card 2-cols + kebab (si hay actions) -->
-      <template v-if="isMobileView" v-slot:body="props">
+      <template v-else v-slot:body="props">
         <q-tr
           :class="[
             getRowClass(props.row, props.rowIndex),
@@ -360,6 +472,8 @@ defineExpose({ clearSearch, closeMobileActions })
           @click="isRowInteractive ? onMobileRowClick($event, props.row, props.rowIndex) : null"
         >
           <q-td colspan="100%" class="q-py-sm">
+            <!-- `mobile-row` (v2.35.0): la tarjeta entera a mano (varias líneas, chips); sin él, izquierda / derecha. -->
+            <slot name="mobile-row" :row="props.row" :index="props.rowIndex">
             <div class="x-table-mobile-row__content">
               <!-- Columna izquierda -->
               <div class="x-table-mobile-row__left" :style="{ flexBasis: mobileLeftWidth }">
@@ -396,8 +510,42 @@ defineExpose({ clearSearch, closeMobileActions })
                 <q-icon size="1.25em" name="fa-light fa-ellipsis-vertical" color="grey-7" />
               </div>
             </div>
+            </slot>
           </q-td>
         </q-tr>
+      </template>
+
+      <!-- Filas antes del cuerpo (v2.35.0), p. ej. datos del grupo que aplican a todas las columnas. -->
+      <template v-if="slots['top-row']" v-slot:top-row="tp">
+        <slot name="top-row" v-bind="tp" :mobile="isMobileView" :cell-class="cellClass" />
+      </template>
+
+      <!-- Al pie (v2.35.0): filas propias (`bottom-row`) y la fila de total (`summary`). -->
+      <template v-if="summary || slots['bottom-row']" v-slot:bottom-row="bp">
+        <slot name="bottom-row" v-bind="bp" :mobile="isMobileView" :cell-class="cellClass" />
+        <template v-if="summary">
+          <q-tr v-if="!isMobileView" class="x-table__summary">
+            <q-td v-for="col in bp.cols" :key="col.name" :class="[cellClass(col), `text-${col.align || 'left'}`]">
+              <slot :name="`summary-cell-${col.name}`" :value="summary[col.name]" :col="col" :summary="summary">
+                {{ summary[col.name] ?? '' }}
+              </slot>
+            </q-td>
+          </q-tr>
+          <q-tr v-else class="x-table__summary">
+            <q-td colspan="100%" class="q-py-sm">
+              <slot name="mobile-summary" :summary="summary">
+                <div class="x-table-mobile-row__content">
+                  <div class="x-table-mobile-row__left" :style="{ flexBasis: mobileLeftWidth }">
+                    <div class="ellipsis">{{ summary[mobileLeftFields[0]?.field] ?? '' }}</div>
+                  </div>
+                  <div class="x-table-mobile-row__right">
+                    <div class="ellipsis text-right">{{ summary[mobileRightFields[0]?.field] ?? '' }}</div>
+                  </div>
+                </div>
+              </slot>
+            </q-td>
+          </q-tr>
+        </template>
       </template>
 
       <!-- Empty state -->

@@ -71,12 +71,40 @@ estilos propios encima de los X*:
   :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]" option-label="label" option-value="value" />
 ```
 
+## Tablas de informe (desde v2.35.0)
+
+Para una tabla con muchas columnas de números (un informe), XTable suma lo siguiente sin cambiar las tablas que ya lo
+usan:
+
+- **`header-groups`**: una fila arriba de la cabecera que agrupa columnas seguidas (`[{ label, columns, help }]`), con
+  una línea vertical entre grupos. Las columnas que no están en un grupo ocupan las dos filas de la cabecera.
+- **Columnas fijas**: `sticky: 'left'` en la primera columna y `sticky: 'right'` en la última. Quedan a la vista al
+  desplazar en horizontal y lo de en medio se desliza.
+- **`summary`**: fila de total al pie, con un valor por nombre de columna (slots `summary-cell-{name}` y `mobile-summary`).
+- **`mobile-below`**: desde qué ancho pasa a tarjetas (`sm`, `md`, `lg` o `xl`). Sin la prop, como siempre: celular,
+  tablet o bajo 1440 px. El slot `mobile-row` dibuja la tarjeta entera.
+- **`compact`**: celdas de 7 × 10 px y números de ancho fijo.
+- Columnas con `help` ("?" en la cabecera), y slots `top-row` y `bottom-row` para filas propias.
+- `@row-click` también en escritorio (antes solo en las tarjetas), con la mano al pasar y con Enter desde el teclado.
+
+```vue
+<x-table compact mobile-below="md" row-key="key" :rows="rows" :summary="totals" @row-click="openPerson"
+  :header-groups="[{ label: 'R2 / RV2', columns: ['r2_closes', 'r2_rate', 'r2_amount'], help: 'Cierres, tasa y monto' }]"
+  :columns="[
+    { name: 'name', label: 'Persona', field: 'name', align: 'left', sticky: 'left' },
+    { name: 'r2_closes', label: 'Cierres', field: 'r2_closes', align: 'right' },
+    { name: 'r2_rate', label: 'Tasa', field: 'r2_rate', align: 'right' },
+    { name: 'r2_amount', label: 'S/', field: 'r2_amount', align: 'right' },
+    { name: 'total', label: 'Total', field: 'total', align: 'right', sticky: 'right' },
+  ]" />
+```
+
 ## Componentes
 
 Más de 40 componentes con prefijo `X*`, entre ellos:
 
 - **Formularios**: XInput, XInputNumeric, XInputOtp, XInputPhone (teléfono con código de país), XInputSearchPerson, XSelect, XTreeSelect, XDatepicker, XCheckbox, XToggle, XButtonToggle (opciones en grupo o en píldoras), XSlider, XFile, XImageUpload, XImageCropperUpload
-- **Tablas**: XTable, XTableServer (server-side con filtros, exportación Excel y persistencia de columnas), XTableCard
+- **Tablas**: XTable (local; grupos de columnas, columnas fijas y fila de total para informes), XTableServer (server-side con filtros, exportación Excel y persistencia de columnas), XTableCard
 - **Diálogos y feedback**: XDialog, XDialogAction, XNotify, XLoading, XBanner, XHelpTip, XCallout, XSaveBar (barra de guardado pegada arriba: estado, Descartar y Guardar)
 - **Visualización**: XChart, XBadge, XCard, XLineageTree, XTracking, XPdfPreview, XPdfViewer, XImageViewer, XPhoneLink (teléfono con bandera y WhatsApp), XFieldCheck (el check verde de los campos con valor)
 - **Navegación**: XMainMenu, XDropdownMenu, XModulesTreePicker, XNested, XDnd
